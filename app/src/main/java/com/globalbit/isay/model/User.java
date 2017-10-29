@@ -2,6 +2,8 @@ package com.globalbit.isay.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * Created by alex on 29/10/2017.
  */
@@ -30,7 +32,7 @@ public class User {
     private boolean mIsFollowing;
 
     @SerializedName("createdAt")
-    private String mCreatedAt;
+    private Date mCreatedAt;
 
     public String getUsername() {
         return mUsername;
@@ -88,11 +90,11 @@ public class User {
         mIsFollowing=following;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return mCreatedAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         mCreatedAt=createdAt;
     }
 

@@ -2,6 +2,8 @@ package com.globalbit.isay.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * Created by alex on 29/10/2017.
  */
@@ -12,7 +14,7 @@ public class BasePostComment {
     private String mId;
 
     @SerializedName("createdAt")
-    private String mCreatedAt;
+    private Date mCreatedAt;
 
     @SerializedName("creator")
     private User mCreator;
@@ -40,11 +42,11 @@ public class BasePostComment {
         mId=id;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return mCreatedAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         mCreatedAt=createdAt;
     }
 

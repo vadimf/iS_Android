@@ -3,8 +3,10 @@ package com.globalbit.isay;
 import android.app.Application;
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
 import com.globalbit.isay.model.system.SystemPreferences;
 import com.globalbit.isay.utils.SharedPrefsUtils;
+import io.fabric.sdk.android.Fabric;
 
 
 /**
@@ -20,6 +22,7 @@ public class CustomApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         mApplicationContext=getApplicationContext();
         SharedPrefsUtils.init(this);
     }

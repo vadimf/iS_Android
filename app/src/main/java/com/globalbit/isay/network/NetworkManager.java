@@ -29,6 +29,7 @@ import com.globalbit.isay.network.responses.UserResponse;
 import com.globalbit.isay.network.responses.UsersResponse;
 import com.globalbit.isay.utils.SharedPrefsUtils;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -72,7 +73,9 @@ public class NetworkManager {
         };
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).addInterceptor(httpLoggingInterceptor).connectTimeout(30, TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).build(); //TODO decide the proper connection and read timeout
 
-        Gson gson=new Gson();
+        Gson gson=new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .create();
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(NetworkConstants.BASE_URL)
                 .client(client)
