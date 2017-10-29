@@ -1,0 +1,13 @@
+package com.globalbit.isay.network;
+
+/**
+ * Created by alex on 29/10/2017.
+ */
+
+public class NetworkConstants {
+    public static final String BASE_URL_DEV="http://10.0.0.9:3000/v1/";
+    public static final String BASE_URL_QA="";
+    public static final String BASE_URL_PRODUCTION="";
+
+    public static final String BASE_URL=BASE_URL_DEV;
+}

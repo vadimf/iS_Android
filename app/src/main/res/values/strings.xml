@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">iSay</string>
+
+    //Errors
+    <string name="error_code_1000_description">Invalid method</string>
+    <string name="error_code_1001_description">Not authorized</string>
+    <string name="error_code_1004_description">Deprecated</string>
+    <string name="error_code_1005_description">Headers missing</string>
+    <string name="error_code_1010_description">Bad request</string>
+    <string name="error_code_1020_description">General error</string>
+    <string name="error_code_1030_description">Fields missing</string>
+    <string name="error_code_1031_description">Bad enum</string>
+    <string name="error_code_2000_description">Email length invalid</string>
+    <string name="error_code_2001_description">Email format invalid</string>
+    <string name="error_code_2010_description">User doesn\'t exist</string>
+    <string name="error_code_2020_description">User blocked</string>
+    <string name="error_code_2030_description">Password doesn\'t match</string>
+    <string name="error_code_2040_description">Password length invalid</string>
+    <string name="error_code_2050_description">Email is already taken</string>
+    <string name="error_code_2060_description">First name length invalid</string>
+    <string name="error_code_2061_description">Last name length invalid</string>
+    <string name="error_code_2070_description">Company name length invalid</string>
+    <string name="error_code_2080_description">Phone prefix doesn\'t exist</string>
+    <string name="error_code_2081_description">Country code doesn\'t exist</string>
+    <string name="error_code_2090_description">Forgot password doesn\'t exist</string>
+    <string name="error_code_2091_description">Forgot password expired</string>
+</resources>
