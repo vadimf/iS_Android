@@ -14,8 +14,12 @@ import com.globalbit.isay.network.requests.AuthenticateViaSmsRequest;
 import com.globalbit.isay.network.requests.ContactsRequest;
 import com.globalbit.isay.network.requests.CreateEditCommentRequest;
 import com.globalbit.isay.network.requests.CreateEditPostRequest;
+import com.globalbit.isay.network.requests.FacebookRequest;
+import com.globalbit.isay.network.requests.ForgotPasswordRequest;
 import com.globalbit.isay.network.requests.PushNotificationTokenRequest;
+import com.globalbit.isay.network.requests.ReportRequest;
 import com.globalbit.isay.network.requests.SearchRequest;
+import com.globalbit.isay.network.requests.SignInUpRequest;
 import com.globalbit.isay.network.requests.UserRequest;
 import com.globalbit.isay.network.requests.VerifySmsAuthenticationRequest;
 import com.globalbit.isay.network.responses.AuthenticateUserResponse;
@@ -109,6 +113,30 @@ public class NetworkManager {
         call.enqueue(callback);
     }
 
+    public void facebookAuthentication(IBaseNetworkResponseListener<AuthenticateUserResponse> listener, FacebookRequest request) {
+        Call<AuthenticateUserResponse> call=mIRetrofitApiInterface.facebookAuthentication(request);
+        AuthenticateUserNetworkCallback callback=new AuthenticateUserNetworkCallback(listener);
+        call.enqueue(callback);
+    }
+
+    public void forgotPassword(IBaseNetworkResponseListener<BaseResponse> listener, ForgotPasswordRequest request) {
+        Call<BaseResponse> call=mIRetrofitApiInterface.forgotPassword(request);
+        BaseNetworkCallback callback=new BaseNetworkCallback(listener);
+        call.enqueue(callback);
+    }
+
+    public void sigIn(IBaseNetworkResponseListener<AuthenticateUserResponse> listener, SignInUpRequest request) {
+        Call<AuthenticateUserResponse> call=mIRetrofitApiInterface.sigIn(request);
+        AuthenticateUserNetworkCallback callback=new AuthenticateUserNetworkCallback(listener);
+        call.enqueue(callback);
+    }
+
+    public void signUp(IBaseNetworkResponseListener<AuthenticateUserResponse> listener, SignInUpRequest request) {
+        Call<AuthenticateUserResponse> call=mIRetrofitApiInterface.signUp(request);
+        AuthenticateUserNetworkCallback callback=new AuthenticateUserNetworkCallback(listener);
+        call.enqueue(callback);
+    }
+
     public void getMyDetails(IBaseNetworkResponseListener<UserResponse> listener) {
         Call<UserResponse> call=mIRetrofitApiInterface.getMyDetails();
         UserNetworkCallback callback=new UserNetworkCallback(listener);
@@ -175,8 +203,8 @@ public class NetworkManager {
         call.enqueue(callback);
     }
 
-    public void reportUser(IBaseNetworkResponseListener<BaseResponse> listener, String username) {
-        Call<BaseResponse> call=mIRetrofitApiInterface.reportUser(username);
+    public void reportUser(IBaseNetworkResponseListener<BaseResponse> listener, String username, ReportRequest request) {
+        Call<BaseResponse> call=mIRetrofitApiInterface.reportUser(username, request);
         BaseNetworkCallback callback=new BaseNetworkCallback(listener);
         call.enqueue(callback);
     }
@@ -247,8 +275,8 @@ public class NetworkManager {
         call.enqueue(callback);
     }
 
-    public void reportPost(IBaseNetworkResponseListener<BaseResponse> listener, String id) {
-        Call<BaseResponse> call=mIRetrofitApiInterface.reportPost(id);
+    public void reportPost(IBaseNetworkResponseListener<BaseResponse> listener, String id, ReportRequest request) {
+        Call<BaseResponse> call=mIRetrofitApiInterface.reportPost(id, request);
         BaseNetworkCallback callback=new BaseNetworkCallback(listener);
         call.enqueue(callback);
     }

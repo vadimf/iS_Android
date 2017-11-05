@@ -4,8 +4,12 @@ import com.globalbit.isay.network.requests.AuthenticateViaSmsRequest;
 import com.globalbit.isay.network.requests.ContactsRequest;
 import com.globalbit.isay.network.requests.CreateEditCommentRequest;
 import com.globalbit.isay.network.requests.CreateEditPostRequest;
+import com.globalbit.isay.network.requests.FacebookRequest;
+import com.globalbit.isay.network.requests.ForgotPasswordRequest;
 import com.globalbit.isay.network.requests.PushNotificationTokenRequest;
+import com.globalbit.isay.network.requests.ReportRequest;
 import com.globalbit.isay.network.requests.SearchRequest;
+import com.globalbit.isay.network.requests.SignInUpRequest;
 import com.globalbit.isay.network.requests.UserRequest;
 import com.globalbit.isay.network.requests.VerifySmsAuthenticationRequest;
 import com.globalbit.isay.network.responses.AuthenticateUserResponse;
@@ -50,6 +54,18 @@ public interface IRetrofitApi {
     @DELETE("auth")
     Call<BaseResponse> signOut();
 
+    @POST("auth/facebook")
+    Call<AuthenticateUserResponse> facebookAuthentication(@Body FacebookRequest request);
+
+    @GET("auth/forgot-password")
+    Call<BaseResponse> forgotPassword(ForgotPasswordRequest request);
+
+    @POST("auth/manual/signin")
+    Call<AuthenticateUserResponse> sigIn(@Body SignInUpRequest request);
+
+    @POST("auth/manual/signup")
+    Call<AuthenticateUserResponse> signUp(@Body SignInUpRequest request);
+
 
     //User
 
@@ -87,7 +103,7 @@ public interface IRetrofitApi {
     Call<BaseResponse> unfollow(@Path("username") String username);
 
     @POST("user/{username}/report")
-    Call<BaseResponse> reportUser(@Path("username") String username);  //TODO add proper request when service is ready
+    Call<BaseResponse> reportUser(@Path("username") String username, @Body ReportRequest request);
 
 
     //Feed
@@ -129,7 +145,7 @@ public interface IRetrofitApi {
     Call<BaseResponse> removeBookmarkedPost(@Path("post") String postId);
 
     @POST("post/{post}/report")
-    Call<BaseResponse> reportPost(@Path("post") String postId);
+    Call<BaseResponse> reportPost(@Path("post") String postId, @Body ReportRequest request);
 
     @POST("post/{post}/view")
     Call<BaseResponse> viewPost(@Path("post") String postId);  //Use this to set that the post is viewed by user

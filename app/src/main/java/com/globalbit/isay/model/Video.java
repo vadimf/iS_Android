@@ -13,8 +13,8 @@ public class Video {
     @SerializedName("url")
     private String mUrl;
 
-    @SerializedName("thumbnails")
-    private ArrayList<String> mThumbnails;
+    @SerializedName("thumbnail")
+    private String mThumbnail;
 
     @SerializedName("duration")
     private int mDuration;
@@ -27,12 +27,12 @@ public class Video {
         mUrl=url;
     }
 
-    public ArrayList<String> getThumbnails() {
-        return mThumbnails;
+    public String getThumbnail() {
+        return mThumbnail;
     }
 
-    public void setThumbnails(ArrayList<String> thumbnails) {
-        mThumbnails=thumbnails;
+    public void setThumbnail(String thumbnail) {
+        mThumbnail=thumbnail;
     }
 
     public int getDuration() {
