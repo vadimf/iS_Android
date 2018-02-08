@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "386970563763",
+    "firebase_url": "https://isay-89efe.firebaseio.com",
+    "project_id": "isay-89efe",
+    "storage_bucket": "isay-89efe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386970563763:android:8f8085e78387f517",
+        "android_client_info": {
+          "package_name": "com.globalbit.tellyou"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "386970563763-qgtbgp41t3llc6rfm6hdb0ehg9ms7vog.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApJ771oj0SGk7lcyCnR1SHSmlOxxrYRhg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
