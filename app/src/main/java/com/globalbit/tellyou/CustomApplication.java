@@ -2,7 +2,7 @@ package com.globalbit.tellyou;
 
 import android.app.Application;
 import android.content.Context;
-
+import android.support.multidex.MultiDexApplication;
 import com.crashlytics.android.Crashlytics;
 import com.globalbit.tellyou.model.system.SystemPreferencesKT;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
@@ -13,7 +13,7 @@ import io.fabric.sdk.android.Fabric;
  * Created by Alex on 15/12/2016.
  */
 
-public class CustomApplication extends Application {
+public class CustomApplication extends MultiDexApplication {
     private static Context mApplicationContext;
     private static SystemPreferencesKT mSystemPreference;
     private static String mPostId;

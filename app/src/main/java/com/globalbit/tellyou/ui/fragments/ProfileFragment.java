@@ -16,14 +16,17 @@ import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.FragmentProfileBinding;
+import com.globalbit.tellyou.model.Post;
 import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.ui.activities.ProfileActivity;
+import com.globalbit.tellyou.ui.adapters.PostsAdapter;
 import com.globalbit.tellyou.ui.events.BookmarkEvent;
 import com.globalbit.tellyou.ui.events.FollowingEvent;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
+import com.globalbit.tellyou.ui.interfaces.IPostListener;
 import com.globalbit.tellyou.utils.Enums;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.squareup.picasso.Picasso;
@@ -38,12 +41,13 @@ import java.util.Locale;
  * Created by alex on 08/11/2017.
  */
 
-public class ProfileFragment extends BaseFragment implements View.OnClickListener {
+public class ProfileFragment extends BaseFragment implements View.OnClickListener, IPostListener {
     private static final String TAG=ProfileFragment.class.getSimpleName();
     private FragmentProfileBinding mBinding;
     private User mUser;
     private Enums.ProfileState mProfileState;
     private IMainListener mListener;
+    private PostsAdapter mAdapter;
 
     public static ProfileFragment newInstance(User user) {
         ProfileFragment fragment=new ProfileFragment();
@@ -71,8 +75,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         if(mUser==null) { //My profile
             mUser=SharedPrefsUtils.getUserDetails();
             mProfileState=Enums.ProfileState.MyProfile;
-            mBinding.btnAction.setVisibility(View.GONE);
             mBinding.imgViewMenu.setImageResource(R.drawable.ic_menu);
+            mBinding.btnAction.setText(R.string.btn_edit_profile);
+            mBinding.txtViewMyVideos.setVisibility(View.VISIBLE);
         }
         else { //Other profile
             mProfileState=Enums.ProfileState.UserProfile;
@@ -87,19 +92,46 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 mBinding.btnAction.setTextColor(getResources().getColor(R.color.border_active));
                 mBinding.btnAction.setText(R.string.btn_follow);
             }
+            mBinding.txtViewMyVideos.setVisibility(View.GONE);
         }
+        setProfile();
+        mAdapter=new PostsAdapter(getActivity(), Constants.TYPE_FEED_USER, this);
+
+        return mBinding.getRoot();
+    }
+
+    private void setProfile() {
         if(mUser.getProfile()!=null) {
             if(mUser.getProfile().getPicture()!=null&&!StringUtils.isEmpty(mUser.getProfile().getPicture().getThumbnail())) {
                 Picasso.with(getActivity()).load(mUser.getProfile().getPicture().getThumbnail()).into(mBinding.imgViewPhoto);
             }
         }
+        if(mUser.getProfile()!=null&&!StringUtils.isEmpty(mUser.getProfile().getBio())) {
+            mBinding.txtViewBio.setText(mUser.getProfile().getBio());
+        }
+        else {
+            mBinding.txtViewBio.setVisibility(View.GONE);
+        }
         mBinding.txtViewUserName.setText(String.format(Locale.getDefault(),"%s%s",getString(R.string.special),mUser.getUsername()));
 
-
+        String fullName=null;
+        if(mUser.getProfile()!=null&&!StringUtils.isEmpty(mUser.getProfile().getFirstName())&&!StringUtils.isEmpty(mUser.getProfile().getLastName())) {
+            fullName=String.format(Locale.getDefault(),"%s %s", mUser.getProfile().getFirstName(), mUser.getProfile().getLastName());
+        }
+        else if(mUser.getProfile()!=null&&!StringUtils.isEmpty(mUser.getProfile().getFirstName())) {
+            fullName=mUser.getProfile().getFirstName();
+        }
+        else if(mUser.getProfile()!=null&&!StringUtils.isEmpty(mUser.getProfile().getLastName())) {
+            fullName=mUser.getProfile().getLastName();
+        }
+        if(!StringUtils.isEmpty(fullName)) {
+            mBinding.txtViewName.setText(fullName);
+        }
         mBinding.txtViewFollowing.setText(String.format(Locale.getDefault(), "%d", mUser.getFollowing()));
         mBinding.txtViewFollowers.setText(String.format(Locale.getDefault(), "%d", mUser.getFollowers()));
 
-        return mBinding.getRoot();
+        PostsFragment fragment=PostsFragment.newInstance(Constants.TYPE_FEED_USER, mUser);
+        getChildFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "PostsTag").commit();
     }
 
     @Override
@@ -160,7 +192,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         }
                         break;
                 }
-                break;
         }
     }
 
@@ -180,15 +211,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==Constants.REQUEST_EDIT_PROFILE&& resultCode==Activity.RESULT_OK) {
             mUser=SharedPrefsUtils.getUserDetails();
-            if(mUser.getProfile()!=null) {
-                mBinding.txtViewUserName.setText(String.format(Locale.getDefault(), "%s%s", getString(R.string.special), mUser.getUsername()));
-                if(mUser.getProfile().getPicture()!=null&&!StringUtils.isEmpty(mUser.getProfile().getPicture().getThumbnail())) {
-                    Picasso.with(getActivity()).load(mUser.getProfile().getPicture().getThumbnail()).into(mBinding.imgViewPhoto);
-                }
-            }
-
-            mBinding.txtViewFollowing.setText(String.format(Locale.getDefault(), "%d", mUser.getFollowing()));
-            mBinding.txtViewFollowers.setText(String.format(Locale.getDefault(), "%d", mUser.getFollowers()));
+            setProfile();
         }
         else if(requestCode==Constants.REQUEST_FOLLOWING||requestCode==Constants.REQUEST_FOLLOWERS) {
 
@@ -238,5 +261,20 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         super.onStop();
     }
 
+
+    @Override
+    public void onShowComments(Post post, int position) {
+
+    }
+
+    @Override
+    public void onRefreshPosts() {
+
+    }
+
+    @Override
+    public void onUserProfile(String username) {
+
+    }
 
 }

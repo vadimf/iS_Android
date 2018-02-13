@@ -17,16 +17,13 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    style="@style/Base.Widget.AppCompat.Toolbar"
-                    android:layout_height="?attr/actionBarSize"
-                    android:elevation="4dp"
-                    android:background="@color/white">
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="?attr/actionBarSize"
+                        android:elevation="4dp"
+                        android:background="@color/white"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp">
                         <FrameLayout
                             android:layout_width="50dp"
                             android:layout_height="match_parent"
@@ -38,8 +35,15 @@
                                 android:id="@+id/imgViewMenu"
                                 android:src="@drawable/ic_menu"/>
                         </FrameLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:id="@+id/txtViewName"
+                            tools:text="destroyer"
+                            style="@style/TextBigLightDarkStyle"
+                            android:layout_gravity="center_horizontal"/>
                     </RelativeLayout>
-                </android.support.v7.widget.Toolbar>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -107,14 +111,35 @@
                     tools:text="destroyer"
                     style="@style/TextBigLightDarkStyle"
                     android:layout_gravity="center_horizontal"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/txtViewBio"
+                    tools:text="destroyer"
+                    style="@style/TextBigLightDarkStyle"
+                    android:layout_gravity="center_horizontal"/>
                 <Button
                     style="@style/ButtonFollowSmall"
                     android:id="@+id/btnAction"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_gravity="center_horizontal"
                     android:text="@string/btn_follow"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtViewMyVideos"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/label_my_videos"
+                    android:layout_gravity="center_horizontal"/>
             </LinearLayout>
         </android.support.design.widget.AppBarLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/frame_container"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     </android.support.design.widget.CoordinatorLayout>
 
 

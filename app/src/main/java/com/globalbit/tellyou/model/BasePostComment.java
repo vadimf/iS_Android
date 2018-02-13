@@ -17,7 +17,7 @@ public class BasePostComment {
     private Date mCreatedAt;
 
     @SerializedName("creator")
-    private User mCreator;
+    private User mUser;
 
     @SerializedName("video")
     private Video mVideo;
@@ -33,6 +33,9 @@ public class BasePostComment {
 
     @SerializedName("text")
     private String mText;
+
+    @SerializedName("viewed")
+    private boolean mIsViewed;
 
     public String getId() {
         return mId;
@@ -50,12 +53,12 @@ public class BasePostComment {
         mCreatedAt=createdAt;
     }
 
-    public User getCreator() {
-        return mCreator;
+    public User getUser() {
+        return mUser;
     }
 
-    public void setCreator(User creator) {
-        mCreator=creator;
+    public void setUser(User user) {
+        mUser=user;
     }
 
     public Video getVideo() {
@@ -96,5 +99,13 @@ public class BasePostComment {
 
     public void setText(String text) {
         mText=text;
+    }
+
+    public boolean isViewed() {
+        return mIsViewed;
+    }
+
+    public void setViewed(boolean viewed) {
+        mIsViewed=viewed;
     }
 }

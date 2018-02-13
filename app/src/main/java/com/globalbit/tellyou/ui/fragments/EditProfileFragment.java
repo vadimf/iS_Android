@@ -95,39 +95,47 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                     if(charSequence.length()>0) {
                         if(charSequence.length()>=CustomApplication.getSystemPreference().getValidations().getUsername().getMinLength()
                                 &&charSequence.length()<=CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength()) {
-                            NetworkManager.getInstance().usernameExist(new IBaseNetworkResponseListener<UsernameExistResponse>() {
-                                @Override
-                                public void onSuccess(UsernameExistResponse response) {
-                                    if(mBinding.inputUsername.getText().toString().equals(response.getUsername())) {
-                                        if(response.isExists()) {
-                                            mBinding.txtViewError.setVisibility(View.VISIBLE);
-                                            mBinding.txtViewError.setText(R.string.validation_username_taken);
-                                            mBinding.btnContinue.setTextColor(getResources().getColor(R.color.border_inactive));
-                                            mBinding.btnContinue.setEnabled(false);
-                                        } else {
-                                            mBinding.txtViewError.setVisibility(View.GONE);
-                                            mBinding.btnContinue.setEnabled(true);
-                                            mBinding.btnContinue.setTextColor(getResources().getColor(R.color.border_active));
+                            if(mUser!=null&&!StringUtils.isEmpty(mUser.getUsername())&&!mUser.getUsername().equals(mBinding.inputUsername.getText().toString())) {
+                                NetworkManager.getInstance().usernameExist(new IBaseNetworkResponseListener<UsernameExistResponse>() {
+                                    @Override
+                                    public void onSuccess(UsernameExistResponse response) {
+                                        if(mBinding.inputUsername.getText().toString().equals(response.getUsername())) {
+                                            if(response.isExists()) {
+                                                mBinding.txtViewError.setVisibility(View.VISIBLE);
+                                                mBinding.txtViewError.setText(R.string.validation_username_taken);
+                                                mBinding.btnContinue.setTextColor(getResources().getColor(R.color.border_inactive));
+                                                mBinding.btnContinue.setEnabled(false);
+                                            } else {
+                                                mBinding.txtViewError.setVisibility(View.GONE);
+                                                mBinding.btnContinue.setEnabled(true);
+                                                mBinding.btnContinue.setTextColor(getResources().getColor(R.color.border_active));
+                                            }
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onError(int errorCode, String errorMessage) {
-                                    if(!StringUtils.isEmpty(mBinding.inputUsername.getText().toString())) {
-                                        mBinding.txtViewError.setVisibility(View.VISIBLE);
-                                        mBinding.btnContinue.setEnabled(false);
-                                        mBinding.btnContinue.setTextColor(getResources().getColor(R.color.border_inactive));
-                                        mBinding.txtViewError.setText(String.format(Locale.getDefault(), getString(R.string.error_username_response)
-                                                , CustomApplication.getSystemPreference().getValidations().getUsername().getMinLength()
-                                                , CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength()));
-                                    } else {
-                                        mBinding.txtViewError.setVisibility(View.GONE);
-                                        mBinding.btnContinue.setEnabled(false);
-                                        mBinding.btnContinue.setTextColor(getResources().getColor(R.color.border_inactive));
+                                    @Override
+                                    public void onError(int errorCode, String errorMessage) {
+                                        if(!StringUtils.isEmpty(mBinding.inputUsername.getText().toString())) {
+                                            mBinding.txtViewError.setVisibility(View.VISIBLE);
+                                            mBinding.btnContinue.setEnabled(false);
+                                            mBinding.btnContinue.setTextColor(getResources().getColor(R.color.border_inactive));
+                                            mBinding.txtViewError.setText(String.format(Locale.getDefault(), getString(R.string.error_username_response)
+                                                    , CustomApplication.getSystemPreference().getValidations().getUsername().getMinLength()
+                                                    , CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength()));
+                                        } else {
+                                            mBinding.txtViewError.setVisibility(View.GONE);
+                                            mBinding.btnContinue.setEnabled(false);
+                                            mBinding.btnContinue.setTextColor(getResources().getColor(R.color.border_inactive));
+                                        }
                                     }
-                                }
-                            }, charSequence.toString());
+                                }, charSequence.toString());
+                            }
+                            else {
+                                mBinding.txtViewError.setVisibility(View.GONE);
+                                mBinding.btnContinue.setEnabled(true);
+                                mBinding.btnContinue.setTextColor(getResources().getColor(R.color.border_active));
+                            }
+
                         }
                         else {
                             if(!StringUtils.isEmpty(mBinding.inputUsername.getText().toString())) {
@@ -213,6 +221,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                     String[] nameArray=mBinding.inputName.getText().toString().trim().split(" ");
                     if(nameArray.length==1) {
                         user.getProfile().setFirstName(nameArray[0]);
+                        user.getProfile().setLastName(null);
                     }
                     else if(nameArray.length==2) {
                         user.getProfile().setFirstName(nameArray[0]);
