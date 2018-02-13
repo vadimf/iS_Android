@@ -115,11 +115,11 @@ public interface IRetrofitApi {
 
     //Feed
 
-    @GET("feed")
-    Call<PostsResponse> getFeedPosts(@Query("page") int page);
-
-    /*@GET("feed/following")
+    /*@GET("feed")
     Call<PostsResponse> getFeedPosts(@Query("page") int page);*/
+
+    @GET("feed/following")
+    Call<PostsResponse> getFeedPosts(@Query("page") int page);
 
     @GET("feed/popular")
     Call<PostsResponse> getPopularPosts(@Query("page") int page);

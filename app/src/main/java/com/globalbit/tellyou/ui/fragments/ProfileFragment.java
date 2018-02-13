@@ -7,10 +7,12 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
@@ -21,8 +23,10 @@ import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
+import com.globalbit.tellyou.ui.activities.FollowActivity;
 import com.globalbit.tellyou.ui.activities.ProfileActivity;
 import com.globalbit.tellyou.ui.adapters.PostsAdapter;
+import com.globalbit.tellyou.ui.adapters.ProfilePagerAdapter;
 import com.globalbit.tellyou.ui.events.BookmarkEvent;
 import com.globalbit.tellyou.ui.events.FollowingEvent;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
@@ -47,7 +51,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     private User mUser;
     private Enums.ProfileState mProfileState;
     private IMainListener mListener;
-    private PostsAdapter mAdapter;
+    private ProfilePagerAdapter mProfilePagerAdapter;
 
     public static ProfileFragment newInstance(User user) {
         ProfileFragment fragment=new ProfileFragment();
@@ -72,12 +76,17 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
         mBinding.btnBack.setOnClickListener(this);
         mBinding.btnAction.setOnClickListener(this);
+        mBinding.lnrLayoutFollowing.setOnClickListener(this);
+        mBinding.lnrLayoutFollowers.setOnClickListener(this);
+        User user=SharedPrefsUtils.getUserDetails();
+        if(mUser!=null&&mUser.getUsername().equals(user.getUsername())) {
+            mUser=null;
+        }
         if(mUser==null) { //My profile
             mUser=SharedPrefsUtils.getUserDetails();
             mProfileState=Enums.ProfileState.MyProfile;
             mBinding.imgViewMenu.setImageResource(R.drawable.ic_menu);
-            mBinding.btnAction.setText(R.string.btn_edit_profile);
-            mBinding.txtViewMyVideos.setVisibility(View.VISIBLE);
+            //mProfilePagerAdapter=new ProfilePagerAdapter(getChildFragmentManager(), getActivity(), new String[]{getString(R.string.tab_questions),getString(R.string.tab_bookmarks)} ,mUser );
         }
         else { //Other profile
             mProfileState=Enums.ProfileState.UserProfile;
@@ -94,8 +103,10 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             }
             mBinding.txtViewMyVideos.setVisibility(View.GONE);
         }
+        mProfilePagerAdapter=new ProfilePagerAdapter(getChildFragmentManager(), getActivity(), new String[]{getString(R.string.tab_videos)} ,mUser );
+        mBinding.viewpager.setAdapter(mProfilePagerAdapter);
+        //mBinding.tabDiscover.setupWithViewPager(mBinding.viewpager);
         setProfile();
-        mAdapter=new PostsAdapter(getActivity(), Constants.TYPE_FEED_USER, this);
 
         return mBinding.getRoot();
     }
@@ -130,12 +141,11 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         mBinding.txtViewFollowing.setText(String.format(Locale.getDefault(), "%d", mUser.getFollowing()));
         mBinding.txtViewFollowers.setText(String.format(Locale.getDefault(), "%d", mUser.getFollowers()));
 
-        PostsFragment fragment=PostsFragment.newInstance(Constants.TYPE_FEED_USER, mUser);
-        getChildFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "PostsTag").commit();
     }
 
     @Override
     public void onClick(View view) {
+        User user=null;
         switch(view.getId()) {
             case R.id.btnBack:
                 switch(mProfileState) {
@@ -192,6 +202,27 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         }
                         break;
                 }
+                break;
+            case R.id.lnrLayoutFollowing:
+                Intent intentFollowing=new Intent(getActivity(), FollowActivity.class);
+                intentFollowing.putExtra(Constants.DATA_FOLLOW, Constants.REQUEST_FOLLOWING);
+                user=null;
+                if(mProfileState==Enums.ProfileState.UserProfile) {
+                    user=mUser;
+                }
+                intentFollowing.putExtra(Constants.DATA_USER, user);
+                startActivityForResult(intentFollowing, Constants.REQUEST_FOLLOWING);
+                break;
+            case R.id.lnrLayoutFollowers:
+                Intent intentFollowers=new Intent(getActivity(), FollowActivity.class);
+                intentFollowers.putExtra(Constants.DATA_FOLLOW, Constants.REQUEST_FOLLOWERS);
+                user=null;
+                if(mProfileState==Enums.ProfileState.UserProfile) {
+                    user=mUser;
+                }
+                intentFollowers.putExtra(Constants.DATA_USER, user);
+                startActivityForResult(intentFollowers, Constants.REQUEST_FOLLOWERS);
+                break;
         }
     }
 
@@ -214,14 +245,30 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             setProfile();
         }
         else if(requestCode==Constants.REQUEST_FOLLOWING||requestCode==Constants.REQUEST_FOLLOWERS) {
-
+            if(mProfileState==Enums.ProfileState.MyProfile) {
+                mUser=SharedPrefsUtils.getUserDetails();
+                setProfile();
+            }
+        }
+        else if(requestCode==Constants.REQUEST_ASK_QUESTION) {
+            if(resultCode==Activity.RESULT_OK) {
+                Fragment fragment=mProfilePagerAdapter.getRegisteredFragment(0);
+                if(fragment!=null) {
+                    fragment.onActivityResult(requestCode, resultCode, data);
+                }
+            }
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookmarkEvent(BookmarkEvent event) {
         if(mProfileState==Enums.ProfileState.MyProfile) {
-
+            if(mProfilePagerAdapter!=null&&mProfilePagerAdapter.getCount()==2) {
+                Fragment fragment=mProfilePagerAdapter.getRegisteredFragment(1);
+                if(fragment instanceof PostsFragment) {
+                    ((PostsFragment) fragment).onRefreshPosts();
+                }
+            }
         }
     }
 

@@ -17,7 +17,6 @@ import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ItemPostBinding;
-import com.globalbit.tellyou.databinding.ItemProfileHeaderBinding;
 import com.globalbit.tellyou.model.Post;
 import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.ui.fragments.PostsFragment;

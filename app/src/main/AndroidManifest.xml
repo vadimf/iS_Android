@@ -38,6 +38,7 @@
         <activity android:name=".ui.activities.InformationActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.DiscoverActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.CropActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activities.FollowActivity" android:screenOrientation="portrait"/>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="2a2f1a11c3b59a0bc6aca1ffc12345a256cc2878" />

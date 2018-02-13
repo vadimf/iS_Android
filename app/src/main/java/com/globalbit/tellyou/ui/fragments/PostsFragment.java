@@ -214,6 +214,9 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
         else if(requestCode==Constants.REQUEST_POST) {
             onRefreshPosts();
         }
+        else if(requestCode==Constants.REQUEST_USER_PROFILE) {
+            onRefreshPosts();
+        }
     }
 
     @Override

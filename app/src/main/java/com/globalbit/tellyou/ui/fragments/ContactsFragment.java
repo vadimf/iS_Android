@@ -91,7 +91,7 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_contacts, container,false);
         final LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
         mBinding.recyclerViewUsers.setLayoutManager(layoutManager);
-        mAdapter=new UsersAdapter(getActivity());
+        mAdapter=new UsersAdapter(getActivity(), null);
         mBinding.recyclerViewUsers.setAdapter(mAdapter);
         mBinding.recyclerViewUsers.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

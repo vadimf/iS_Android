@@ -165,6 +165,12 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                 fragment.onActivityResult(requestCode, resultCode, data);
             }
         }
+        else if(requestCode==Constants.REQUEST_USER_PROFILE) {
+            Fragment fragment=getSupportFragmentManager().findFragmentByTag("HomeTag");
+            if(fragment!=null) {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
     }
 
     @Override
@@ -197,7 +203,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                     Intent intent=new Intent(MainActivity.this, ProfileActivity.class);
                     intent.putExtra(Constants.DATA_PROFILE, Constants.REQUEST_USER_PROFILE);
                     intent.putExtra(Constants.DATA_USER, response.getUser());
-                    startActivity(intent);
+                    startActivityForResult(intent,Constants.REQUEST_USER_PROFILE);
                 }
 
                 @Override

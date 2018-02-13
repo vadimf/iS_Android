@@ -2,6 +2,7 @@ package com.globalbit.tellyou.ui.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.ui.activities.ProfileActivity;
+import com.globalbit.tellyou.ui.interfaces.IUserListener;
+import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -27,10 +30,22 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     private ArrayList<User> mItems;
     private Context mContext;
     private boolean mShowStatus=false;
+    private User mUser;
+    private boolean mIsFollowing=false;
+    private IUserListener mListener;
 
 
-    public UsersAdapter(Context context) {
+    public UsersAdapter(Context context, IUserListener listener) {
         mContext=context;
+        mListener=listener;
+        mUser=SharedPrefsUtils.getUserDetails();
+    }
+
+    public UsersAdapter(Context context, IUserListener listener, boolean isFollowing) {
+        mContext=context;
+        mListener=listener;
+        mUser=SharedPrefsUtils.getUserDetails();
+        mIsFollowing=isFollowing;
     }
 
     public void showStatus(boolean showStatus) {
@@ -85,15 +100,19 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             else {
                 holder.mBinding.txtViewStatus.setVisibility(View.GONE);
             }
-            if(item.isFollowing()) {
-                holder.mBinding.btnFollow.setBackgroundResource(R.drawable.button_share);
-                holder.mBinding.btnFollow.setTextColor(mContext.getResources().getColor(R.color.share));
-                holder.mBinding.btnFollow.setText(R.string.btnFollowing);
+            if(mUser.getUsername().equals(item.getUsername())) {
+                holder.mBinding.btnFollow.setVisibility(View.GONE);
             }
             else {
-                holder.mBinding.btnFollow.setBackgroundResource(R.drawable.button_regular);
-                holder.mBinding.btnFollow.setTextColor(mContext.getResources().getColor(R.color.border_active));
-                holder.mBinding.btnFollow.setText(R.string.btn_follow);
+                if(item.isFollowing()) {
+                    holder.mBinding.btnFollow.setBackgroundResource(R.drawable.button_share);
+                    holder.mBinding.btnFollow.setTextColor(mContext.getResources().getColor(R.color.share));
+                    holder.mBinding.btnFollow.setText(R.string.btnFollowing);
+                } else {
+                    holder.mBinding.btnFollow.setBackgroundResource(R.drawable.button_regular);
+                    holder.mBinding.btnFollow.setTextColor(mContext.getResources().getColor(R.color.border_active));
+                    holder.mBinding.btnFollow.setText(R.string.btn_follow);
+                }
             }
             if(item.getProfile()!=null&&item.getProfile().getPicture()!=null) {
                 Picasso.with(mContext).load(item.getProfile().getPicture().getThumbnail()).into(holder.mBinding.imgViewPhoto);
@@ -118,6 +137,11 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
 
                                     }
                                 }, item.getUsername());
+                                if(mIsFollowing) {
+                                    mItems.remove(position);
+                                    notifyItemRemoved(position);
+                                    mListener.onShowEmpty();
+                                }
                             }
                             else {
                                 NetworkManager.getInstance().follow(new IBaseNetworkResponseListener<BaseResponse>() {

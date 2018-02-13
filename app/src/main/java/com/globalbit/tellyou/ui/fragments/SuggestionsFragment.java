@@ -46,7 +46,7 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_suggestions, container, false);
         final LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
         mBinding.recyclerViewUsers.setLayoutManager(layoutManager);
-        mAdapter=new UsersAdapter(getActivity());
+        mAdapter=new UsersAdapter(getActivity(), null);
         mBinding.recyclerViewUsers.setAdapter(mAdapter);
         mBinding.imgViewClear.setOnClickListener(this);
         mBinding.inputSearch.addTextChangedListener(new TextWatcher() {
