@@ -29,4 +29,5 @@
     <color name="grey">#f9f9f9</color>
     <color name="inactive_opacity">#edeef0</color>
     <color name="active_opacity">#b7ddff</color>
+    <color name="progress_bar">#00ccff</color>
 </resources>

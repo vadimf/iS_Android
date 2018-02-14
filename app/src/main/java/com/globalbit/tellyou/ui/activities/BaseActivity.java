@@ -108,6 +108,10 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    protected void permissionDeclined() {
+
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -129,6 +133,9 @@ public class BaseActivity extends AppCompatActivity {
             }
             if(flag) {
                 permissionAccepted();
+            }
+            else {
+                permissionDeclined();
             }
         }
     }

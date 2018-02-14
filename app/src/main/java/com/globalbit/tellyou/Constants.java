@@ -16,7 +16,7 @@ public class Constants {
 
 
     //Requests
-    public static final int REQUEST_ASK_QUESTION=100;
+    public static final int REQUEST_VIDEO_RECORDING=100;
     public static final int REQUEST_ABOUT=101;
     public static final int REQUEST_PRIVACY=102;
     public static final int REQUEST_TERMS_OF_USE=103;

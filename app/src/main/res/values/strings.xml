@@ -196,5 +196,15 @@
     <string name="dialog_title_internet_connection">Network connection</string>
     <string name="dialog_content_error_internet_connection">There was a problem connecting to server, please check your internet connection</string>
     <string name="label_my_videos">MY VIDEOS</string>
+    <string name="label_start_time">00:00</string>
+    <string name="btn_exit">Exit</string>
+    <string name="dialog_title_permissions_declined">Permissions declined</string>
+    <string name="dialog_accept_video_recording_permissions">Please accept all the permissions to start recording video</string>
+    <string name="dialog_discard_video">Discard this video?</string>
+    <string name="btn_discard">Discard</string>
+    <string name="btn_reshoot">Re-shoot</string>
+    <string name="dialog_reshoot_video">Re-shoot this video?</string>
+    <string name="hint_add_title">Add a title</string>
+    <string name="hint_add_hash_tags">Add #hashtags</string>
 
 </resources>

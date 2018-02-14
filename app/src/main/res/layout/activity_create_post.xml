@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="4dp"
+            android:background="@color/white"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+            <FrameLayout
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:id="@+id/btnBack">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:id="@+id/imgViewMenu"
+                    android:src="@drawable/ic_left_arrow"/>
+            </FrameLayout>
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:text="Tell it!"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            style="@style/TextMediumLightStyle"
+            android:textColorHint="@color/border_inactive"
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            android:id="@+id/inputTitle"
+            android:inputType="text"
+            android:hint="@string/hint_add_title"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            style="@style/TextMediumLightStyle"
+            android:textColorHint="@color/border_inactive"
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            android:id="@+id/inputHashtags"
+            android:inputType="text"
+            android:hint="@string/hint_add_hash_tags"/>
+    </LinearLayout>
+</layout>

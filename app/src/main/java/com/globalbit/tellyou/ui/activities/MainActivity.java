@@ -10,7 +10,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -27,7 +26,6 @@ import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.network.responses.UserResponse;
-import com.globalbit.tellyou.service.fcm.FCMHandler;
 import com.globalbit.tellyou.ui.fragments.PostsFragment;
 import com.globalbit.tellyou.ui.fragments.ProfileFragment;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
@@ -77,8 +75,8 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                         mLastNavigationItem=item;
                         return true;
                     case R.id.action_add:
-                        /*Intent intent=new Intent(MainActivity.this, AskQuestionActivity.class);
-                        startActivityForResult(intent, Constants.REQUEST_ASK_QUESTION);*/
+                        Intent intent=new Intent(MainActivity.this, VideoRecordingActivity.class);
+                        startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);
                         return false;
                     case R.id.action_profile:
                         mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -138,7 +136,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==Constants.REQUEST_ASK_QUESTION) {
+        if(requestCode==Constants.REQUEST_VIDEO_RECORDING) {
             mLastNavigationItem.setChecked(true);
             if(resultCode==RESULT_OK) {
                 Fragment fragment=getSupportFragmentManager().findFragmentByTag("HomeTag");

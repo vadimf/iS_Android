@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -39,6 +41,8 @@
         <activity android:name=".ui.activities.DiscoverActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.CropActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.FollowActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activities.VideoRecordingActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activities.CreatePostActivity" android:screenOrientation="portrait"/>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="2a2f1a11c3b59a0bc6aca1ffc12345a256cc2878" />

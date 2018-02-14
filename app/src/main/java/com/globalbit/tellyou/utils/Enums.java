@@ -57,4 +57,12 @@ public class Enums {
         Follow
     }
 
+    public enum RecordingState {
+        Initial,
+        Recording,
+        Stopped,
+        Finished,
+        NoPermissions
+    }
+
 }

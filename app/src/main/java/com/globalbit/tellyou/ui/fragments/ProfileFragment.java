@@ -7,12 +7,10 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
@@ -25,7 +23,6 @@ import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.ui.activities.FollowActivity;
 import com.globalbit.tellyou.ui.activities.ProfileActivity;
-import com.globalbit.tellyou.ui.adapters.PostsAdapter;
 import com.globalbit.tellyou.ui.adapters.ProfilePagerAdapter;
 import com.globalbit.tellyou.ui.events.BookmarkEvent;
 import com.globalbit.tellyou.ui.events.FollowingEvent;
@@ -250,7 +247,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 setProfile();
             }
         }
-        else if(requestCode==Constants.REQUEST_ASK_QUESTION) {
+        else if(requestCode==Constants.REQUEST_VIDEO_RECORDING) {
             if(resultCode==Activity.RESULT_OK) {
                 Fragment fragment=mProfilePagerAdapter.getRegisteredFragment(0);
                 if(fragment!=null) {
