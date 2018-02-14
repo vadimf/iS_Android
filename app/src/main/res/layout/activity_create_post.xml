@@ -21,12 +21,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center_vertical"
-                    android:id="@+id/imgViewMenu"
                     android:src="@drawable/ic_left_arrow"/>
             </FrameLayout>
             <Button
                 android:layout_width="100dp"
                 android:layout_height="50dp"
+                android:id="@+id/btnTellIt"
                 android:text="Tell it!"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"/>
@@ -39,13 +39,11 @@
             android:layout_marginEnd="20dp"
             style="@style/TextMediumLightStyle"
             android:textColorHint="@color/border_inactive"
-            android:gravity="center"
-            android:background="@android:color/transparent"
             android:id="@+id/inputTitle"
             android:inputType="text"
             android:hint="@string/hint_add_title"/>
 
-        <EditText
+        <!--<EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -53,10 +51,40 @@
             android:layout_marginEnd="20dp"
             style="@style/TextMediumLightStyle"
             android:textColorHint="@color/border_inactive"
-            android:gravity="center"
-            android:background="@android:color/transparent"
             android:id="@+id/inputHashtags"
             android:inputType="text"
-            android:hint="@string/hint_add_hash_tags"/>
+            android:hint="@string/hint_add_hash_tags"/>-->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/label_review_video"
+            android:layout_gravity="center_horizontal"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="20dp">
+            <VideoView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/videoView"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgViewPlay"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_play_circle_filled_black_24dp"/>
+            <android.support.v7.widget.AppCompatSeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="10dp"
+                android:id="@+id/seekBar"/>
+        </FrameLayout>
+
     </LinearLayout>
 </layout>

@@ -25,13 +25,17 @@ import com.globalbit.tellyou.network.responses.UserResponse;
 import com.globalbit.tellyou.network.responses.UsernameExistResponse;
 import com.globalbit.tellyou.network.responses.UsersResponse;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -127,8 +131,9 @@ public interface IRetrofitApi {
 
     //Post
 
+    @Multipart
     @POST("post")
-    Call<PostResponse> createPost(@Body CreateEditPostRequest request);
+    Call<PostResponse> createPost(@Part MultipartBody.Part video, @Part MultipartBody.Part thumbnail, @Part("json") RequestBody request);
 
     @GET("post/{post}")
     Call<PostResponse> getPostById(@Path("post") String postId);

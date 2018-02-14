@@ -58,8 +58,10 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -259,8 +261,9 @@ public class NetworkManager {
         call.enqueue(callback);
     }
 
-    public void createPost(IBaseNetworkResponseListener<PostResponse> listener, CreateEditPostRequest request) {
-        Call<PostResponse> call=mIRetrofitApiInterface.createPost(request);
+    public void createPost(IBaseNetworkResponseListener<PostResponse> listener, MultipartBody.Part video, MultipartBody.Part thumbnail, RequestBody json) {
+
+        Call<PostResponse> call=mIRetrofitApiInterface.createPost(video, thumbnail, json);
         PostNetworkCallback callback=new PostNetworkCallback(listener, Enums.RequestType.CakePost);
         call.enqueue(callback);
     }

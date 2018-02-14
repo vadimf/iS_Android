@@ -206,5 +206,7 @@
     <string name="dialog_reshoot_video">Re-shoot this video?</string>
     <string name="hint_add_title">Add a title</string>
     <string name="hint_add_hash_tags">Add #hashtags</string>
+    <string name="label_review_video">Review your video</string>
+    <string name="error_new_video_title_empty">Title cannot be empty</string>
 
 </resources>

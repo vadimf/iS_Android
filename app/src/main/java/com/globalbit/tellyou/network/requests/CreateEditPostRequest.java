@@ -1,6 +1,7 @@
 package com.globalbit.tellyou.network.requests;
 
 import com.globalbit.tellyou.model.Post;
+import com.globalbit.tellyou.model.system.NewPost;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -10,13 +11,13 @@ import com.google.gson.annotations.SerializedName;
 public class CreateEditPostRequest {
 
     @SerializedName("post")
-    private Post mPost;
+    private NewPost mPost;
 
-    public Post getPost() {
+    public NewPost getPost() {
         return mPost;
     }
 
-    public void setPost(Post post) {
+    public void setPost(NewPost post) {
         mPost=post;
     }
 }

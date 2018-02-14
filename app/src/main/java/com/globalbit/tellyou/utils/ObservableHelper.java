@@ -7,17 +7,30 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Base64;
+import android.util.Log;
 
+import com.coremedia.iso.boxes.Container;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.model.Contact;
 import com.globalbit.tellyou.model.Phone;
 import com.globalbit.tellyou.model.Picture;
 import com.globalbit.tellyou.network.requests.ContactsRequest;
+import com.googlecode.mp4parser.authoring.Movie;
+import com.googlecode.mp4parser.authoring.Track;
+import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
+import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
+import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
@@ -48,6 +61,66 @@ public class ObservableHelper {
                     bitmap.recycle();
                 }
                 return Observable.just(encoded);
+            }
+        });
+    }
+
+    public static Observable<String> mergeVideoFilesObservable(final ArrayList<String> sourceFiles, final String targetFile) {
+        return Observable.defer(new Callable<ObservableSource<? extends String>>() {
+            @Override public ObservableSource<? extends String> call() throws Exception {
+                String videoPath="";
+                Log.i("mergeVideoFiles", "mergeMediaFiles: "+targetFile);
+                try {
+                    //String mediaKey = isAudio ? "soun" : "vide";
+                    List<Movie> listMovies = new ArrayList<>();
+                    for (String filename : sourceFiles) {
+                        listMovies.add(MovieCreator.build(filename));
+                    }
+                    //List<Track> listTracks = new LinkedList<>();
+                    List<Track> videoTracks = new LinkedList<>();
+                    List<Track> audioTracks = new LinkedList<>();
+                    for (Movie movie : listMovies) {
+                        for (Track track : movie.getTracks()) {
+                            if (track.getHandler().equals("soun")) {
+                                audioTracks.add(track);
+                            }
+                            if (track.getHandler().equals("vide")) {
+                                videoTracks.add(track);
+                            }
+                        }
+                    }
+                    Movie outputMovie = new Movie();
+            /*if (!listTracks.isEmpty()) {
+                outputMovie.addTrack(new AppendTrack(listTracks.toArray(new Track[listTracks.size()])));
+            }*/
+                    if (audioTracks.size() > 0) {
+                        outputMovie.addTrack(new AppendTrack(audioTracks.toArray(new Track[audioTracks.size()])));
+                    }
+                    if (videoTracks.size() > 0) {
+                        outputMovie.addTrack(new AppendTrack(videoTracks.toArray(new Track[videoTracks.size()])));
+                    }
+                    Container container = new DefaultMp4Builder().build(outputMovie);
+                    FileChannel fileChannel = new RandomAccessFile(String.format(targetFile), "rw").getChannel();
+                    container.writeContainer(fileChannel);
+                    fileChannel.close();
+                    videoPath=targetFile;
+                    for(int i=0; i<sourceFiles.size(); i++) {
+                        String filePath=sourceFiles.get(i);
+                        File file=new File(filePath);
+                        if(file.exists()) {
+                            if(file.delete()) {
+                                Log.i("mergeVideoFiles", "File deleted successfully: "+filePath);
+                            }
+                            else {
+                                Log.i("mergeVideoFiles", "Couldn't delete the file: "+filePath);
+                            }
+                        }
+                    }
+                }
+                catch (IOException e) {
+                    Log.e("mergeVideoFiles", "Error merging media files. exception: "+e.getMessage());
+                }
+                return Observable.just(videoPath);
             }
         });
     }

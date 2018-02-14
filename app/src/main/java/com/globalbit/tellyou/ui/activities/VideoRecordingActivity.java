@@ -2,6 +2,7 @@ package com.globalbit.tellyou.ui.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.hardware.Camera;
@@ -22,10 +23,12 @@ import android.view.WindowManager;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.coremedia.iso.boxes.Container;
+import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityVideoRecordingBinding;
 import com.globalbit.tellyou.ui.views.CameraPreview;
 import com.globalbit.tellyou.utils.Enums;
+import com.globalbit.tellyou.utils.ObservableHelper;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
@@ -46,6 +49,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by alex on 14/02/2018.
@@ -79,6 +87,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
     private final Handler mHandler = new Handler();
     private int mElapsedTime=0;
     private Enums.RecordingState mRecordingState=Enums.RecordingState.NoPermissions;
+    private final CompositeDisposable mDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,7 +123,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
         switch(mRecordingState) {
             case Initial:
             case NoPermissions:
-                onBackPressed();
+                finish();
                 break;
             case Recording:
                 break;
@@ -231,7 +240,12 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                                 mRecordingState=Enums.RecordingState.Initial;
                                 setRecordingState();
                                 mElapsedTime=0;
+                                deleteTempFiles(mFilesPath);
                                 mFilesPath.clear();
+                                mBinding.lnrLayoutPortrait.setVisibility(View.GONE);
+                                mBinding.viewTimePortrait.setText(DateUtils.formatElapsedTime(mElapsedTime/1000));
+                                mBinding.progressBarPortrait.setProgress(mElapsedTime);
+
                             }
                         })
                         .negativeText(R.string.btn_cancel)
@@ -239,7 +253,31 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.imgViewFinish:
                 //TODO process the video (show process loader) and open posting activity
-                mergeMediaFiles(false, mFilesPath, getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
+                showLoadingDialog();
+                //mergeMediaFiles(false, mFilesPath, getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
+                mDisposable.add(ObservableHelper.mergeVideoFilesObservable(mFilesPath, getOutputMediaFile(MEDIA_TYPE_VIDEO).toString())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableObserver<String>() {
+                            @Override
+                            public void onNext(String videoPath) {
+                                hideLoadingDialog();
+                                Intent intent=new Intent(VideoRecordingActivity.this, CreatePostActivity.class);
+                                intent.putExtra(Constants.DATA_VIDEO_PATH, videoPath);
+                                startActivity(intent);
+                                finish();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        }));
                 break;
             case R.id.imgViewSwitchCamera:
                 mIsFrontCamera=!mIsFrontCamera;
@@ -316,6 +354,23 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
             mOrientationListener.disable();
         }
         stopSeekbarUpdate();
+        deleteTempFiles(mFilesPath);
+        mDisposable.clear();
+    }
+
+    private void deleteTempFiles(ArrayList<String> filesPath) {
+        for(int i=0; i<filesPath.size(); i++) {
+            String filePath=filesPath.get(i);
+            File file=new File(filePath);
+            if(file.exists()) {
+                if(file.delete()) {
+                    Log.i(TAG, "File deleted successfully: "+filePath);
+                }
+                else {
+                    Log.i(TAG, "Couldn't delete the file: "+filePath);
+                }
+            }
+        }
     }
 
     private void setRecordingState() {
@@ -482,7 +537,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
         }
     }
 
-    public static boolean mergeMediaFiles(boolean isAudio, ArrayList<String> sourceFiles, String targetFile) {
+    public boolean mergeMediaFiles(boolean isAudio, ArrayList<String> sourceFiles, String targetFile) {
         Log.i("Test", "mergeMediaFiles: "+targetFile);
         try {
             //String mediaKey = isAudio ? "soun" : "vide";
@@ -517,18 +572,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
             FileChannel fileChannel = new RandomAccessFile(String.format(targetFile), "rw").getChannel();
             container.writeContainer(fileChannel);
             fileChannel.close();
-            for(int i=0; i<sourceFiles.size(); i++) {
-                String filePath=sourceFiles.get(i);
-                File file=new File(filePath);
-                if(file.exists()) {
-                    if(file.delete()) {
-                        Log.i(TAG, "File deleted successfully: "+filePath);
-                    }
-                    else {
-                        Log.i(TAG, "Couldn't delete the file: "+filePath);
-                    }
-                }
-            }
+            deleteTempFiles(sourceFiles);
             return true;
         }
         catch (IOException e) {
