@@ -313,7 +313,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                 e.printStackTrace();
             }
             if(mFile!=null) {
-                Uri uri=FileProvider.getUriForFile(getActivity(), CustomApplication.getAppContext().getPackageName()+".com.globalbit.cake.provider", mFile);
+                Uri uri=FileProvider.getUriForFile(getActivity(), CustomApplication.getAppContext().getPackageName()+".com.globalbit.tellyou.provider", mFile);
                 if(uri!=null) {
                     Intent takePictureIntent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if(takePictureIntent.resolveActivity(getActivity().getPackageManager())!=null) {

@@ -95,9 +95,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
         DisplayMetrics displaymetrics = new DisplayMetrics();
         display.getMetrics(displaymetrics);
-        int width=displaymetrics.widthPixels;
-        int height=displaymetrics.heightPixels;
-        int squareSize =-1;
+        //int width=displaymetrics.widthPixels;
+        //int height=displaymetrics.heightPixels;
+        //int squareSize =-1;
         switch (display.getRotation()) {
             case Surface.ROTATION_0: // This is display orientation
                 Log.i("CameraPreview", "ROTATION_0");
@@ -139,13 +139,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 angle=90;
                 break;
         }
-        if(width<height) {
+        /*if(width<height) {
             squareSize=width;
         }
         else {
             squareSize=height;
-        }
-        Log.v("CameraPreview", "angle: " +getAngle()+" "+squareSize);
+        }*/
+        //Log.v("CameraPreview", "angle: " +getAngle()+" "+squareSize);
         mCamera.setDisplayOrientation(angle);
 
         List<Camera.Size> allSizes = cameraParams.getSupportedPreviewSizes();

@@ -56,7 +56,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         Resources resources = mContext.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         mImgWidth=metrics.widthPixels/2;
-        mImgHeight=(int)(mImgWidth*1.2);
+        mImgHeight=(int)(mImgWidth*1.33);
         mLayoutParams=new RelativeLayout.LayoutParams(mImgWidth, mImgHeight);
     }
 
