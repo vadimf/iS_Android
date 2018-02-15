@@ -261,9 +261,9 @@ public class NetworkManager {
         call.enqueue(callback);
     }
 
-    public void createPost(IBaseNetworkResponseListener<PostResponse> listener, MultipartBody.Part video, MultipartBody.Part thumbnail, RequestBody json) {
+    public void createPost(IBaseNetworkResponseListener<PostResponse> listener, MultipartBody.Part video, MultipartBody.Part thumbnail, RequestBody text, RequestBody duration) {
 
-        Call<PostResponse> call=mIRetrofitApiInterface.createPost(video, thumbnail, json);
+        Call<PostResponse> call=mIRetrofitApiInterface.createPost(video, thumbnail, text, duration);
         PostNetworkCallback callback=new PostNetworkCallback(listener, Enums.RequestType.CakePost);
         call.enqueue(callback);
     }

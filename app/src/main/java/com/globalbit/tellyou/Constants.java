@@ -59,7 +59,10 @@ public class Constants {
     public static final String DATA_PHONE="DataPhone";
     public static final String DATA_FRIENDS_TYPE="DataFriendsType";
     public static final String DATA_COMMENT_ID="DataCommentId";
-    public static final String DATA_VIDEO_PATH="DataVideoPath";
+    public static final String DATA_VIDEO_FILE="DataVideoFile";
+    public static final String DATA_GIF_FILE="DataGifFile";
+    public static final String DATA_TEXT="Text";
+    public static final String DATA_DURATION="Duration";
 
 
     //Types

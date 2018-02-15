@@ -3,20 +3,17 @@ package com.globalbit.tellyou.ui.activities;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.net.Network;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.MediaController;
 import android.widget.SeekBar;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -25,24 +22,17 @@ import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityCreatePostBinding;
-import com.globalbit.tellyou.model.Post;
-import com.globalbit.tellyou.model.system.NewPost;
-import com.globalbit.tellyou.network.NetworkManager;
-import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
-import com.globalbit.tellyou.network.responses.PostResponse;
-import com.globalbit.tellyou.utils.Enums;
-import com.google.gson.Gson;
+import com.globalbit.tellyou.service.UploadService;
+import com.globalbit.tellyou.utils.GeneralUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 /**
  * Created by alex on 14/02/2018.
@@ -76,7 +66,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
         mBinding.btnBack.setOnClickListener(this);
         mBinding.imgViewPlay.setOnClickListener(this);
         //mBinding.frmLayoutController.setOnClickListener(this);
-        mVideoPath=getIntent().getStringExtra(Constants.DATA_VIDEO_PATH);
+        mVideoPath=getIntent().getStringExtra(Constants.DATA_VIDEO_FILE);
         if(!StringUtils.isEmpty(mVideoPath)) {
             File file=new File(mVideoPath);
             Uri uri=Uri.fromFile(file);
@@ -127,64 +117,79 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btnTellIt:
-                //TODO send the new video to server
                 if(StringUtils.isEmpty(mBinding.inputTitle.getText().toString())) {
                     showMessage(getString(R.string.error),getString(R.string.error_new_video_title_empty));
                 }
                 else {
-                    NewPost post=new NewPost();
-                    post.setText(mBinding.inputTitle.getText().toString());
-                    post.setDuration(mBinding.seekBar.getMax());
-                    String json=new Gson().toJson(post);
                     File file=new File(mVideoPath);
+                    /*NewPost post=new NewPost();
+                    post.setText(mBinding.inputTitle.getText().toString());
+                    post.setDuration(mBinding.seekBar.getMax()/1000);
+                    File file=new File(mVideoPath);
+                    RequestBody requestFile =RequestBody.create(
+                            MediaType.parse("video/mp4"),
+                            file
+                    );*/
+                    Bitmap thumb = ThumbnailUtils.createVideoThumbnail(mVideoPath,
+                            MediaStore.Images.Thumbnails.MINI_KIND);
 
-// URI to your video file
-                    Uri myVideoUri = Uri.parse(file.toString());
-
-// MediaMetadataRetriever instance
-                    MediaMetadataRetriever mmRetriever = new MediaMetadataRetriever();
+                    /*MediaMetadataRetriever mmRetriever = new MediaMetadataRetriever();
                     mmRetriever.setDataSource(file.getAbsolutePath());
+                    Bitmap bitmap = mmRetriever.getFrameAtTime(100);*/
+                    File gifFile=null;
+                    try {
+                        gifFile=GeneralUtils.createImageFile("jpg");
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        thumb.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
+                        byte[] bitmapdata = bos.toByteArray();
+                        FileOutputStream fos = new FileOutputStream(gifFile);
+                        fos.write(bitmapdata);
+                        fos.flush();
+                        fos.close();
+                    } catch(IOException e) {
+                        e.printStackTrace();
+                    }
 
-// Array list to hold your frames
-                    ArrayList<Bitmap> frames = new ArrayList<>();
+                    Intent intent=new Intent(this, UploadService.class);
+                    intent.putExtra(Constants.DATA_VIDEO_FILE, file);
+                    intent.putExtra(Constants.DATA_GIF_FILE, gifFile);
+                    intent.putExtra(Constants.DATA_TEXT, mBinding.inputTitle.getText().toString());
+                    intent.putExtra(Constants.DATA_DURATION, mBinding.seekBar.getMax()/1000);
+                    startService(intent);
+                    new MaterialDialog.Builder(this)
+                            .content(R.string.dialog_video_uploading)
+                            .cancelable(false)
+                            .positiveText(R.string.btn_ok)
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    finish();
+                                }
+                            })
+                            .show();
+                    /*RequestBody requestGif =RequestBody.create(
+                            MediaType.parse("image/jpg"),
+                            gifFile
+                    );
 
-//Create a new Media Player
-                    MediaPlayer mp = MediaPlayer.create(getBaseContext(), myVideoUri);
-
-// Some kind of iteration to retrieve the frames and add it to Array list
-                    Bitmap bitmap = mmRetriever.getFrameAtTime(1000);
-                    Bitmap bitmap2 = mmRetriever.getFrameAtTime(2000);
-                    Bitmap bitmap3 = mmRetriever.getFrameAtTime(3000);
-                    Bitmap bitmap4 = mmRetriever.getFrameAtTime(4000);
-                    Bitmap bitmap5 = mmRetriever.getFrameAtTime(5000);
-                    frames.add(bitmap);
-                    frames.add(bitmap2);
-                    frames.add(bitmap3);
-                    frames.add(bitmap4);
-                    frames.add(bitmap5);
-
-                    AnimationDrawable animatedGIF = new AnimationDrawable();
-
-                    animatedGIF.addFrame(new BitmapDrawable(getResources(),bitmap), 50);
-                    animatedGIF.addFrame(new BitmapDrawable(getResources(),bitmap2), 50);
-                    animatedGIF.addFrame(new BitmapDrawable(getResources(),bitmap3), 50);
-                    animatedGIF.addFrame(new BitmapDrawable(getResources(),bitmap4), 50);
-                    animatedGIF.addFrame(new BitmapDrawable(getResources(),bitmap5), 50);
-
-
+                    showLoadingDialog();
                     NetworkManager.getInstance().createPost(new IBaseNetworkResponseListener<PostResponse>() {
                         @Override
                         public void onSuccess(PostResponse response) {
-
+                            hideLoadingDialog();
+                            finish();
                         }
 
                         @Override
                         public void onError(int errorCode, String errorMessage) {
+                            hideLoadingDialog();
+                            showErrorMessage(errorCode, null, errorMessage);
 
                         }
-                    }, MultipartBody.Part.createFormData("file", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file)),
-                            MultipartBody.Part.createFormData("file", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file)),
-                            RequestBody.create(MediaType.parse("multipart/form-data"), json));
+                    }, MultipartBody.Part.createFormData("video", file.getName(), requestFile),
+                            MultipartBody.Part.createFormData("thumbnail", gifFile.getName(), requestGif),
+                            RequestBody.create(okhttp3.MultipartBody.FORM, post.getText()),
+                            RequestBody.create(MultipartBody.FORM, String.valueOf(post.getDuration())));*/
                 }
                 break;
             case R.id.btnBack:

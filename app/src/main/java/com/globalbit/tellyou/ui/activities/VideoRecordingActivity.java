@@ -1,7 +1,6 @@
 package com.globalbit.tellyou.ui.activities;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
@@ -263,7 +262,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                             public void onNext(String videoPath) {
                                 hideLoadingDialog();
                                 Intent intent=new Intent(VideoRecordingActivity.this, CreatePostActivity.class);
-                                intent.putExtra(Constants.DATA_VIDEO_PATH, videoPath);
+                                intent.putExtra(Constants.DATA_VIDEO_FILE, videoPath);
                                 startActivity(intent);
                                 finish();
                             }

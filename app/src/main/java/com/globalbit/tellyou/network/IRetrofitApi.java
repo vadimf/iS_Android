@@ -133,7 +133,7 @@ public interface IRetrofitApi {
 
     @Multipart
     @POST("post")
-    Call<PostResponse> createPost(@Part MultipartBody.Part video, @Part MultipartBody.Part thumbnail, @Part("json") RequestBody request);
+    Call<PostResponse> createPost(@Part MultipartBody.Part video, @Part MultipartBody.Part thumbnail, @Part("text") RequestBody text, @Part("duration") RequestBody duration);
 
     @GET("post/{post}")
     Call<PostResponse> getPostById(@Path("post") String postId);

@@ -101,8 +101,8 @@
     <string name="hint_option_5">Option 5</string>
     <string name="dialog_action_bookmark">Bookmark question</string>
     <string name="label_stop_voting">Stop voting</string>
-    <string name="label_delete_question">Delete poll</string>
-    <string name="dialog_delete_poll">Delete this poll?</string>
+    <string name="label_delete_video">Delete video</string>
+    <string name="dialog_delete_video">Delete this video?</string>
     <string name="btn_delete">Delete</string>
     <string name="dialog_stop_voting">Stop voting?</string>
     <string name="btn_end">End</string>
@@ -208,5 +208,6 @@
     <string name="hint_add_hash_tags">Add #hashtags</string>
     <string name="label_review_video">Review your video</string>
     <string name="error_new_video_title_empty">Title cannot be empty</string>
+    <string name="dialog_video_uploading">Your video will be uploaded to the server</string>
 
 </resources>

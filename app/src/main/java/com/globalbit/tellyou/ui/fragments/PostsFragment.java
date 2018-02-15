@@ -28,6 +28,8 @@ import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.PostsResponse;
 import com.globalbit.tellyou.ui.activities.DiscoverActivity;
+import com.globalbit.tellyou.ui.activities.MainActivity;
+import com.globalbit.tellyou.ui.activities.VideoRecordingActivity;
 import com.globalbit.tellyou.ui.adapters.PostsAdapter;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
 import com.globalbit.tellyou.ui.interfaces.IPostListener;
@@ -87,7 +89,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_posts, container, false);
         final GridLayoutManager layoutManager=new GridLayoutManager(getActivity(), 2);
         mBinding.recyclerViewPosts.setLayoutManager(layoutManager);
-        mBinding.recyclerViewPosts.addItemDecoration(new SimpleDividerItemDecoration(getActivity(), R.drawable.line_divider_4));
+        //mBinding.recyclerViewPosts.addItemDecoration(new SimpleDividerItemDecoration(getActivity(), R.drawable.line_divider_4));
         mAdapter=new PostsAdapter(getActivity(), mFeedType, this);
         mBinding.recyclerViewPosts.setAdapter(mAdapter);
         if(mFeedType==Constants.TYPE_FEED_HOME) {
@@ -300,9 +302,8 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
                     startActivityForResult(intent, Constants.REQUEST_DISCOVER);
                 }
                 else if(mFeedType==Constants.TYPE_FEED_USER) {
-                    //TODO start recording new video
-                    /*intent=new Intent(getActivity(), AskQuestionActivity.class);
-                    startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);*/
+                    intent=new Intent(getActivity(), VideoRecordingActivity.class);
+                    startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);
                 }
                 break;
         }

@@ -5,7 +5,7 @@ package com.globalbit.tellyou.network;
  */
 
 public class NetworkConstants {
-    public static final String BASE_URL_DEV="http://10.0.0.9:3001/v1/";
+    public static final String BASE_URL_DEV="http://10.0.0.9:3003/v1/";
     public static final String BASE_URL_QA="http://35.196.212.178:3003/v1/";
     public static final String BASE_URL_PRODUCTION="";
 
