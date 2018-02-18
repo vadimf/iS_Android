@@ -29,6 +29,7 @@ import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.PostsResponse;
 import com.globalbit.tellyou.ui.activities.DiscoverActivity;
 import com.globalbit.tellyou.ui.activities.MainActivity;
+import com.globalbit.tellyou.ui.activities.PlayerActivity;
 import com.globalbit.tellyou.ui.activities.VideoRecordingActivity;
 import com.globalbit.tellyou.ui.adapters.PostsAdapter;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
@@ -215,6 +216,9 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
         else if(requestCode==Constants.REQUEST_USER_PROFILE) {
             onRefreshPosts();
         }
+        else if(requestCode==Constants.REQUEST_VIDEO_PLAYER) {
+            //TODO something when returning from video player
+        }
     }
 
     @Override
@@ -287,6 +291,12 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
         mListener.onUserProfile(username);
     }
 
+    @Override
+    public void onVideoPayer(Post post, int position) {
+        Intent intent=new Intent(getActivity(), PlayerActivity.class);
+        intent.putExtra(Constants.DATA_POST, post);
+        startActivityForResult(intent, Constants.REQUEST_VIDEO_PLAYER);
+    }
 
     @Override
     public void onClick(View view) {

@@ -30,4 +30,5 @@
     <color name="inactive_opacity">#edeef0</color>
     <color name="active_opacity">#b7ddff</color>
     <color name="progress_bar">#00ccff</color>
+    <color name="background_opacity">#80000000</color>
 </resources>

@@ -1,5 +1,8 @@
 package com.globalbit.tellyou.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
@@ -8,7 +11,7 @@ import java.util.Date;
  * Created by alex on 29/10/2017.
  */
 
-public class BasePostComment {
+public class BasePostComment implements Parcelable {
 
     @SerializedName("id")
     private String mId;
@@ -107,5 +110,50 @@ public class BasePostComment {
 
     public void setViewed(boolean viewed) {
         mIsViewed=viewed;
+    }
+
+    public BasePostComment() {}
+
+    public BasePostComment(Parcel in) {
+        mId=in.readString();
+        mCreatedAt=new Date(in.readLong());
+        mUser=in.readParcelable(User.class.getClassLoader());
+        mVideo=in.readParcelable(Video.class.getClassLoader());
+        mViews=in.readInt();
+        mUniqueViews=in.readInt();
+        mComments=in.readInt();
+        mText=in.readString();
+        mIsViewed=in.readByte() != 0;
+
+    }
+
+    public static final Creator<BasePostComment> CREATOR=new Creator<BasePostComment>() {
+        @Override
+        public BasePostComment createFromParcel(Parcel in) {
+            return new BasePostComment(in);
+        }
+
+        @Override
+        public BasePostComment[] newArray(int size) {
+            return new BasePostComment[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mId);
+        dest.writeLong(mCreatedAt.getTime());
+        dest.writeParcelable(mUser, flags);
+        dest.writeParcelable(mVideo, flags);
+        dest.writeInt(mViews);
+        dest.writeInt(mUniqueViews);
+        dest.writeInt(mComments);
+        dest.writeString(mText);
+        dest.writeByte((byte) (mIsViewed ? 1 : 0));
     }
 }

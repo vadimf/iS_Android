@@ -37,6 +37,7 @@ public class Constants {
     public static final int REQUEST_PHONE_NUMBER=118;
     public static final int REQUEST_CONTACTS=119;
     public static final int REQUEST_PROFILE=120;
+    public static final int REQUEST_VIDEO_PLAYER=121;
 
 
     //Data

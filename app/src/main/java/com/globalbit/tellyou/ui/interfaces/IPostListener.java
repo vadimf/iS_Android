@@ -10,4 +10,5 @@ public interface IPostListener {
     void onShowComments(Post post, int position);
     void onRefreshPosts();
     void onUserProfile(String username);
+    void onVideoPayer(Post post, int position);
 }

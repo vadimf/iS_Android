@@ -30,6 +30,8 @@ public class SharedPrefsUtils {
     private static final String KEY_USER = "User";
     private static final String KEY_FACEBOOK_TOKEN = "FacebookToken";
     private static final String KEY_NETWORK_URL="NetworkURL";
+    private static final String KEY_SHOW_TUTORIAL="ShowTutorial";
+    private static final String KEY_AUTOPLAY_NEXT_VIDEO="AutoPlayNextVideo";
 
     public static void init(Context context)
     {
@@ -119,5 +121,25 @@ public class SharedPrefsUtils {
 
     public static String getNetworkUrl() {
         return mSharedPreferences.getString(KEY_NETWORK_URL, null);
+    }
+
+    public static void setShowTutorial(boolean showTutorial)
+    {
+        mSharedPreferences.edit().putBoolean(KEY_SHOW_TUTORIAL, showTutorial).apply();
+    }
+
+    public static boolean isShowTutorial()
+    {
+        return mSharedPreferences.getBoolean(KEY_SHOW_TUTORIAL,true);
+    }
+
+    public static void setAutoplayNextVideo(boolean autoplayNextVideo)
+    {
+        mSharedPreferences.edit().putBoolean(KEY_AUTOPLAY_NEXT_VIDEO, autoplayNextVideo).apply();
+    }
+
+    public static boolean isAutoplayNextVideo()
+    {
+        return mSharedPreferences.getBoolean(KEY_AUTOPLAY_NEXT_VIDEO,true);
     }
 }

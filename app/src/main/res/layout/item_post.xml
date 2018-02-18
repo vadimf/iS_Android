@@ -3,7 +3,8 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/rltvLayoutPost">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +37,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lines="3"
+                android:lines="2"
                 android:id="@+id/txtViewDescription"
                 android:textColor="@color/white"
                 android:layout_alignParentBottom="true"/>

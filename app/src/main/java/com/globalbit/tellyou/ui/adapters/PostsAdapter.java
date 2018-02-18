@@ -187,6 +187,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         case R.id.imgViewUser:
                             showProfile(item);
                             break;
+                        case R.id.rltvLayoutPost:
+                            mListener.onVideoPayer(item, position);
+                            break;
                     }
                 }
             });
@@ -214,6 +217,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             mBinding=DataBindingUtil.bind(v);
             mBinding.imgViewUser.setOnClickListener(this);
             mBinding.imgViewAction.setOnClickListener(this);
+            mBinding.rltvLayoutPost.setOnClickListener(this);
         }
 
         public interface ClickListener {

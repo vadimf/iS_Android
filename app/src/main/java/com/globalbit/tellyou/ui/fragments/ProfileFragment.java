@@ -42,7 +42,7 @@ import java.util.Locale;
  * Created by alex on 08/11/2017.
  */
 
-public class ProfileFragment extends BaseFragment implements View.OnClickListener, IPostListener {
+public class ProfileFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG=ProfileFragment.class.getSimpleName();
     private FragmentProfileBinding mBinding;
     private User mUser;
@@ -303,22 +303,6 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onStop() {
         super.onStop();
-    }
-
-
-    @Override
-    public void onShowComments(Post post, int position) {
-
-    }
-
-    @Override
-    public void onRefreshPosts() {
-
-    }
-
-    @Override
-    public void onUserProfile(String username) {
-
     }
 
 }
