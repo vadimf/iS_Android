@@ -10,13 +10,20 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityPlayerBinding;
 import com.globalbit.tellyou.model.BasePostComment;
+import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
+import com.globalbit.tellyou.ui.events.FollowingEvent;
+import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -34,6 +41,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 1000;
     private ActivityPlayerBinding mBinding;
     private BasePostComment mPost;
+    private User mUser;
 
     private ScheduledFuture<?> mScheduleFuture;
     private final Runnable mUpdateProgressTask = new Runnable() {
@@ -51,13 +59,15 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding=DataBindingUtil.setContentView(this, R.layout.activity_player);
+        mUser=SharedPrefsUtils.getUserDetails();
         mPost=getIntent().getParcelableExtra(Constants.DATA_POST);
         if(mPost!=null) {
             mBinding.imgViewCancel.setOnClickListener(this);
-            mBinding.lnrLayoutPlayerActions.frmLayoutMenu.setOnClickListener(this);
-            mBinding.lnrLayoutPlayerActions.frmLayoutInfo.setOnClickListener(this);
-            mBinding.lnrLayoutPlayerActions.frmLayoutComments.setOnClickListener(this);
-            mBinding.lnrLayoutPlayerActions.frmLayoutShare.setOnClickListener(this);
+            mBinding.layoutPlayerActions.frmLayoutMenu.setOnClickListener(this);
+            mBinding.layoutPlayerActions.frmLayoutInfo.setOnClickListener(this);
+            mBinding.layoutPlayerActions.frmLayoutComments.setOnClickListener(this);
+            mBinding.layoutPlayerActions.frmLayoutShare.setOnClickListener(this);
+            mBinding.layoutVideoInformation.btnAction.setOnClickListener(this);
             initiatePostInformation();
         }
         else {
@@ -70,10 +80,37 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
         if(mPost!=null) {
             mBinding.txtViewViews.setText(String.format(Locale.getDefault(), "%d", mPost.getViews()));
             if(mPost.getComments()>0) {
-                mBinding.lnrLayoutPlayerActions.txtViewComments.setText(String.format(Locale.getDefault(), "%d", mPost.getComments()));
+                mBinding.layoutPlayerActions.txtViewComments.setText(String.format(Locale.getDefault(), "%d", mPost.getComments()));
             }
             else {
-                mBinding.lnrLayoutPlayerActions.txtViewComments.setText("");
+                mBinding.layoutPlayerActions.txtViewComments.setText("");
+            }
+            mBinding.layoutVideoInformation.txtViewUsername.setText(String.format(Locale.getDefault(),"@%s",mPost.getUser().getUsername()));
+            if(mPost.getUser().getProfile()!=null&&mPost.getUser().getProfile().getPicture()!=null&&!StringUtils.isEmpty(mPost.getUser().getProfile().getPicture().getThumbnail())) {
+                Picasso.with(this).load(mPost.getUser().getProfile().getPicture().getThumbnail()).into(mBinding.layoutVideoInformation.imgViewPhoto);
+            }
+            else {
+                mBinding.layoutVideoInformation.imgViewPhoto.setImageResource(R.drawable.small_image_profile_default);
+            }
+            if(mPost.getCreatedAt()!=null) {
+                mBinding.layoutVideoInformation.txtViewDate.setText(DateUtils.getRelativeTimeSpanString(mPost.getCreatedAt().getTime()));
+            }
+            mBinding.layoutVideoInformation.txtViewTitle.setText(mPost.getText());
+            if(mUser.getUsername().equals(mPost.getUser().getUsername())) {
+                mBinding.layoutVideoInformation.btnAction.setVisibility(View.GONE);
+            }
+            else {
+                mBinding.layoutVideoInformation.btnAction.setVisibility(View.VISIBLE);
+                if(mPost.getUser().isFollowing()) {
+                    mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_share);
+                    mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.share));
+                    mBinding.layoutVideoInformation.btnAction.setText(R.string.btn_following);
+                }
+                else {
+                    mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_regular);
+                    mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.border_active));
+                    mBinding.layoutVideoInformation.btnAction.setText(R.string.btn_follow);
+                }
             }
             mElapsedTime=0;
             stopSeekbarUpdate();
@@ -121,13 +158,19 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.imgViewCancel:
-                finish();
+                onBackPressed();
                 break;
             case R.id.frmLayoutMenu:
                 //TODO show menu;
                 break;
             case R.id.frmLayoutInfo:
                 //TODO show video details
+                if(mBinding.layoutVideoInformation.lnrLayoutVideoInformation.getVisibility()==View.VISIBLE) {
+                    mBinding.layoutVideoInformation.lnrLayoutVideoInformation.setVisibility(View.GONE);
+                }
+                else {
+                    mBinding.layoutVideoInformation.lnrLayoutVideoInformation.setVisibility(View.VISIBLE);
+                }
                 break;
             case R.id.frmLayoutComments:
                 //TODO open video comments
@@ -135,8 +178,52 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
             case R.id.frmLayoutShare:
                 //TODO share outside the application (Deep-linking)
                 break;
+            case R.id.btnAction:
+                //TODO follow/un-follow user
+                if(mPost.getUser().isFollowing()) {
+                    NetworkManager.getInstance().unfollow(new IBaseNetworkResponseListener<BaseResponse>() {
+                        @Override
+                        public void onSuccess(BaseResponse response) {
+                            mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_regular);
+                            mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.border_active));
+                            mBinding.layoutVideoInformation.btnAction.setText(getString(R.string.btn_follow));
+                            mPost.getUser().setFollowing(false);
+                        }
+
+                        @Override
+                        public void onError(int errorCode, String errorMessage) {
+
+                        }
+                    }, mPost.getUser().getUsername());
+                }
+                else {
+                    NetworkManager.getInstance().follow(new IBaseNetworkResponseListener<BaseResponse>() {
+                        @Override
+                        public void onSuccess(BaseResponse response) {
+                            mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_share);
+                            mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.share));
+                            mBinding.layoutVideoInformation.btnAction.setText(getString(R.string.btn_following));
+                            mPost.getUser().setFollowing(true);
+                            EventBus.getDefault().post(new FollowingEvent(true));
+                        }
+
+                        @Override
+                        public void onError(int errorCode, String errorMessage) {
+
+                        }
+                    }, mPost.getUser().getUsername());
+
+                }
+                break;
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mBinding.videoViewPlayer.stopPlayback();
+        stopSeekbarUpdate();
     }
 
     @Override
