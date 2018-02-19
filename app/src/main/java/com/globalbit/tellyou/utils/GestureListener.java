@@ -16,11 +16,13 @@ public class GestureListener implements GestureDetector.OnGestureListener {
     private static final int SWIPE_THRESHOLD = 100;
     private int minFlingVelocity;
     private IGestureEventsListener mListener;
+    private int mTimeMultiplier;
 
 
-    public GestureListener(IGestureEventsListener listener, ViewConfiguration viewConfiguration) {
+    public GestureListener(IGestureEventsListener listener, ViewConfiguration viewConfiguration, int timeMultiplier) {
         mListener=listener;
         minFlingVelocity=viewConfiguration.getScaledMinimumFlingVelocity();
+        mTimeMultiplier=timeMultiplier;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class GestureListener implements GestureDetector.OnGestureListener {
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
         Log.i(TAG, "Scroll "+v+","+v1);
-        float speed=Math.abs(v)*50;
+        float speed=Math.abs(v)*mTimeMultiplier;
         float deltaY = motionEvent1.getY() - motionEvent.getY();
         float deltaX = motionEvent1.getX() - motionEvent.getX();
         Log.i(TAG, "Delta X "+deltaX);

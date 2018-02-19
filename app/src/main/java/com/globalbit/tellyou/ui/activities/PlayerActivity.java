@@ -66,7 +66,6 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding=DataBindingUtil.setContentView(this, R.layout.activity_player);
-        mBinding.gestureView.setGesterEventsListener(this);
         mBinding.layoutVideoMenu.switchAutoplay.setChecked(SharedPrefsUtils.isAutoplayNextVideo());
         mBinding.layoutVideoMenu.switchAutoplay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -83,6 +82,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
             mBinding.layoutPlayerActions.frmLayoutComments.setOnClickListener(this);
             mBinding.layoutPlayerActions.frmLayoutShare.setOnClickListener(this);
             mBinding.layoutVideoInformation.btnAction.setOnClickListener(this);
+            mBinding.gestureView.setGesterEventsListener(this, mPost.getVideo().getDuration());
             initiatePostInformation();
         }
         else {

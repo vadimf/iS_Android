@@ -47,7 +47,7 @@ public class GestureControllerView extends View {
         gestureDetector.onTouchEvent(event);
     }
 
-    public void setGesterEventsListener(IGestureEventsListener listener){
-        gestureDetector = new GestureDetector(getContext(), new GestureListener(listener, ViewConfiguration.get(getContext())));
+    public void setGesterEventsListener(IGestureEventsListener listener, int timeMultiplier){
+        gestureDetector = new GestureDetector(getContext(), new GestureListener(listener, ViewConfiguration.get(getContext()),timeMultiplier));
     }
 }
