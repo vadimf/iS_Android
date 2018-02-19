@@ -4,11 +4,14 @@ import android.databinding.DataBindingUtil;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
@@ -19,11 +22,9 @@ import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
-import com.globalbit.tellyou.ui.events.FollowingEvent;
+import com.globalbit.tellyou.ui.interfaces.IGestureEventsListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.squareup.picasso.Picasso;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -35,14 +36,15 @@ import java.util.concurrent.TimeUnit;
  * Created by alex on 18/02/2018.
  */
 
-public class PlayerActivity extends BaseActivity implements View.OnClickListener{
+public class PlayerActivity extends BaseActivity implements View.OnClickListener, IGestureEventsListener {
     private static final String TAG=PlayerActivity.class.getSimpleName();
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 1000;
+    private static final long HIDE_DETAILS_THRESHOLD=3000;
     private ActivityPlayerBinding mBinding;
     private BasePostComment mPost;
     private User mUser;
-
+    private CountDownTimer mTimer;
     private ScheduledFuture<?> mScheduleFuture;
     private final Runnable mUpdateProgressTask = new Runnable() {
         @Override
@@ -54,11 +56,24 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
             Executors.newSingleThreadScheduledExecutor();
     private final Handler mHandler = new Handler();
     private int mElapsedTime=0;
+    private boolean mIsPlaying=false;
+    private boolean mIsStarted=false;
+    private MediaPlayer mMediaPlayer=null;
+    private boolean mIsResumedActivity=false;
+    private int mCurrentPosition=0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding=DataBindingUtil.setContentView(this, R.layout.activity_player);
+        mBinding.gestureView.setGesterEventsListener(this);
+        mBinding.layoutVideoMenu.switchAutoplay.setChecked(SharedPrefsUtils.isAutoplayNextVideo());
+        mBinding.layoutVideoMenu.switchAutoplay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                SharedPrefsUtils.setAutoplayNextVideo(b);
+            }
+        });
         mUser=SharedPrefsUtils.getUserDetails();
         mPost=getIntent().getParcelableExtra(Constants.DATA_POST);
         if(mPost!=null) {
@@ -75,6 +90,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
             Log.i(TAG, "Post is null");
         }
     }
+
 
     private void initiatePostInformation() {
         if(mPost!=null) {
@@ -116,38 +132,64 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
             stopSeekbarUpdate();
             mBinding.progressBarPortrait.setMax(mPost.getVideo().getDuration()*1000);
             mBinding.progressBarPortrait.setProgress(0);
+            mBinding.layoutVideoInformation.lnrLayoutVideoInformation.setVisibility(View.VISIBLE);
+            mTimer=new CountDownTimer(HIDE_DETAILS_THRESHOLD, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    mBinding.layoutVideoInformation.lnrLayoutVideoInformation.setVisibility(View.GONE);
+                }
+            };
+            mTimer.start();
             Uri uri=Uri.parse(mPost.getVideo().getUrl());
             mBinding.videoViewPlayer.setVideoURI(uri);
             mBinding.videoViewPlayer.requestFocus();
             mBinding.videoViewPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
-                    mBinding.videoViewPlayer.start();
-                    NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
-                        @Override
-                        public void onSuccess(BaseResponse response) {
-
-                        }
-
-                        @Override
-                        public void onError(int errorCode, String errorMessage) {
-
-                        }
-                    },mPost.getId());
-                    scheduleSeekbarUpdate();
+                    mMediaPlayer=mediaPlayer;
+                    if(mIsResumedActivity) {
+                        mMediaPlayer.seekTo(mCurrentPosition);
+                        mIsResumedActivity=false;
+                    }
+                    Log.i(TAG, "onPrepared: ");
                 }
             });
+            mIsStarted=true;
+            mBinding.videoViewPlayer.start();
+            NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
+                @Override
+                public void onSuccess(BaseResponse response) {
+
+                }
+
+                @Override
+                public void onError(int errorCode, String errorMessage) {
+
+                }
+            },mPost.getId());
+            scheduleSeekbarUpdate();
             mBinding.videoViewPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     stopSeekbarUpdate();
+                    mIsStarted=false;
+                    mBinding.progressBarPortrait.setProgress(mPost.getVideo().getDuration()*1000);
+                    if(mTimer!=null) {
+                        mTimer.cancel();
+                    }
                 }
             });
             mBinding.videoViewPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                 @Override
                 public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
                     Log.i(TAG, "onError: ");
-                    return false;
+                    initiatePostInformation();
+                    return true;
                 }
             });
         }
@@ -162,14 +204,24 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                 break;
             case R.id.frmLayoutMenu:
                 //TODO show menu;
+                if(mBinding.layoutVideoMenu.lnrLayoutVideoMenu.getVisibility()==View.VISIBLE) {
+                    mBinding.layoutVideoMenu.lnrLayoutVideoMenu.setVisibility(View.GONE);
+                }
+                else {
+                    mBinding.layoutVideoMenu.lnrLayoutVideoMenu.setVisibility(View.VISIBLE);
+                    mBinding.layoutVideoInformation.lnrLayoutVideoInformation.setVisibility(View.GONE);
+                }
                 break;
             case R.id.frmLayoutInfo:
-                //TODO show video details
+                if(mTimer!=null) {
+                    mTimer.cancel();
+                }
                 if(mBinding.layoutVideoInformation.lnrLayoutVideoInformation.getVisibility()==View.VISIBLE) {
                     mBinding.layoutVideoInformation.lnrLayoutVideoInformation.setVisibility(View.GONE);
                 }
                 else {
                     mBinding.layoutVideoInformation.lnrLayoutVideoInformation.setVisibility(View.VISIBLE);
+                    mBinding.layoutVideoMenu.lnrLayoutVideoMenu.setVisibility(View.GONE);
                 }
                 break;
             case R.id.frmLayoutComments:
@@ -204,7 +256,6 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                             mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.share));
                             mBinding.layoutVideoInformation.btnAction.setText(getString(R.string.btn_following));
                             mPost.getUser().setFollowing(true);
-                            EventBus.getDefault().post(new FollowingEvent(true));
                         }
 
                         @Override
@@ -222,18 +273,29 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        mBinding.videoViewPlayer.stopPlayback();
-        stopSeekbarUpdate();
+        cancel();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        cancel();
+    }
+
+    private void cancel() {
         mBinding.videoViewPlayer.stopPlayback();
+        stopSeekbarUpdate();
+        if(mTimer!=null) {
+            mTimer.cancel();
+        }
+        if(mMediaPlayer!=null) {
+            mMediaPlayer.release();
+            mMediaPlayer=null;
+        }
     }
 
     private void updateProgress() {
-        Log.i(TAG, "updateProgress: "+mElapsedTime);
+        //Log.i(TAG, "updateProgress: "+mElapsedTime);
         mBinding.progressBarPortrait.setProgress(mElapsedTime);
         mElapsedTime+=1000;
     }
@@ -242,6 +304,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
         if (mScheduleFuture != null) {
             mScheduleFuture.cancel(false);
         }
+        mIsPlaying=false;
     }
 
     private void scheduleSeekbarUpdate() {
@@ -256,5 +319,96 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                     }, PROGRESS_UPDATE_INITIAL_INTERVAL,
                     PROGRESS_UPDATE_INTERNAL, TimeUnit.MILLISECONDS);
         }
+        mIsPlaying=true;
+    }
+
+    @Override
+    public void onTap() {
+        if(mIsPlaying) {
+            if(mMediaPlayer!=null) {
+                mMediaPlayer.pause();
+            }
+            stopSeekbarUpdate();
+        }
+        else {
+            if(mMediaPlayer!=null) {
+                mMediaPlayer.start();
+            }
+            if(!mIsStarted) {
+                mBinding.progressBarPortrait.setProgress(mBinding.videoViewPlayer.getCurrentPosition());
+                mElapsedTime=mBinding.videoViewPlayer.getCurrentPosition();
+                mIsStarted=true;
+            }
+            scheduleSeekbarUpdate();
+        }
+    }
+
+    @Override
+    public void onHorizontalScroll(MotionEvent event, float delta, int speed) {
+        if(delta<0) {
+            int newPosition=mBinding.videoViewPlayer.getCurrentPosition()+speed;
+            if(newPosition>mBinding.videoViewPlayer.getDuration()) {
+                newPosition=mBinding.videoViewPlayer.getDuration();
+            }
+            Log.i(TAG, "onHorizontalScroll: "+newPosition);
+            mBinding.videoViewPlayer.seekTo(newPosition);
+            mElapsedTime=newPosition;
+            mBinding.progressBarPortrait.setProgress(newPosition);
+        }
+        else {
+            int newPosition=mBinding.videoViewPlayer.getCurrentPosition()-speed;
+            if(newPosition<0) {
+                newPosition=0;
+            }
+            Log.i(TAG, "onHorizontalScroll: "+newPosition);
+            mBinding.videoViewPlayer.seekTo(newPosition);
+            mElapsedTime=newPosition;
+            mBinding.progressBarPortrait.setProgress(newPosition);
+        }
+    }
+
+    @Override
+    public void onVerticalScroll(MotionEvent event, float delta, int speed) {
+
+    }
+
+    @Override
+    public void onSwipeRight() {
+
+    }
+
+    @Override
+    public void onSwipeLeft() {
+
+    }
+
+    @Override
+    public void onSwipeBottom() {
+
+    }
+
+    @Override
+    public void onSwipeTop() {
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mIsPlaying) {
+            stopSeekbarUpdate();
+            if(mMediaPlayer!=null) {
+                mMediaPlayer.pause();
+            }
+        }
+        mIsResumedActivity=true;
+        if(mMediaPlayer!=null) {
+            mCurrentPosition=mMediaPlayer.getCurrentPosition();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

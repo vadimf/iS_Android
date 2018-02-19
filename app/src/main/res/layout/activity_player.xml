@@ -16,6 +16,10 @@
                 android:layout_alignParentTop="true"
                 android:id="@+id/videoViewPlayer"/>
         </RelativeLayout>
+        <com.globalbit.tellyou.ui.views.GestureControllerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/gestureView"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -55,6 +59,12 @@
                 android:layout_alignParentBottom="true"/>
             <include layout="@layout/layout_video_information"
                 android:id="@+id/layoutVideoInformation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/layoutPlayerActions"
+                android:visibility="gone"/>
+            <include layout="@layout/layout_video_menu"
+                android:id="@+id/layoutVideoMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/layoutPlayerActions"

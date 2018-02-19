@@ -64,7 +64,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
     private static final int MAX_VIDEO_LENGTH=120000;
     private static final int ELAPSED_WARNING=10000;
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
-    private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 1000;
+    private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 0;
     public static final int MEDIA_TYPE_VIDEO = 1;
     private Camera mCamera;
     private int mCamerId=-1;

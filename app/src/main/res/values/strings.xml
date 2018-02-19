@@ -209,5 +209,7 @@
     <string name="label_review_video">Review your video</string>
     <string name="error_new_video_title_empty">Title cannot be empty</string>
     <string name="dialog_video_uploading">Your video will be uploaded to the server</string>
+    <string name="label_autoplay">Autoplay next video</string>
+    <string name="label_report_video">Report this video</string>
 
 </resources>
