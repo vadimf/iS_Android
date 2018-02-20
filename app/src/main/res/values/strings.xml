@@ -102,13 +102,14 @@
     <string name="dialog_action_bookmark">Bookmark question</string>
     <string name="label_stop_voting">Stop voting</string>
     <string name="label_delete_video">Delete video</string>
+    <string name="label_report_reply">Report this reply</string>
     <string name="dialog_delete_video">Delete this video?</string>
     <string name="btn_delete">Delete</string>
     <string name="dialog_stop_voting">Stop voting?</string>
     <string name="btn_end">End</string>
     <string name="dialog_remove_bookmark">Remove from bookmarks</string>
     <string name="percentage">%</string>
-    <string name="title_comments">Comments</string>
+    <string name="title_comments">No replies</string>
     <string name="btn_reply">Reply</string>
     <string name="hint_add_comment">Add a comment&#8230;</string>
     <string name="btn_send">Send</string>
@@ -219,5 +220,12 @@
     <string name="btn_report">Report</string>
     <string name="snack_bar_report_submitted">Your report has been submitted</string>
     <string name="error_reporting_your_video">Your cannot report your own video!</string>
+    <string name="error_reporting_your_reply">Your cannot report your own reply!</string>
+
+    <plurals name="replies">
+        <item quantity="zero">No replies</item>
+        <item quantity="one">1 reply</item>
+        <item quantity="other">%d replies</item>
+    </plurals>
 
 </resources>

@@ -61,11 +61,13 @@ import io.reactivex.schedulers.Schedulers;
 public class VideoRecordingActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG=VideoRecordingActivity.class.getSimpleName();
     private ActivityVideoRecordingBinding mBinding;
-    private static final int MAX_VIDEO_LENGTH=120000;
+    private int MAX_VIDEO_LENGTH=Constants.POST_VIDEO_MAX_SIZE;
     private static final int ELAPSED_WARNING=10000;
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 0;
     public static final int MEDIA_TYPE_VIDEO = 1;
+    private int mVideoRecordingType;
+    private String mPostId;
     private Camera mCamera;
     private int mCamerId=-1;
     private CameraPreview mPreview;
@@ -88,10 +90,21 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
     private Enums.RecordingState mRecordingState=Enums.RecordingState.NoPermissions;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding=DataBindingUtil.setContentView(this, R.layout.activity_video_recording);
+        mVideoRecordingType=getIntent().getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
+        mPostId=getIntent().getStringExtra(Constants.DATA_POST_ID);
+        switch(mVideoRecordingType) {
+            case Constants.TYPE_POST_VIDEO_RECORDING:
+                MAX_VIDEO_LENGTH=Constants.POST_VIDEO_MAX_SIZE;
+                break;
+            case Constants.TYPE_REPLY_VIDEO_RECORDING:
+                MAX_VIDEO_LENGTH=Constants.REPLY_VIDEO_MAX_SIZE;
+                break;
+        }
         mBinding.lnrLayoutVideoRecordingActions.imgViewExit.setOnClickListener(this);
         mBinding.lnrLayoutVideoRecordingActions.imgViewRecordStop.setOnClickListener(this);
         mBinding.lnrLayoutVideoRecordingActions.imgViewReShoot.setOnClickListener(this);
@@ -263,6 +276,8 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                                 hideLoadingDialog();
                                 Intent intent=new Intent(VideoRecordingActivity.this, CreatePostActivity.class);
                                 intent.putExtra(Constants.DATA_VIDEO_FILE, videoPath);
+                                intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, mVideoRecordingType);
+                                intent.putExtra(Constants.DATA_POST_ID, mPostId);
                                 startActivity(intent);
                                 finish();
                             }

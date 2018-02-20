@@ -153,8 +153,9 @@ public interface IRetrofitApi {
     @GET("post/bookmarked")
     Call<PostsResponse> getBookmarkedPosts(@Query("page") int page);
 
+    @Multipart
     @POST("post/{post}/comment")
-    Call<CommentResponse> createComment(@Path("post") String postId, @Body CreateEditCommentRequest request);
+    Call<CommentResponse> createComment(@Path("post") String postId, @Part MultipartBody.Part video, @Part MultipartBody.Part thumbnail, @Part("duration") RequestBody duration);
 
     @GET("post/{post}/comments")
     Call<CommentsResponse> getPostComments(@Path("post") String postId, @Query("page") int page);

@@ -42,6 +42,8 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
     private static final String TAG=CreatePostActivity.class.getSimpleName();
     private ActivityCreatePostBinding mBinding;
     private String mVideoPath;
+    private int mVideoRecordingType;
+    private String mPostId;
     private boolean mIsPlaying=false;
     private boolean mIsStarted=false;
     private int mElapsedTime=0;
@@ -62,6 +64,16 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding=DataBindingUtil.setContentView(this, R.layout.activity_create_post);
+        mVideoRecordingType=getIntent().getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
+        mPostId=getIntent().getStringExtra(Constants.DATA_POST_ID);
+        switch(mVideoRecordingType) {
+            case Constants.TYPE_POST_VIDEO_RECORDING:
+                mBinding.inputTitle.setVisibility(View.VISIBLE);
+                break;
+            case Constants.TYPE_REPLY_VIDEO_RECORDING:
+                mBinding.inputTitle.setVisibility(View.GONE);
+                break;
+        }
         mBinding.btnTellIt.setOnClickListener(this);
         mBinding.btnBack.setOnClickListener(this);
         mBinding.imgViewPlay.setOnClickListener(this);
@@ -117,25 +129,13 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btnTellIt:
-                if(StringUtils.isEmpty(mBinding.inputTitle.getText().toString())) {
+                if(mVideoRecordingType==Constants.TYPE_POST_VIDEO_RECORDING&&StringUtils.isEmpty(mBinding.inputTitle.getText().toString())) {
                     showMessage(getString(R.string.error),getString(R.string.error_new_video_title_empty));
                 }
                 else {
                     File file=new File(mVideoPath);
-                    /*NewPost post=new NewPost();
-                    post.setText(mBinding.inputTitle.getText().toString());
-                    post.setDuration(mBinding.seekBar.getMax()/1000);
-                    File file=new File(mVideoPath);
-                    RequestBody requestFile =RequestBody.create(
-                            MediaType.parse("video/mp4"),
-                            file
-                    );*/
                     Bitmap thumb = ThumbnailUtils.createVideoThumbnail(mVideoPath,
                             MediaStore.Images.Thumbnails.MINI_KIND);
-
-                    /*MediaMetadataRetriever mmRetriever = new MediaMetadataRetriever();
-                    mmRetriever.setDataSource(file.getAbsolutePath());
-                    Bitmap bitmap = mmRetriever.getFrameAtTime(100);*/
                     File gifFile=null;
                     try {
                         gifFile=GeneralUtils.createImageFile("jpg");
@@ -155,6 +155,8 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                     intent.putExtra(Constants.DATA_GIF_FILE, gifFile);
                     intent.putExtra(Constants.DATA_TEXT, mBinding.inputTitle.getText().toString());
                     intent.putExtra(Constants.DATA_DURATION, mBinding.seekBar.getMax()/1000);
+                    intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, mVideoRecordingType);
+                    intent.putExtra(Constants.DATA_POST_ID, mPostId);
                     startService(intent);
                     new MaterialDialog.Builder(this)
                             .content(R.string.dialog_video_uploading)
@@ -167,29 +169,6 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                                 }
                             })
                             .show();
-                    /*RequestBody requestGif =RequestBody.create(
-                            MediaType.parse("image/jpg"),
-                            gifFile
-                    );
-
-                    showLoadingDialog();
-                    NetworkManager.getInstance().createPost(new IBaseNetworkResponseListener<PostResponse>() {
-                        @Override
-                        public void onSuccess(PostResponse response) {
-                            hideLoadingDialog();
-                            finish();
-                        }
-
-                        @Override
-                        public void onError(int errorCode, String errorMessage) {
-                            hideLoadingDialog();
-                            showErrorMessage(errorCode, null, errorMessage);
-
-                        }
-                    }, MultipartBody.Part.createFormData("video", file.getName(), requestFile),
-                            MultipartBody.Part.createFormData("thumbnail", gifFile.getName(), requestGif),
-                            RequestBody.create(okhttp3.MultipartBody.FORM, post.getText()),
-                            RequestBody.create(MultipartBody.FORM, String.valueOf(post.getDuration())));*/
                 }
                 break;
             case R.id.btnBack:

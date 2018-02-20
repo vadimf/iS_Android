@@ -308,6 +308,11 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                 break;
             case R.id.frmLayoutComments:
                 //TODO open video comments
+                if(mPost!=null) {
+                    Intent intentReplies=new Intent(this, ReplyActivity.class);
+                    intentReplies.putExtra(Constants.DATA_POST_ID, mPost.getId());
+                    startActivityForResult(intentReplies, Constants.REQUEST_COMMENTS);
+                }
                 break;
             case R.id.frmLayoutShare:
                 //TODO share outside the application (Deep-linking)
@@ -384,6 +389,9 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                 Snackbar snackbar=Snackbar.make(mBinding.layoutPlayerActions.lnrLayoutPlayerActions, getString(R.string.snack_bar_report_submitted), Snackbar.LENGTH_SHORT);
                 snackbar.show();
             }
+        }
+        else if(requestCode==Constants.REQUEST_COMMENTS) {
+            //TODO update something
         }
     }
 

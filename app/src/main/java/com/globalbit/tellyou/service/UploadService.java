@@ -14,6 +14,7 @@ import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
+import com.globalbit.tellyou.network.responses.CommentResponse;
 import com.globalbit.tellyou.network.responses.PostResponse;
 import com.globalbit.tellyou.ui.activities.SplashScreenActivity;
 
@@ -43,7 +44,8 @@ public class UploadService extends Service {
             File gif=(File)intent.getSerializableExtra(Constants.DATA_GIF_FILE);
             String text=intent.getStringExtra(Constants.DATA_TEXT);
             int duration=intent.getIntExtra(Constants.DATA_DURATION, -1);
-
+            int videoRecordingType=intent.getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
+            String postId=intent.getStringExtra(Constants.DATA_POST_ID);
             RequestBody requestFile =RequestBody.create(
                     MediaType.parse("video/mp4"),
                     file
@@ -52,57 +54,114 @@ public class UploadService extends Service {
                     MediaType.parse("image/jpg"),
                     gif
             );
-            NetworkManager.getInstance().createPost(new IBaseNetworkResponseListener<PostResponse>() {
-                    @Override
-                    public void onSuccess(PostResponse response) {
-                        if(file.exists()) {
-                            if(file.delete()) {
-                                Log.i(TAG, "File deleted successfully");
+            switch(videoRecordingType) {
+                case Constants.TYPE_POST_VIDEO_RECORDING:
+                    NetworkManager.getInstance().createPost(new IBaseNetworkResponseListener<PostResponse>() {
+                                @Override
+                                public void onSuccess(PostResponse response) {
+                                    if(file.exists()) {
+                                        if(file.delete()) {
+                                            Log.i(TAG, "File deleted successfully");
+                                        }
+                                        else {
+                                            Log.i(TAG, "Couldn't delete the file");
+                                        }
+                                    }
+                                    Intent notificationIntent = new Intent(UploadService.this, SplashScreenActivity.class);
+                                    notificationIntent.setAction(MAIN_ACTION);
+                                    notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    PendingIntent pendingIntent = PendingIntent.getActivity(UploadService.this, 0,
+                                            notificationIntent, 0);
+                                    Notification notification =
+                                            new NotificationCompat.Builder(UploadService.this, "UploadChannel")
+                                                    .setContentTitle("Uploaded")
+                                                    .setContentText("Your video was uploaded")
+                                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                                    .setContentIntent(pendingIntent)
+                                                    .setAutoCancel(true)
+                                                    .build();
+                                    final NotificationManager notificationManager = (NotificationManager) getApplicationContext()
+                                            .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+
+                                    notificationManager.notify(1, notification);
+                                    stopForeground(false);
+                                }
+
+                                @Override
+                                public void onError(int errorCode, String errorMessage) {
+                                    Notification notification =
+                                            new NotificationCompat.Builder(UploadService.this, "UploadChannel")
+                                                    .setContentTitle("Error")
+                                                    .setContentText("Your video failed to upload")
+                                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                                    .setContentIntent(null)
+                                                    .setAutoCancel(true)
+                                                    .build();
+                                    final NotificationManager notificationManager = (NotificationManager) getApplicationContext()
+                                            .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+
+                                    notificationManager.notify(1, notification);
+                                }
+                            }, MultipartBody.Part.createFormData("video", file.getName(), requestFile),
+                            MultipartBody.Part.createFormData("thumbnail", gif.getName(), requestGif),
+                            RequestBody.create(okhttp3.MultipartBody.FORM, text),
+                            RequestBody.create(MultipartBody.FORM, String.valueOf(duration)));
+                    break;
+                case Constants.TYPE_REPLY_VIDEO_RECORDING:
+                    NetworkManager.getInstance().createComment(new IBaseNetworkResponseListener<CommentResponse>() {
+                            @Override
+                            public void onSuccess(CommentResponse response) {
+                                if(file.exists()) {
+                                    if(file.delete()) {
+                                        Log.i(TAG, "File deleted successfully");
+                                    }
+                                    else {
+                                        Log.i(TAG, "Couldn't delete the file");
+                                    }
+                                }
+                                Intent notificationIntent = new Intent(UploadService.this, SplashScreenActivity.class);
+                                notificationIntent.setAction(MAIN_ACTION);
+                                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                PendingIntent pendingIntent = PendingIntent.getActivity(UploadService.this, 0,
+                                        notificationIntent, 0);
+                                Notification notification =
+                                        new NotificationCompat.Builder(UploadService.this, "UploadChannel")
+                                                .setContentTitle("Uploaded")
+                                                .setContentText("Your video was uploaded")
+                                                .setSmallIcon(R.mipmap.ic_launcher)
+                                                .setContentIntent(pendingIntent)
+                                                .setAutoCancel(true)
+                                                .build();
+                                final NotificationManager notificationManager = (NotificationManager) getApplicationContext()
+                                        .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+
+                                notificationManager.notify(1, notification);
+                                stopForeground(false);
                             }
-                            else {
-                                Log.i(TAG, "Couldn't delete the file");
+
+                            @Override
+                            public void onError(int errorCode, String errorMessage) {
+                                Notification notification =
+                                        new NotificationCompat.Builder(UploadService.this, "UploadChannel")
+                                                .setContentTitle("Error")
+                                                .setContentText("Your video failed to upload")
+                                                .setSmallIcon(R.mipmap.ic_launcher)
+                                                .setContentIntent(null)
+                                                .setAutoCancel(true)
+                                                .build();
+                                final NotificationManager notificationManager = (NotificationManager) getApplicationContext()
+                                        .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+
+                                notificationManager.notify(1, notification);
                             }
-                        }
-                        Intent notificationIntent = new Intent(UploadService.this, SplashScreenActivity.class);
-                        notificationIntent.setAction(MAIN_ACTION);
-                        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        PendingIntent pendingIntent = PendingIntent.getActivity(UploadService.this, 0,
-                            notificationIntent, 0);
-                        Notification notification =
-                                new NotificationCompat.Builder(UploadService.this, "UploadChannel")
-                                        .setContentTitle("Uploaded")
-                                        .setContentText("Your video was uploaded")
-                                        .setSmallIcon(R.mipmap.ic_launcher)
-                                        .setContentIntent(pendingIntent)
-                                        .setAutoCancel(true)
-                                        .build();
-                        final NotificationManager notificationManager = (NotificationManager) getApplicationContext()
-                                .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+                        },postId , MultipartBody.Part.createFormData("video", file.getName(), requestFile),
+                        MultipartBody.Part.createFormData("thumbnail", gif.getName(), requestGif),
+                        RequestBody.create(MultipartBody.FORM, String.valueOf(duration)));
+                    break;
+            }
 
-                        notificationManager.notify(1, notification);
-                        stopForeground(false);
-                    }
-
-                    @Override
-                    public void onError(int errorCode, String errorMessage) {
-                        Notification notification =
-                                new NotificationCompat.Builder(UploadService.this, "UploadChannel")
-                                        .setContentTitle("Error")
-                                        .setContentText("Your video failed to upload")
-                                        .setSmallIcon(R.mipmap.ic_launcher)
-                                        .setContentIntent(null)
-                                        .setAutoCancel(true)
-                                        .build();
-                        final NotificationManager notificationManager = (NotificationManager) getApplicationContext()
-                                .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
-
-                        notificationManager.notify(1, notification);
-                    }
-                }, MultipartBody.Part.createFormData("video", file.getName(), requestFile),
-                MultipartBody.Part.createFormData("thumbnail", gif.getName(), requestGif),
-                RequestBody.create(okhttp3.MultipartBody.FORM, text),
-                RequestBody.create(MultipartBody.FORM, String.valueOf(duration)));
 
 
             Notification notification =

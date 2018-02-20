@@ -318,6 +318,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
                 }
                 else if(mFeedType==Constants.TYPE_FEED_USER) {
                     intent=new Intent(getActivity(), VideoRecordingActivity.class);
+                    intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
                     startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);
                 }
                 break;

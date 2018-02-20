@@ -76,6 +76,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                         return true;
                     case R.id.action_add:
                         Intent intent=new Intent(MainActivity.this, VideoRecordingActivity.class);
+                        intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
                         startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);
                         return false;
                     case R.id.action_profile:

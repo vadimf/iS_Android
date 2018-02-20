@@ -13,6 +13,8 @@ public class Constants {
     public static final int QUESTION_IMAGE_OPTION_MAX=4;
     public static final int QUESTION_TEXT_OPTION_MIN=2;
     public static final int QUESTION_IMAGE_OPTION_MIN=2;
+    public static final int POST_VIDEO_MAX_SIZE=120000;
+    public static final int REPLY_VIDEO_MAX_SIZE=30000;
 
 
     //Requests
@@ -68,6 +70,7 @@ public class Constants {
     public static final String DATA_GIF_FILE="DataGifFile";
     public static final String DATA_TEXT="Text";
     public static final String DATA_DURATION="Duration";
+    public static final String DATA_VIDEO_RECORDING_TYPE="DataVideoRecordingType";
 
 
     //Types
@@ -87,5 +90,8 @@ public class Constants {
 
     public static final int TYPE_FRIENDS_FACEBOOK=1;
     public static final int TYPE_FRIENDS_CONTACTS=2;
+
+    public static final int TYPE_POST_VIDEO_RECORDING=0;
+    public static final int TYPE_REPLY_VIDEO_RECORDING=1;
 
 }

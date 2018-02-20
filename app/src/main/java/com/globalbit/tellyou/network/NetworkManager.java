@@ -304,8 +304,8 @@ public class NetworkManager {
         call.enqueue(callback);
     }
 
-    public void createComment(IBaseNetworkResponseListener<CommentResponse> listener, String postId, CreateEditCommentRequest request) {
-        Call<CommentResponse> call=mIRetrofitApiInterface.createComment(postId, request);
+    public void createComment(IBaseNetworkResponseListener<CommentResponse> listener, String postId, MultipartBody.Part video, MultipartBody.Part thumbnail, RequestBody duration) {
+        Call<CommentResponse> call=mIRetrofitApiInterface.createComment(postId, video, thumbnail, duration);
         CommentNetworkCallback callback=new CommentNetworkCallback(listener, Enums.RequestType.GetComments);
         call.enqueue(callback);
     }
