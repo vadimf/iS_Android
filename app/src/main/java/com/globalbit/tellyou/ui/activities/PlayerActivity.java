@@ -13,19 +13,23 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.globalbit.androidutils.CollectionUtils;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityPlayerBinding;
 import com.globalbit.tellyou.model.BasePostComment;
+import com.globalbit.tellyou.model.Post;
 import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
+import com.globalbit.tellyou.network.responses.PostsResponse;
 import com.globalbit.tellyou.ui.interfaces.IGestureEventsListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -61,6 +65,11 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     private MediaPlayer mMediaPlayer=null;
     private boolean mIsResumedActivity=false;
     private int mCurrentPosition=0;
+    private int mPostIndex=0;
+    private int mPage=1;
+    private ArrayList<BasePostComment> mPosts;
+    private User mCurrentUser=null;
+    private boolean mLoadMore=true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,7 +83,13 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
             }
         });
         mUser=SharedPrefsUtils.getUserDetails();
-        mPost=getIntent().getParcelableExtra(Constants.DATA_POST);
+        mPosts=getIntent().getParcelableArrayListExtra(Constants.DATA_POSTS);
+        mPostIndex=getIntent().getIntExtra(Constants.DATA_INDEX,0);
+        mPage=getIntent().getIntExtra(Constants.DATA_PAGE, 1);
+        mCurrentUser=getIntent().getParcelableExtra(Constants.DATA_USER);
+        if(!CollectionUtils.isEmpty(mPosts)&&mPostIndex<mPosts.size()) {
+            mPost=mPosts.get(mPostIndex);
+        }
         if(mPost!=null) {
             mBinding.imgViewCancel.setOnClickListener(this);
             mBinding.layoutPlayerActions.frmLayoutMenu.setOnClickListener(this);
@@ -82,7 +97,6 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
             mBinding.layoutPlayerActions.frmLayoutComments.setOnClickListener(this);
             mBinding.layoutPlayerActions.frmLayoutShare.setOnClickListener(this);
             mBinding.layoutVideoInformation.btnAction.setOnClickListener(this);
-            mBinding.gestureView.setGesterEventsListener(this, mPost.getVideo().getDuration());
             initiatePostInformation();
         }
         else {
@@ -94,6 +108,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 
     private void initiatePostInformation() {
         if(mPost!=null) {
+            mBinding.gestureView.setGesterEventsListener(this, mPost.getVideo().getDuration());
             mBinding.txtViewViews.setText(String.format(Locale.getDefault(), "%d", mPost.getViews()));
             if(mPost.getComments()>0) {
                 mBinding.layoutPlayerActions.txtViewComments.setText(String.format(Locale.getDefault(), "%d", mPost.getComments()));
@@ -132,6 +147,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
             stopSeekbarUpdate();
             mBinding.progressBarPortrait.setMax(mPost.getVideo().getDuration()*1000);
             mBinding.progressBarPortrait.setProgress(0);
+            mBinding.layoutVideoMenu.lnrLayoutVideoMenu.setVisibility(View.GONE);
             mBinding.layoutVideoInformation.lnrLayoutVideoInformation.setVisibility(View.VISIBLE);
             mTimer=new CountDownTimer(HIDE_DETAILS_THRESHOLD, 1000) {
                 @Override
@@ -156,22 +172,24 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                         mMediaPlayer.seekTo(mCurrentPosition);
                         mIsResumedActivity=false;
                     }
+                    else {
+                        NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
+                            @Override
+                            public void onSuccess(BaseResponse response) {
+                                mPost.setViews(mPost.getViews()+1);
+                            }
+
+                            @Override
+                            public void onError(int errorCode, String errorMessage) {
+
+                            }
+                        },mPost.getId());
+                    }
                     Log.i(TAG, "onPrepared: ");
                 }
             });
             mIsStarted=true;
             mBinding.videoViewPlayer.start();
-            NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
-                @Override
-                public void onSuccess(BaseResponse response) {
-
-                }
-
-                @Override
-                public void onError(int errorCode, String errorMessage) {
-
-                }
-            },mPost.getId());
             scheduleSeekbarUpdate();
             mBinding.videoViewPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -181,6 +199,9 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                     mBinding.progressBarPortrait.setProgress(mPost.getVideo().getDuration()*1000);
                     if(mTimer!=null) {
                         mTimer.cancel();
+                    }
+                    if(SharedPrefsUtils.isAutoplayNextVideo()) {
+                        onSwipeTop();
                     }
                 }
             });
@@ -192,7 +213,66 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                     return true;
                 }
             });
+            loadItems();
         }
+    }
+
+    private void loadItems() {
+        if(mLoadMore&&!CollectionUtils.isEmpty(mPosts)&&(mPosts.size()-mPostIndex)<5) {
+            mPage++;
+            if(mCurrentUser==null) {
+                NetworkManager.getInstance().getFeedPosts(new IBaseNetworkResponseListener<PostsResponse>() {
+                    @Override
+                    public void onSuccess(PostsResponse response) {
+                        addItems(response.getPosts());
+                    }
+
+                    @Override
+                    public void onError(int errorCode, String errorMessage) {
+                        mPage--;
+                    }
+                }, mPage);
+            }
+            else {
+                if(mCurrentUser.getUsername().equals(mUser.getUsername())) {
+                    NetworkManager.getInstance().getMyPosts(new IBaseNetworkResponseListener<PostsResponse>() {
+                        @Override
+                        public void onSuccess(PostsResponse response) {
+                            addItems(response.getPosts());
+                        }
+
+                        @Override
+                        public void onError(int errorCode, String errorMessage) {
+                            mPage--;
+                        }
+                    }, mPage);
+                }
+                else {
+                    NetworkManager.getInstance().getUserPosts(new IBaseNetworkResponseListener<PostsResponse>() {
+                        @Override
+                        public void onSuccess(PostsResponse response) {
+                            addItems(response.getPosts());
+                        }
+
+                        @Override
+                        public void onError(int errorCode, String errorMessage) {
+                            mPage--;
+                        }
+                    }, mCurrentUser.getUsername(), mPage);
+                }
+            }
+        }
+    }
+
+    private void addItems(ArrayList<Post> posts) {
+        if(posts.size()==0) {
+            mPage--;
+            mLoadMore=false;
+        }
+        if(mPosts==null) {
+            mPosts=new ArrayList<>();
+        }
+        mPosts.addAll(posts);
     }
 
 
@@ -384,12 +464,24 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onSwipeBottom() {
-
+        if(!CollectionUtils.isEmpty(mPosts)&&mPostIndex>0) {
+            cancel();
+            mPostIndex--;
+            Log.i(TAG, "onSwipeBottom: "+mPostIndex);
+            mPost=mPosts.get(mPostIndex);
+            initiatePostInformation();
+        }
     }
 
     @Override
     public void onSwipeTop() {
-
+        if(!CollectionUtils.isEmpty(mPosts)&&mPostIndex<(mPosts.size()-1)) {
+            cancel();
+            mPostIndex++;
+            Log.i(TAG, "onSwipeTop: "+mPostIndex);
+            mPost=mPosts.get(mPostIndex);
+            initiatePostInformation();
+        }
     }
 
     @Override

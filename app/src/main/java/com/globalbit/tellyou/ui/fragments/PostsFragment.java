@@ -294,7 +294,12 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
     @Override
     public void onVideoPayer(Post post, int position) {
         Intent intent=new Intent(getActivity(), PlayerActivity.class);
-        intent.putExtra(Constants.DATA_POST, post);
+        intent.putExtra(Constants.DATA_POSTS, mAdapter.getItems());
+        intent.putExtra(Constants.DATA_INDEX, position);
+        intent.putExtra(Constants.DATA_PAGE, mPage);
+        if(mFeedType==Constants.TYPE_FEED_USER) {
+            intent.putExtra(Constants.DATA_USER, mUser);
+        }
         startActivityForResult(intent, Constants.REQUEST_VIDEO_PLAYER);
     }
 

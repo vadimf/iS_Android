@@ -44,11 +44,11 @@ public class GestureListener implements GestureDetector.OnGestureListener {
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        Log.i(TAG, "Scroll "+v+","+v1);
+        //Log.i(TAG, "Scroll "+v+","+v1);
         float speed=Math.abs(v)*mTimeMultiplier;
         float deltaY = motionEvent1.getY() - motionEvent.getY();
         float deltaX = motionEvent1.getX() - motionEvent.getX();
-        Log.i(TAG, "Delta X "+deltaX);
+        //Log.i(TAG, "Delta X "+deltaX);
 
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
@@ -63,9 +63,9 @@ public class GestureListener implements GestureDetector.OnGestureListener {
             if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
                 mListener.onVerticalScroll(motionEvent1, v1, (int)speed);
                 if (v1 < 0) {
-                    Log.i(TAG, "Slide down");
+                    //Log.i(TAG, "Slide down");
                 } else {
-                    Log.i(TAG, "Slide up");
+                    //Log.i(TAG, "Slide up");
                 }
             }
         }
@@ -79,7 +79,7 @@ public class GestureListener implements GestureDetector.OnGestureListener {
 
     @Override
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        Log.i(TAG, "Fling");
+        //Log.i(TAG, "Fling");
         boolean result = false;
         try {
             float diffY = motionEvent1.getY() - motionEvent.getY();

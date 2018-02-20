@@ -95,7 +95,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                     if(charSequence.length()>0) {
                         if(charSequence.length()>=CustomApplication.getSystemPreference().getValidations().getUsername().getMinLength()
                                 &&charSequence.length()<=CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength()) {
-                            if(mUser!=null&&!StringUtils.isEmpty(mUser.getUsername())&&!mUser.getUsername().equals(mBinding.inputUsername.getText().toString())) {
+                            if(mUser!=null/*&&!StringUtils.isEmpty(mUser.getUsername())*/&&!mUser.getUsername().equals(mBinding.inputUsername.getText().toString())) {
                                 NetworkManager.getInstance().usernameExist(new IBaseNetworkResponseListener<UsernameExistResponse>() {
                                     @Override
                                     public void onSuccess(UsernameExistResponse response) {

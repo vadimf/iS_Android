@@ -56,6 +56,9 @@ public class Constants {
     public static final String DATA_POST_ID="DataPostId";
     public static final String DATA_POST_COMMENTS_COUNT="DataPostCommentsCount";
     public static final String DATA_POST="DataPost";
+    public static final String DATA_POSTS="DataPosts";
+    public static final String DATA_INDEX="DataIndex";
+    public static final String DATA_PAGE="DataPage";
     public static final String DATA_FOLLOW="DataFollow";
     public static final String DATA_PHONE="DataPhone";
     public static final String DATA_FRIENDS_TYPE="DataFriendsType";
