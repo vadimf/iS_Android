@@ -45,27 +45,29 @@ public class GestureListener implements GestureDetector.OnGestureListener {
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
         //Log.i(TAG, "Scroll "+v+","+v1);
-        float speed=Math.abs(v)*mTimeMultiplier;
-        float deltaY = motionEvent1.getY() - motionEvent.getY();
-        float deltaX = motionEvent1.getX() - motionEvent.getX();
-        //Log.i(TAG, "Delta X "+deltaX);
+        if(motionEvent!=null&&motionEvent1!=null) {
+            float speed=Math.abs(v)*mTimeMultiplier;
+            float deltaY=motionEvent1.getY()-motionEvent.getY();
+            float deltaX=motionEvent1.getX()-motionEvent.getX();
+            //Log.i(TAG, "Delta X "+deltaX);
 
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
-                mListener.onHorizontalScroll(motionEvent1, v,(int)speed);
-                if (v < 0) {
-                    Log.i(TAG, "Slide right");
-                } else {
-                    Log.i(TAG, "Slide left");
+            if(Math.abs(deltaX)>Math.abs(deltaY)) {
+                if(Math.abs(deltaX)>SWIPE_THRESHOLD) {
+                    mListener.onHorizontalScroll(motionEvent1, v, (int) speed);
+                    if(v<0) {
+                        Log.i(TAG, "Slide right");
+                    } else {
+                        Log.i(TAG, "Slide left");
+                    }
                 }
-            }
-        } else {
-            if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
-                mListener.onVerticalScroll(motionEvent1, v1, (int)speed);
-                if (v1 < 0) {
-                    //Log.i(TAG, "Slide down");
-                } else {
-                    //Log.i(TAG, "Slide up");
+            } else {
+                if(Math.abs(deltaY)>SWIPE_THRESHOLD) {
+                    mListener.onVerticalScroll(motionEvent1, v1, (int) speed);
+                    if(v1<0) {
+                        //Log.i(TAG, "Slide down");
+                    } else {
+                        //Log.i(TAG, "Slide up");
+                    }
                 }
             }
         }

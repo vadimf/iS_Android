@@ -1,5 +1,6 @@
 package com.globalbit.tellyou.ui.activities;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -97,6 +99,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
             mBinding.layoutPlayerActions.frmLayoutComments.setOnClickListener(this);
             mBinding.layoutPlayerActions.frmLayoutShare.setOnClickListener(this);
             mBinding.layoutVideoInformation.btnAction.setOnClickListener(this);
+            mBinding.layoutVideoMenu.txtViewReport.setOnClickListener(this);
             initiatePostInformation();
         }
         else {
@@ -283,7 +286,6 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                 onBackPressed();
                 break;
             case R.id.frmLayoutMenu:
-                //TODO show menu;
                 if(mBinding.layoutVideoMenu.lnrLayoutVideoMenu.getVisibility()==View.VISIBLE) {
                     mBinding.layoutVideoMenu.lnrLayoutVideoMenu.setVisibility(View.GONE);
                 }
@@ -346,7 +348,19 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 
                 }
                 break;
-
+            case R.id.txtViewReport:
+                if(mPost!=null) {
+                    if(mPost.getUser()!=null&&mPost.getUser().getUsername().equals(mUser.getUsername())) {
+                        showMessage(getString(R.string.error), getString(R.string.error_reporting_your_video));
+                    }
+                    else {
+                        mBinding.layoutVideoMenu.lnrLayoutVideoMenu.setVisibility(View.GONE);
+                        Intent intent=new Intent(this, ReportActivity.class);
+                        intent.putExtra(Constants.DATA_POST_ID, mPost.getId());
+                        startActivityForResult(intent, Constants.REQUEST_REPORT);
+                    }
+                }
+                break;
         }
     }
 
@@ -360,6 +374,17 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         cancel();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==Constants.REQUEST_REPORT) {
+            if(resultCode==RESULT_OK) {
+                Snackbar snackbar=Snackbar.make(mBinding.layoutPlayerActions.lnrLayoutPlayerActions, getString(R.string.snack_bar_report_submitted), Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
+        }
     }
 
     private void cancel() {

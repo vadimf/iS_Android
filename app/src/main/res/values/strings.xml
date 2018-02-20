@@ -211,5 +211,13 @@
     <string name="dialog_video_uploading">Your video will be uploaded to the server</string>
     <string name="label_autoplay">Autoplay next video</string>
     <string name="label_report_video">Report this video</string>
+    <string name="title_report_video">Report this video</string>
+    <string name="label_reporting_reason">Choose a reason for reporting this video</string>
+    <string name="report_reason_spam">It\'s spam</string>
+    <string name="report_reason_inappropriate">It\'s inappropriate</string>
+    <string name="report_reason_not_like">I don\'t like this</string>
+    <string name="btn_report">Report</string>
+    <string name="snack_bar_report_submitted">Your report has been submitted</string>
+    <string name="error_reporting_your_video">Your cannot report your own video!</string>
 
 </resources>
