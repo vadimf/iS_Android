@@ -46,6 +46,7 @@
         <activity android:name=".ui.activities.PlayerActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.ReportActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.ReplyActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activities.VideoPlayerActivity" android:screenOrientation="portrait"/>
         <service android:name=".service.UploadService"/>
         <meta-data
             android:name="io.fabric.ApiKey"

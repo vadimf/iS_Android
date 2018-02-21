@@ -30,6 +30,7 @@ import com.globalbit.tellyou.network.responses.PostsResponse;
 import com.globalbit.tellyou.ui.activities.DiscoverActivity;
 import com.globalbit.tellyou.ui.activities.MainActivity;
 import com.globalbit.tellyou.ui.activities.PlayerActivity;
+import com.globalbit.tellyou.ui.activities.VideoPlayerActivity;
 import com.globalbit.tellyou.ui.activities.VideoRecordingActivity;
 import com.globalbit.tellyou.ui.adapters.PostsAdapter;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
@@ -293,13 +294,13 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
 
     @Override
     public void onVideoPayer(Post post, int position) {
-        Intent intent=new Intent(getActivity(), PlayerActivity.class);
+        Intent intent=new Intent(getActivity(), VideoPlayerActivity.class);
         intent.putExtra(Constants.DATA_POSTS, mAdapter.getItems());
         intent.putExtra(Constants.DATA_INDEX, position);
         intent.putExtra(Constants.DATA_PAGE, mPage);
-        if(mFeedType==Constants.TYPE_FEED_USER) {
+        /*if(mFeedType==Constants.TYPE_FEED_USER) {
             intent.putExtra(Constants.DATA_USER, mUser);
-        }
+        }*/
         startActivityForResult(intent, Constants.REQUEST_VIDEO_PLAYER);
     }
 

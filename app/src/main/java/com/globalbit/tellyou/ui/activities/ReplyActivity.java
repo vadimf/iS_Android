@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -53,6 +56,8 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mBinding.recyclerViewReplies.setLayoutManager(layoutManager);
         mBinding.recyclerViewReplies.setAdapter(mAdapter);
+        SnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(mBinding.recyclerViewReplies);
         mBinding.recyclerViewReplies.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

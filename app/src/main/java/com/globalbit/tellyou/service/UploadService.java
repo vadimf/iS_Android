@@ -54,6 +54,7 @@ public class UploadService extends Service {
                     MediaType.parse("image/jpg"),
                     gif
             );
+            Notification notification;
             switch(videoRecordingType) {
                 case Constants.TYPE_POST_VIDEO_RECORDING:
                     NetworkManager.getInstance().createPost(new IBaseNetworkResponseListener<PostResponse>() {
@@ -107,6 +108,15 @@ public class UploadService extends Service {
                             MultipartBody.Part.createFormData("thumbnail", gif.getName(), requestGif),
                             RequestBody.create(okhttp3.MultipartBody.FORM, text),
                             RequestBody.create(MultipartBody.FORM, String.valueOf(duration)));
+                    notification =
+                            new NotificationCompat.Builder(this, "UploadChannel")
+                                    .setContentTitle("Uploading")
+                                    .setContentText("Your video is uploading")
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentIntent(null)
+                                    .build();
+
+                    startForeground(1, notification);
                     break;
                 case Constants.TYPE_REPLY_VIDEO_RECORDING:
                     NetworkManager.getInstance().createComment(new IBaseNetworkResponseListener<CommentResponse>() {
@@ -159,20 +169,18 @@ public class UploadService extends Service {
                         },postId , MultipartBody.Part.createFormData("video", file.getName(), requestFile),
                         MultipartBody.Part.createFormData("thumbnail", gif.getName(), requestGif),
                         RequestBody.create(MultipartBody.FORM, String.valueOf(duration)));
+                    notification =
+                            new NotificationCompat.Builder(this, "UploadChannel")
+                                    .setContentTitle("Uploading")
+                                    .setContentText("Your video is uploading")
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentIntent(null)
+                                    .build();
+
+                    startForeground(1, notification);
                     break;
             }
 
-
-
-            Notification notification =
-                    new NotificationCompat.Builder(this, "UploadChannel")
-                            .setContentTitle("Uploading")
-                            .setContentText("Your video is uploading")
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentIntent(null)
-                            .build();
-
-            startForeground(1, notification);
         }
 
         return START_STICKY;

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.text.format.DateUtils;
@@ -27,16 +28,50 @@ import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.network.responses.PostsResponse;
+import com.globalbit.tellyou.ui.events.NextVideoEvent;
 import com.globalbit.tellyou.ui.interfaces.IGestureEventsListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.metadata.Metadata;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.text.Cue;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import im.ene.toro.ToroPlayer;
+
+import im.ene.toro.exoplayer.Playable;
+import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
+import im.ene.toro.exoplayer.ToroExo;
+import im.ene.toro.helper.ToroPlayerHelper;
+import im.ene.toro.media.PlaybackInfo;
+import im.ene.toro.widget.Container;
 
 /**
  * Created by alex on 18/02/2018.
@@ -48,7 +83,8 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 1000;
     private static final long HIDE_DETAILS_THRESHOLD=3000;
     private ActivityPlayerBinding mBinding;
-    private BasePostComment mPost;
+    private Post mPost;
+    private SimpleExoPlayer mPlayer;
     private User mUser;
     private CountDownTimer mTimer;
     private ScheduledFuture<?> mScheduleFuture;
@@ -69,7 +105,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     private int mCurrentPosition=0;
     private int mPostIndex=0;
     private int mPage=1;
-    private ArrayList<BasePostComment> mPosts;
+    private ArrayList<Post> mPosts;
     private User mCurrentUser=null;
     private boolean mLoadMore=true;
 
@@ -77,6 +113,13 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding=DataBindingUtil.setContentView(this, R.layout.activity_player);
+        Handler mainHandler = new Handler();
+        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        TrackSelection.Factory videoTrackSelectionFactory =
+                new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        TrackSelector trackSelector =
+                new DefaultTrackSelector(videoTrackSelectionFactory);
+        mPlayer=ExoPlayerFactory.newSimpleInstance(this,trackSelector);
         mBinding.layoutVideoMenu.switchAutoplay.setChecked(SharedPrefsUtils.isAutoplayNextVideo());
         mBinding.layoutVideoMenu.switchAutoplay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -165,7 +208,104 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
             };
             mTimer.start();
             Uri uri=Uri.parse(mPost.getVideo().getUrl());
-            mBinding.videoViewPlayer.setVideoURI(uri);
+
+            mBinding.videoViewPlayer.setPlayer(mPlayer);
+            // Measures bandwidth during playback. Can be null if not required.
+            DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+            // Produces DataSource instances through which media data is loaded.
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this,
+                    Util.getUserAgent(this, "yourApplicationName"), bandwidthMeter);
+            // This is the MediaSource representing the media to be played.
+            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                    .createMediaSource(uri);
+            // Prepare the player with the source.
+            mPlayer.prepare(videoSource);
+            mPlayer.setPlayWhenReady(true);
+            scheduleSeekbarUpdate();
+            NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
+                @Override
+                public void onSuccess(BaseResponse response) {
+                    mPost.setViews(mPost.getViews()+1);
+                }
+
+                @Override
+                public void onError(int errorCode, String errorMessage) {
+
+                }
+            },mPost.getId());
+            mBinding.videoViewPlayer.getPlayer().addListener(new Playable.EventListener() {
+                @Override
+                public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+                }
+
+                @Override
+                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+                }
+
+                @Override
+                public void onLoadingChanged(boolean isLoading) {
+
+                }
+
+                @Override
+                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                    Log.i(TAG, "onPlayerStateChanged: "+playbackState);
+                }
+
+                @Override
+                public void onRepeatModeChanged(int repeatMode) {
+
+                }
+
+                @Override
+                public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+                }
+
+                @Override
+                public void onPlayerError(ExoPlaybackException error) {
+
+                }
+
+                @Override
+                public void onPositionDiscontinuity(int reason) {
+
+                }
+
+                @Override
+                public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+                }
+
+                @Override
+                public void onSeekProcessed() {
+
+                }
+
+                @Override
+                public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+
+                }
+
+                @Override
+                public void onRenderedFirstFrame() {
+
+                }
+
+                @Override
+                public void onMetadata(Metadata metadata) {
+
+                }
+
+                @Override
+                public void onCues(List<Cue> cues) {
+
+                }
+            });
+            //Uri uri=Uri.parse(mPost.getVideo().getUrl());
+            /*mBinding.videoViewPlayer.setVideoURI(uri);
             mBinding.videoViewPlayer.requestFocus();
             mBinding.videoViewPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -190,9 +330,9 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                     }
                     Log.i(TAG, "onPrepared: ");
                 }
-            });
-            mIsStarted=true;
-            mBinding.videoViewPlayer.start();
+            });*/
+            //mIsStarted=true;
+            /*mBinding.videoViewPlayer.start();
             scheduleSeekbarUpdate();
             mBinding.videoViewPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -215,7 +355,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                     initiatePostInformation();
                     return true;
                 }
-            });
+            });*/
             loadItems();
         }
     }
@@ -379,6 +519,10 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         cancel();
+        if (mPlayer != null) {
+            mPlayer.release();
+            mPlayer = null;
+        }
     }
 
     @Override
@@ -396,7 +540,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void cancel() {
-        mBinding.videoViewPlayer.stopPlayback();
+        //mBinding.videoViewPlayer.stopPlayback();
         stopSeekbarUpdate();
         if(mTimer!=null) {
             mTimer.cancel();
@@ -410,7 +554,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     private void updateProgress() {
         //Log.i(TAG, "updateProgress: "+mElapsedTime);
         mBinding.progressBarPortrait.setProgress(mElapsedTime);
-        mElapsedTime+=1000;
+        mElapsedTime+=PROGRESS_UPDATE_INTERNAL;
     }
 
     private void stopSeekbarUpdate() {
@@ -437,7 +581,18 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onTap() {
-        if(mIsPlaying) {
+        /*if(mPlayer!=null) {
+            if(mPlayer.isPlaying()) {
+                mPlayer.setPlayWhenReady(false);
+                mPlayer.pause();
+                stopSeekbarUpdate();
+            }
+            else {
+                playerHelper.play();
+                scheduleSeekbarUpdate();
+            }
+        }*/
+        /*if(mIsPlaying) {
             if(mMediaPlayer!=null) {
                 mMediaPlayer.pause();
             }
@@ -453,28 +608,28 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                 mIsStarted=true;
             }
             scheduleSeekbarUpdate();
-        }
+        }*/
     }
 
     @Override
     public void onHorizontalScroll(MotionEvent event, float delta, int speed) {
         if(delta<0) {
-            int newPosition=mBinding.videoViewPlayer.getCurrentPosition()+speed;
-            if(newPosition>mBinding.videoViewPlayer.getDuration()) {
-                newPosition=mBinding.videoViewPlayer.getDuration();
+            int newPosition=(int)mBinding.videoViewPlayer.getPlayer().getCurrentPosition()+speed;
+            if(newPosition>mBinding.videoViewPlayer.getPlayer().getDuration()) {
+                newPosition=(int)mBinding.videoViewPlayer.getPlayer().getDuration();
             }
             Log.i(TAG, "onHorizontalScroll: "+newPosition);
-            mBinding.videoViewPlayer.seekTo(newPosition);
+            mBinding.videoViewPlayer.getPlayer().seekTo(newPosition);
             mElapsedTime=newPosition;
             mBinding.progressBarPortrait.setProgress(newPosition);
         }
         else {
-            int newPosition=mBinding.videoViewPlayer.getCurrentPosition()-speed;
+            int newPosition=(int)mBinding.videoViewPlayer.getPlayer().getCurrentPosition()-speed;
             if(newPosition<0) {
                 newPosition=0;
             }
             Log.i(TAG, "onHorizontalScroll: "+newPosition);
-            mBinding.videoViewPlayer.seekTo(newPosition);
+            mBinding.videoViewPlayer.getPlayer().seekTo(newPosition);
             mElapsedTime=newPosition;
             mBinding.progressBarPortrait.setProgress(newPosition);
         }
@@ -520,7 +675,11 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onPause() {
         super.onPause();
-        if(mIsPlaying) {
+        /*if (playerHelper != null&&playerHelper.isPlaying()) {
+            playerHelper.pause();
+        }*/
+        stopSeekbarUpdate();
+        /*if(mIsPlaying) {
             stopSeekbarUpdate();
             if(mMediaPlayer!=null) {
                 mMediaPlayer.pause();
@@ -529,11 +688,12 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
         mIsResumedActivity=true;
         if(mMediaPlayer!=null) {
             mCurrentPosition=mMediaPlayer.getCurrentPosition();
-        }
+        }*/
     }
 
     @Override
     protected void onResume() {
         super.onResume();
     }
+
 }
