@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -67,23 +67,15 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="20dp">
-            <VideoView
+            <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                android:id="@+id/videoViewPlayer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
-                android:id="@+id/videoView"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imgViewPlay"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_play_circle_filled_black_24dp"/>
-            <android.support.v7.widget.AppCompatSeekBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_margin="10dp"
-                android:id="@+id/seekBar"/>
+                app:resize_mode="fill"
+                app:surface_type="texture_view"
+                app:show_timeout="0"
+                app:controller_layout_id="@layout/custom_playback_control"/>
         </FrameLayout>
 
     </LinearLayout>

@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.MediaController;
 import android.widget.SeekBar;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -29,10 +30,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+
+import im.ene.toro.exoplayer.Playable;
+import im.ene.toro.exoplayer.ToroExo;
 
 /**
  * Created by alex on 14/02/2018.
@@ -44,21 +44,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
     private String mVideoPath;
     private int mVideoRecordingType;
     private String mPostId;
-    private boolean mIsPlaying=false;
-    private boolean mIsStarted=false;
-    private int mElapsedTime=0;
-    private static final long PROGRESS_UPDATE_INTERNAL = 1000;
-    private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 1000;
-    private ScheduledFuture<?> mScheduleFuture;
-    private final Runnable mUpdateProgressTask = new Runnable() {
-        @Override
-        public void run() {
-            updateProgress();
-        }
-    };
-    private final ScheduledExecutorService mExecutorService =
-            Executors.newSingleThreadScheduledExecutor();
-    private final Handler mHandler = new Handler();
+    private Playable playerHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,52 +62,14 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
         }
         mBinding.btnTellIt.setOnClickListener(this);
         mBinding.btnBack.setOnClickListener(this);
-        mBinding.imgViewPlay.setOnClickListener(this);
-        //mBinding.frmLayoutController.setOnClickListener(this);
         mVideoPath=getIntent().getStringExtra(Constants.DATA_VIDEO_FILE);
         if(!StringUtils.isEmpty(mVideoPath)) {
             File file=new File(mVideoPath);
             Uri uri=Uri.fromFile(file);
-            mBinding.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-                    Log.i(TAG, "onPrepared: "+mediaPlayer.getDuration());
-                    mBinding.seekBar.setMax(mediaPlayer.getDuration());
-                }
-            });
-            mBinding.videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    stopSeekbarUpdate();
-                    mIsPlaying=false;
-                    mIsStarted=false;
-                }
-            });
-            mBinding.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                    mBinding.videoView.seekTo(i);
-                    mElapsedTime=i;
-                    Log.i(TAG, "onProgressChanged: "+i);
-                    if(!mIsPlaying) {
-                        mBinding.imgViewPlay.setVisibility(View.VISIBLE);
-                    }
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-
-                }
-            });
-            mBinding.videoView.setVideoURI(uri);
-            mBinding.videoView.seekTo(100);
-
-            //mBinding.videoView.setZOrderOnTop(true);
+            playerHelper = ToroExo.with(this).getDefaultCreator().createPlayable(uri);
+            playerHelper.prepare();
+            playerHelper.setPlayerView(mBinding.videoViewPlayer);
+            mBinding.videoViewPlayer.setOnClickListener(this);
         }
     }
 
@@ -154,7 +102,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                     intent.putExtra(Constants.DATA_VIDEO_FILE, file);
                     intent.putExtra(Constants.DATA_GIF_FILE, gifFile);
                     intent.putExtra(Constants.DATA_TEXT, mBinding.inputTitle.getText().toString());
-                    intent.putExtra(Constants.DATA_DURATION, mBinding.seekBar.getMax()/1000);
+                    intent.putExtra(Constants.DATA_DURATION, mBinding.videoViewPlayer.getPlayer().getDuration()/1000);
                     intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, mVideoRecordingType);
                     intent.putExtra(Constants.DATA_POST_ID, mPostId);
                     startService(intent);
@@ -174,49 +122,9 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
             case R.id.btnBack:
                 onBackPressed();
                 break;
-            case R.id.imgViewPlay:
-                if(mIsStarted) {
-                    mBinding.videoView.resume();
-                }
-                else {
-                    mBinding.videoView.start();
-                    mIsStarted=true;
-                    scheduleSeekbarUpdate();
-                }
-                mBinding.videoView.start();
-                mIsStarted=true;
-                scheduleSeekbarUpdate();
-                mIsPlaying=true;
-                mBinding.imgViewPlay.setVisibility(View.GONE);
-                break;
         }
     }
 
-    private void updateProgress() {
-        Log.i(TAG, "updateProgress: "+mElapsedTime);
-        mBinding.seekBar.setProgress(mElapsedTime);
-        mElapsedTime+=1000;
-    }
-
-    private void stopSeekbarUpdate() {
-        if (mScheduleFuture != null) {
-            mScheduleFuture.cancel(false);
-        }
-    }
-
-    private void scheduleSeekbarUpdate() {
-        stopSeekbarUpdate();
-        if (!mExecutorService.isShutdown()) {
-            mScheduleFuture = mExecutorService.scheduleAtFixedRate(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            mHandler.post(mUpdateProgressTask);
-                        }
-                    }, PROGRESS_UPDATE_INITIAL_INTERVAL,
-                    PROGRESS_UPDATE_INTERNAL, TimeUnit.MILLISECONDS);
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -226,7 +134,6 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        stopSeekbarUpdate();
                         File file=new File(mVideoPath);
                         if(file.exists()) {
                             if(file.delete()) {
@@ -243,5 +150,24 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                 })
                 .negativeText(R.string.btn_cancel)
                 .show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        playerHelper.setPlayerView(null);
+        playerHelper.release();
+        playerHelper = null;
+    }
+
+    @Override protected void onStop() {
+        super.onStop();
+        playerHelper.pause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        playerHelper.play();
     }
 }

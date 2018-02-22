@@ -59,6 +59,7 @@ public class GestureListener implements GestureDetector.OnGestureListener {
                     } else {
                         Log.i(TAG, "Slide left");
                     }
+                    return true;
                 }
             } else {
                 if(Math.abs(deltaY)>SWIPE_THRESHOLD) {

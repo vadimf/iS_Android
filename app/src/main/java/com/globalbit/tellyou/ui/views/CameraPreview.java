@@ -21,17 +21,17 @@ import java.util.List;
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
-    private boolean mIsFrontCamera;
+    private Camera.CameraInfo mCameraInfo;
     private static final String CAMERA_PARAM_ORIENTATION = "orientation";
     private static final String CAMERA_PARAM_LANDSCAPE = "landscape";
     private static final String CAMERA_PARAM_PORTRAIT = "portrait";
     protected Camera.Size mPreviewSize;
     private int mAngle;
 
-    public CameraPreview(Context context, Camera camera, boolean isFrontCamera) {
+    public CameraPreview(Context context, Camera camera, Camera.CameraInfo cameraInfo) {
         super(context);
         mCamera=camera;
-        mIsFrontCamera=isFrontCamera;
+        mCameraInfo=cameraInfo;
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -91,62 +91,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     protected void configureCameraParameters(Camera.Parameters cameraParams, boolean portrait, int i1, int i2) {
-        int angle;
-        Display display = ((Activity)getContext()).getWindowManager().getDefaultDisplay();
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        display.getMetrics(displaymetrics);
-        //int width=displaymetrics.widthPixels;
-        //int height=displaymetrics.heightPixels;
-        //int squareSize =-1;
-        switch (display.getRotation()) {
-            case Surface.ROTATION_0: // This is display orientation
-                Log.i("CameraPreview", "ROTATION_0");
-                if(mIsFrontCamera) {
-                    angle=270;
-                }
-                else {
-                    angle=90; // This is camera orientation
-                }
-                break;
-            case Surface.ROTATION_90:
-                Log.i("CameraPreview", "ROTATION_90");
-                if(mIsFrontCamera) {
-                    angle=180;
-                }
-                else {
-                    angle=0; // This is camera orientation
-                }
-                break;
-            case Surface.ROTATION_180:
-                Log.i("CameraPreview", "ROTATION_180");
-                if(mIsFrontCamera) {
-                    angle=90;
-                }
-                else {
-                    angle=270; // This is camera orientation
-                }
-                break;
-            case Surface.ROTATION_270:
-                Log.i("CameraPreview", "ROTATION_270");
-                if(mIsFrontCamera) {
-                    angle=0;
-                }
-                else {
-                    angle=180; // This is camera orientation
-                }
-                break;
-            default:
-                angle=90;
-                break;
-        }
-        /*if(width<height) {
-            squareSize=width;
-        }
-        else {
-            squareSize=height;
-        }*/
         //Log.v("CameraPreview", "angle: " +getAngle()+" "+squareSize);
-        mCamera.setDisplayOrientation(angle);
+        mCamera.setDisplayOrientation(getCorrectCameraOrientation());
 
         List<Camera.Size> allSizes = cameraParams.getSupportedPreviewSizes();
         Camera.Size size = allSizes.get(0); // get top size
@@ -156,10 +102,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 size = allSizes.get(i);
         }
 
-        List<Camera.Size> allSizesVideo = cameraParams.getSupportedPreviewSizes();
-        for (int i = 0; i < allSizesVideo.size(); i++) {
-            //Log.i("CameraPreview", "Preview Actual Size - w: " + allSizesVideo.get(i).width + ", h: " + allSizesVideo.get(i).height);
-        }
 
 //set max Picture Size
         cameraParams.setPictureSize(size.width, size.height);
@@ -168,6 +110,44 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         mCamera.setParameters(cameraParams);
     }
+
+    public int getCorrectCameraOrientation() {
+
+        int rotation = ((Activity)getContext()).getWindowManager().getDefaultDisplay().getRotation();
+        int degrees = 0;
+
+        switch(rotation){
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+
+        }
+
+        int result;
+        Log.i("Test", "Orintation: "+rotation);
+        Log.i("Test", "Camerainfo: "+mCameraInfo.orientation);
+        if(mCameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT){
+            result = (mCameraInfo.orientation + degrees) % 360;
+            result = (360-result)% 360;
+        }else{
+            result = (mCameraInfo.orientation-degrees+360)%360;
+        }
+        Log.i("Test", "getCorrectCameraOrientation: "+result);
+        return result;
+    }
+
 
 
     public boolean isPortrait() {

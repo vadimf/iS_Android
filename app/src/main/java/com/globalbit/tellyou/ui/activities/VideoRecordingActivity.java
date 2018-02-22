@@ -69,6 +69,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
     private int mVideoRecordingType;
     private String mPostId;
     private Camera mCamera;
+    private Camera.CameraInfo mCameraInfo;
     private int mCamerId=-1;
     private CameraPreview mPreview;
     private boolean mIsFrontCamera=false;
@@ -183,19 +184,12 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                         mRecorder.setCamera(mCamera);
                         mRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
                         mRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-                        if(mIsFrontCamera) {
-                            if(mPreview.getAngle()==0) {
-                                mRecorder.setOrientationHint(90);
-                            }
-                            else if(mPreview.getAngle()==180) {
-                                mRecorder.setOrientationHint(270);
-                            }
-                            else {
-                                mRecorder.setOrientationHint(mPreview.getAngle());
-                            }
+                        Log.i(TAG, "onClick: "+mPreview.getAngle());
+                        if(mCameraInfo.facing==Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                            mRecorder.setOrientationHint(mPreview.getAngle()+mCameraInfo.orientation);
                         }
                         else {
-                            mRecorder.setOrientationHint(mPreview.getAngle()+90);
+                            mRecorder.setOrientationHint(mPreview.getAngle()+mCameraInfo.orientation);
                         }
 
                         CamcorderProfile profile = null;
@@ -303,7 +297,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                     catch(Exception ex){}
                 }
                 mCamera=getCameraInstance(mIsFrontCamera);
-                mPreview = new CameraPreview(this, mCamera, mIsFrontCamera);
+                mPreview = new CameraPreview(this, mCamera, mCameraInfo);
                 mBinding.cameraPreview.removeAllViews();
                 mBinding.cameraPreview.addView(mPreview);
                 break;
@@ -316,7 +310,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
         mCamera = getCameraInstance(false);
 
         // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera, mIsFrontCamera);
+        mPreview = new CameraPreview(this, mCamera, mCameraInfo);
         mBinding.cameraPreview.addView(mPreview);
         mRecordingState=Enums.RecordingState.Initial;
         setRecordingState();
@@ -445,22 +439,24 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
     public Camera getCameraInstance(boolean isFront){
         int cameraCount = 0;
         Camera c = null;
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        mCameraInfo = new Camera.CameraInfo();
         cameraCount = Camera.getNumberOfCameras();
         for ( int camIdx = 0; camIdx < cameraCount; camIdx++ ) {
-            Camera.getCameraInfo( camIdx, cameraInfo );
-            if (isFront && cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT  ) {
+            Camera.getCameraInfo( camIdx, mCameraInfo );
+            if (isFront && mCameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT  ) {
                 try {
                     c = Camera.open( camIdx );
                     mCamerId=camIdx;
+                    break;
                 } catch (RuntimeException e) {
                     Log.e(TAG, "Camera failed to open: " + e.getLocalizedMessage());
                 }
             }
-            else if(!isFront&&cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+            else if(!isFront&&mCameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 try {
                     c = Camera.open( camIdx );
                     mCamerId=camIdx;
+                    break;
                 } catch (RuntimeException e) {
                     Log.e(TAG, "Camera failed to open: " + e.getLocalizedMessage());
                 }

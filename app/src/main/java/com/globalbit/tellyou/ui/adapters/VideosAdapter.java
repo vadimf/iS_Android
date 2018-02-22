@@ -1,6 +1,7 @@
 package com.globalbit.tellyou.ui.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.CountDownTimer;
@@ -9,12 +10,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 
 import com.globalbit.androidutils.StringUtils;
@@ -28,6 +32,7 @@ import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.ui.events.NextVideoEvent;
 import com.globalbit.tellyou.ui.interfaces.IGestureEventsListener;
 import com.globalbit.tellyou.ui.interfaces.IVideoListener;
+import com.globalbit.tellyou.utils.CustomLinearLayoutManager;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.squareup.picasso.Picasso;
 
@@ -59,12 +64,19 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
     private Context mContext;
     private IVideoListener mListener;
     private User mUser;
+    private int mImgWidth, mImgHeight;
+    private CustomLinearLayoutManager mLinearLayoutManager;
 
 
-    public VideosAdapter(Context context, IVideoListener listener) {
+    public VideosAdapter(Context context, IVideoListener listener, CustomLinearLayoutManager linearLayoutManager) {
         mContext=context;
         mListener=listener;
+        mLinearLayoutManager=linearLayoutManager;
         mUser=SharedPrefsUtils.getUserDetails();
+        Resources resources = mContext.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        mImgWidth=metrics.widthPixels;
+        mImgHeight=metrics.heightPixels;
     }
 
     public void setItems(ArrayList<Post> items) {
@@ -102,9 +114,25 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         if(mItems!=null) {
             final Post item=mItems.get(position);
             Uri uri=Uri.parse(item.getVideo().getUrl());
+            if(!StringUtils.isEmpty(item.getVideo().getThumbnail())) {
+                holder.mBinding.imgViewPreview.setVisibility(View.VISIBLE);
+                Picasso.with(mContext).load(item.getVideo().getThumbnail()).resize(mImgWidth, mImgHeight).into(holder.mBinding.imgViewPreview);
+            }
+            else {
+                holder.mBinding.imgViewPreview.setVisibility(View.GONE);
+            }
             holder.mMediaUri=uri;
             holder.mPosition=position;
             holder.mPost=item;
+            holder.mBinding.gestureView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
+                        mLinearLayoutManager.setScrollEnabled(true);
+                    }
+                    return false;
+                }
+            });
             holder.mBinding.gestureView.setGesterEventsListener(new IGestureEventsListener() {
                 @Override
                 public void onTap() {
@@ -126,7 +154,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 @Override
                 public void onHorizontalScroll(MotionEvent event, float delta, int speed) {
                     if(holder.wantsToPlay()) {
-
+                        mLinearLayoutManager.setScrollEnabled(false);
                         if(delta<0) {
                             int newPosition=(int)holder.mBinding.videoViewPlayer.getPlayer().getCurrentPosition()+speed;
                             if(newPosition>holder.mBinding.videoViewPlayer.getPlayer().getDuration()) {
@@ -362,6 +390,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 
         @Override
         public void initialize(@NonNull Container container, @Nullable PlaybackInfo playbackInfo) {
+            mBinding.imgViewPreview.setVisibility(View.VISIBLE);
             if (mHelper == null) {
                 mHelper = new SimpleExoPlayerViewHelper(container, this, mMediaUri);
                 NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
@@ -420,6 +449,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 
         @Override
         public void play() {
+            mBinding.imgViewPreview.setVisibility(View.GONE);
             if (mHelper != null) mHelper.play();
             scheduleSeekbarUpdate();
             mTimer.start();

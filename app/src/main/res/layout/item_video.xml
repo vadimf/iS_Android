@@ -12,6 +12,11 @@
             app:resize_mode="fixed_height"
             app:surface_type="texture_view"
             app:use_controller="false"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imgViewPreview"
+            android:visibility="gone"/>
         <com.globalbit.tellyou.ui.views.GestureControllerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

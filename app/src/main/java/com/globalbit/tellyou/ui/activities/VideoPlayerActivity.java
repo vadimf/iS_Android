@@ -25,6 +25,7 @@ import com.globalbit.tellyou.ui.adapters.VideosAdapter;
 import com.globalbit.tellyou.ui.events.FollowingEvent;
 import com.globalbit.tellyou.ui.events.NextVideoEvent;
 import com.globalbit.tellyou.ui.interfaces.IVideoListener;
+import com.globalbit.tellyou.utils.CustomLinearLayoutManager;
 import com.globalbit.tellyou.utils.Enums;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 
@@ -49,6 +50,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     private Pagination mPagination;
     private User mUser;
     private int mIndex;
+    private CustomLinearLayoutManager mLinearLayoutManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,9 +60,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         mIndex=getIntent().getIntExtra(Constants.DATA_INDEX,0);
         mPage=getIntent().getIntExtra(Constants.DATA_PAGE, 1);
         ArrayList<Post> items=getIntent().getParcelableArrayListExtra(Constants.DATA_POSTS);
-        mAdapter=new VideosAdapter(this, this);
-        final LinearLayoutManager layoutManager=new LinearLayoutManager(this);
-        mBinding.recyclerViewVideos.setLayoutManager(layoutManager);
+        final CustomLinearLayoutManager mLinearLayoutManager=new CustomLinearLayoutManager(this);
+        mAdapter=new VideosAdapter(this, this, mLinearLayoutManager);
+        mBinding.recyclerViewVideos.setLayoutManager(mLinearLayoutManager);
         mBinding.recyclerViewVideos.setAdapter(mAdapter);
         mBinding.recyclerViewVideos.setCacheManager(mAdapter);
         SnapHelper snapHelper = new PagerSnapHelper();
@@ -78,9 +80,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 if(dy<0) {
                     return;
                 }
-                visibleItemCount = layoutManager.getChildCount();
-                totalItemCount = layoutManager.getItemCount();
-                pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+                visibleItemCount = mLinearLayoutManager.getChildCount();
+                totalItemCount = mLinearLayoutManager.getItemCount();
+                pastVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
                 if (mLoading) {
                     if(mPagination!=null&&mPagination.getPage()>=mPagination.getPages()) {
                         return;
