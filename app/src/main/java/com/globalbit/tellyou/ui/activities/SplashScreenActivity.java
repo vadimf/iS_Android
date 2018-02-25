@@ -18,6 +18,7 @@ import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.requests.PushNotificationTokenRequest;
 import com.globalbit.tellyou.network.responses.BaseResponse;
+import com.globalbit.tellyou.network.responses.PostResponse;
 import com.globalbit.tellyou.network.responses.UserResponse;
 import com.globalbit.tellyou.service.fcm.FCMHandler;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
@@ -60,15 +61,42 @@ public class SplashScreenActivity extends BaseActivity implements IBaseNetworkRe
                     if(!TextUtils.isEmpty(deepLink)) {
                         String[] array=deepLink.split("/share/");
                         if(array.length==2) {
-                            String[] array2=array[1].split("/");
+                            Log.i(TAG, "Post id "+array[1]);
+                            CustomApplication.setPostId(array[1]);
+                            if(!StringUtils.isEmpty(array[1])) {
+                                NetworkManager.getInstance().getPostById(new IBaseNetworkResponseListener<PostResponse>() {
+                                    @Override
+                                    public void onSuccess(PostResponse response) {
+                                        CustomApplication.setPost(response.getPost());
+                                        next();
+                                    }
+
+                                    @Override
+                                    public void onError(int errorCode, String errorMessage) {
+                                        next();
+                                    }
+                                }, array[1]);
+                            }
+                            else {
+                                next();
+                            }
+                            /*String[] array2=array[1].split("/");
                             if(array2.length==2) {
                                 Log.i(TAG, "Post id "+array2[1]);
                                 CustomApplication.setPostId(array2[1]);
-                            }
+                            }*/
+                        }
+                        else {
+                            next();
                         }
                     }
+                    else {
+                        next();
+                    }
                 }
-                next();
+                else {
+                    next();
+                }
             }
         }).addOnFailureListener(this, new OnFailureListener() {
             @Override

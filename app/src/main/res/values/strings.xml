@@ -132,7 +132,7 @@
     <string name="label_followers_empty">No one follows you yet</string>
     <string name="label_user_followers_empty">No one follows %1$s yet</string>
     <string name="label_user_following_empty">%1$s not following anyone yet</string>
-    <string name="label_share_title">%1$s shared a Question with you! Check it out now</string>
+    <string name="label_share_title">%1$s shared a video from TellYou app\n\n\"%2$s\"</string>
     <string name="label_share_via">Share via&#8230;</string>
     <string name="label_sign_up_agreement"><![CDATA[By signing up you agree to <u>Terms of Use</u> & <u>Privacy Policy</u>]]></string>
     <string name="label_log_in_agreement"><![CDATA[By logging in you agree to <u>Terms of Use</u> & <u>Privacy Policy</u>]]></string>

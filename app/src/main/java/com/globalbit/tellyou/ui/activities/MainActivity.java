@@ -283,6 +283,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
     protected void onStop() {
         super.onStop();
         CustomApplication.setPostId(null);
+        CustomApplication.setPost(null);
     }
 
     @Override

@@ -79,42 +79,47 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 mBinding.recyclerViewVideos.scrollToPosition(mIndex);
             }
         }
-        mBinding.recyclerViewVideos.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if(dy<0) {
-                    return;
-                }
-                visibleItemCount = mLinearLayoutManager.getChildCount();
-                totalItemCount = mLinearLayoutManager.getItemCount();
-                pastVisiblesItems = mLinearLayoutManager.findFirstVisibleItemPosition();
-                if (mLoading) {
-                    if(mPagination!=null&&mPagination.getPage()>=mPagination.getPages()) {
+        if(mIndex!=-1) {
+            mBinding.recyclerViewVideos.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if(dy<0) {
                         return;
                     }
-                    if ( (visibleItemCount+pastVisiblesItems) >= totalItemCount) {
-                        mLoading = false;
-                        mPage++;
-                        mBinding.swipeLayout.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadItems();
-                            }
-                        });
+                    visibleItemCount=mLinearLayoutManager.getChildCount();
+                    totalItemCount=mLinearLayoutManager.getItemCount();
+                    pastVisiblesItems=mLinearLayoutManager.findFirstVisibleItemPosition();
+                    if(mLoading) {
+                        if(mPagination!=null&&mPagination.getPage()>=mPagination.getPages()) {
+                            return;
+                        }
+                        if((visibleItemCount+pastVisiblesItems)>=totalItemCount) {
+                            mLoading=false;
+                            mPage++;
+                            mBinding.swipeLayout.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadItems();
+                                }
+                            });
+                        }
                     }
                 }
-            }
-        });
-        mBinding.swipeLayout.setEnabled(false);
-        if(mAdapter.getItemCount()==0) {
-            mBinding.swipeLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mPage=1;
-                    loadItems();
-                }
             });
+            mBinding.swipeLayout.setEnabled(false);
+            if(mAdapter.getItemCount()==0) {
+                mBinding.swipeLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPage=1;
+                        loadItems();
+                    }
+                });
+            }
+        }
+        else {
+            mBinding.swipeLayout.setEnabled(false);
         }
     }
 

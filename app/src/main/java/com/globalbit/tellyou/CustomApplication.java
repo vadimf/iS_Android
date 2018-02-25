@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.support.multidex.MultiDexApplication;
 import com.crashlytics.android.Crashlytics;
+import com.globalbit.tellyou.model.Post;
 import com.globalbit.tellyou.model.system.SystemPreferencesKT;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 
@@ -22,7 +23,15 @@ public class CustomApplication extends MultiDexApplication {
     private static Context mApplicationContext;
     private static SystemPreferencesKT mSystemPreference;
     private static String mPostId;
+    private static Post mPost;
 
+    public static Post getPost() {
+        return mPost;
+    }
+
+    public static void setPost(Post mPost) {
+        CustomApplication.mPost=mPost;
+    }
 
 
     @Override

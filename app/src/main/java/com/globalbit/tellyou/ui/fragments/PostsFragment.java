@@ -38,6 +38,7 @@ import com.globalbit.tellyou.ui.interfaces.IPostListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.globalbit.tellyou.utils.SimpleDividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -165,8 +166,15 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
         super.onStart();
         Log.i(TAG, "onStart: ");
         if(mFeedType==Constants.TYPE_FEED_HOME) {
-            if(!StringUtils.isEmpty(CustomApplication.getPostId())) {
+            if(CustomApplication.getPost()!=null) {
                 //TODO show post on separate screen
+                Intent intent=new Intent(getActivity(), VideoPlayerActivity.class);
+                ArrayList<Post> tmpPosts=new ArrayList<>();
+                tmpPosts.add(CustomApplication.getPost());
+                intent.putExtra(Constants.DATA_POSTS, tmpPosts);
+                intent.putExtra(Constants.DATA_INDEX, -1);
+                intent.putExtra(Constants.DATA_PAGE, mPage);
+                startActivityForResult(intent, Constants.REQUEST_VIDEO_PLAYER);
             }
         }
     }

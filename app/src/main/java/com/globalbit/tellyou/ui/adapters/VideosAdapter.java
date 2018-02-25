@@ -1,6 +1,7 @@
 package com.globalbit.tellyou.ui.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
@@ -21,7 +22,9 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.globalbit.androidutils.StringUtils;
+import com.globalbit.tellyou.CustomApplication;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ItemVideoBinding;
 import com.globalbit.tellyou.model.Post;
@@ -34,6 +37,11 @@ import com.globalbit.tellyou.ui.interfaces.IGestureEventsListener;
 import com.globalbit.tellyou.ui.interfaces.IVideoListener;
 import com.globalbit.tellyou.utils.CustomLinearLayoutManager;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
@@ -276,6 +284,41 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                             mListener.onComments(item);
                             break;
                         case R.id.frmLayoutShare:
+                            /*if(holder.isPlaying()) {
+                                if(holder.mHelper!=null) {
+                                    holder.mHelper.pause();
+                                }
+                                holder.stopSeekbarUpdate();
+                            }*/
+                            final MaterialDialog loadingDialog=new MaterialDialog.Builder(mContext)
+                                    .title(R.string.dialog_loading_title)
+                                    .content(R.string.dialog_loading_content)
+                                    .progress(true, 0)
+                                    .show();
+                            String url=CustomApplication.getSystemPreference().getPages().getPostShare().replace(":post",item.getId()).replace(":username", mUser.getUsername());
+                            Task<ShortDynamicLink> shortLinkTask=FirebaseDynamicLinks.getInstance().createDynamicLink()
+                                    .setLink(Uri.parse(url))
+                                    .setDynamicLinkDomain("a676h.app.goo.gl")
+                                    .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                                    .setIosParameters(new DynamicLink.IosParameters.Builder("com.globalbit.tellyou").build())
+                                    .buildShortDynamicLink()
+                                    .addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                                            loadingDialog.dismiss();
+                                            if(task.isSuccessful()) {
+                                                String shareLink=task.getResult().getShortLink().toString();
+                                                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                                                share.setType("text/plain");
+                                                String title;
+                                                title=String.format(Locale.getDefault(), mContext.getString(R.string.label_share_title),SharedPrefsUtils.getUserDetails().getUsername(), item.getText());
+                                                share.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(),"@%s\n\n%s", title, shareLink));
+                                                if (share.resolveActivity(mContext.getPackageManager()) != null) {
+                                                    mContext.startActivity(Intent.createChooser(share, mContext.getString(R.string.label_share_via)));
+                                                }
+                                            }
+                                        }
+                                    });
                             //TODO share outside the application (Deep-linking)
                             break;
                         case R.id.btnAction:
