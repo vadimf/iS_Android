@@ -54,10 +54,12 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
     private PostsAdapter mAdapter;
 
 
+
     private boolean mLoading = true;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private int mFeedType=Constants.TYPE_FEED_HOME;
     private User mUser;
+    private boolean mIsPopularVideos=false;
 
 
     private Post mCurrentPost=null;
@@ -133,6 +135,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
         mBinding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mIsPopularVideos=false;
                 mPage=1;
                 mAdapter.clear();
                 loadItems();
@@ -171,7 +174,12 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
     private void loadItems() {
         switch(mFeedType) {
             case Constants.TYPE_FEED_HOME:
-                NetworkManager.getInstance().getFeedPosts(this, mPage);
+                if(mIsPopularVideos) {
+                    NetworkManager.getInstance().getPopularPosts(this, mPage);
+                }
+                else {
+                    NetworkManager.getInstance().getFeedPosts(this, mPage);
+                }
                 break;
             case Constants.TYPE_FEED_USER:
                 User user=SharedPrefsUtils.getUserDetails();
@@ -230,7 +238,9 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             mAdapter.addItems(response.getPosts());
         }
         mPagination=response.getPagination();
-        isEmpty();
+        if(!mIsPopularVideos) {
+            isEmpty();
+        }
     }
 
     @Override
@@ -249,8 +259,12 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             switch(mFeedType) {
                 case Constants.TYPE_FEED_HOME:
                     mBinding.txtViewEmpty.setText(R.string.label_feed_posts_empty);
-                    mBinding.btnDiscover.setVisibility(View.VISIBLE);
-                    mBinding.btnDiscover.setText(R.string.btn_discover_people);
+                    mBinding.txtViewPopularVideos.setVisibility(View.VISIBLE);
+                    mPage=1;
+                    mIsPopularVideos=true;
+                    mBinding.swipeLayout.setVisibility(View.VISIBLE);
+                    mBinding.swipeLayout.setRefreshing(true);
+                    loadItems();
                     break;
                 case Constants.TYPE_FEED_USER:
                     User user=SharedPrefsUtils.getUserDetails();
@@ -270,6 +284,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             mBinding.swipeLayout.setVisibility(View.VISIBLE);
             mBinding.txtViewEmpty.setVisibility(View.GONE);
             mBinding.btnDiscover.setVisibility(View.GONE);
+            mBinding.txtViewPopularVideos.setVisibility(View.GONE);
         }
     }
 

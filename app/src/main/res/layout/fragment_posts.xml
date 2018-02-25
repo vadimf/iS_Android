@@ -42,17 +42,6 @@
                 android:visibility="invisible"
                 android:layout_gravity="center"/>
         </LinearLayout>
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/swipeLayout"
-            android:visibility="visible">
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/recyclerViewPosts"
-                tools:listitem ="@layout/item_post"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,6 +51,17 @@
             android:visibility="gone"
             style="@style/TitleMediumLightStyle"
             tools:text="No posts"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:id="@+id/txtViewPopularVideos"
+            android:visibility="gone"
+            style="@style/TitleMediumLightStyle"
+            android:text="@string/label_popular_videos"
+            android:textAllCaps="true"/>
         <Button
             style="@style/ButtonRegularStyle"
             android:id="@+id/btnDiscover"
@@ -69,5 +69,17 @@
             android:visibility="gone"
             android:layout_gravity="center_horizontal"
             android:text="@string/btn_discover_people"/>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/swipeLayout"
+            android:visibility="visible">
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recyclerViewPosts"
+                tools:listitem ="@layout/item_post"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 </layout>

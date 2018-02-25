@@ -50,12 +50,18 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     private Pagination mPagination;
     private User mUser;
     private int mIndex;
-    private CustomLinearLayoutManager mLinearLayoutManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding=DataBindingUtil.setContentView(this, R.layout.activity_video);
+        if(SharedPrefsUtils.isShowTutorial()) {
+            mBinding.layoutTutorial.lnrLayoutTutorial.setVisibility(View.VISIBLE);
+            mBinding.layoutTutorial.btnOk.setOnClickListener(this);
+        }
+        else {
+            mBinding.layoutTutorial.lnrLayoutTutorial.setVisibility(View.GONE);
+        }
         mUser=SharedPrefsUtils.getUserDetails();
         mIndex=getIntent().getIntExtra(Constants.DATA_INDEX,0);
         mPage=getIntent().getIntExtra(Constants.DATA_PAGE, 1);
@@ -115,7 +121,10 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch(view.getId()) {
-
+            case R.id.btnOk:
+                mBinding.layoutTutorial.lnrLayoutTutorial.setVisibility(View.GONE);
+                SharedPrefsUtils.setShowTutorial(false);
+                break;
         }
     }
 

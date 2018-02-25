@@ -16,6 +16,8 @@ import com.globalbit.tellyou.databinding.ActivitySplashBinding;
 import com.globalbit.tellyou.model.system.SystemPreferencesResponseKT;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
+import com.globalbit.tellyou.network.requests.PushNotificationTokenRequest;
+import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.network.responses.UserResponse;
 import com.globalbit.tellyou.service.fcm.FCMHandler;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
@@ -23,6 +25,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 /**
  * Created by alex on 06/11/2017.
@@ -97,6 +100,26 @@ public class SplashScreenActivity extends BaseActivity implements IBaseNetworkRe
                         finish();
                     }
                     else {
+                        if(response.getUser()!=null) {
+                            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+                            if(!StringUtils.isEmpty(refreshedToken)) {
+                                Log.i("SharedUtils", "Token: "+refreshedToken);
+                                PushNotificationTokenRequest request=new PushNotificationTokenRequest();
+                                request.setToken(refreshedToken);
+                                NetworkManager.getInstance().sendToken(new IBaseNetworkResponseListener<BaseResponse>() {
+                                    @Override
+                                    public void onSuccess(BaseResponse response) {
+
+                                    }
+
+                                    @Override
+                                    public void onError(int errorCode, String errorMessage) {
+
+                                    }
+                                }, request);
+                            }
+
+                        }
                         Intent intent=new Intent(SplashScreenActivity.this, MainActivity.class);
                         int pushType=getIntent().getIntExtra(Constants.DATA_PUSH, -1);
                         intent.putExtra(Constants.DATA_PUSH, pushType);

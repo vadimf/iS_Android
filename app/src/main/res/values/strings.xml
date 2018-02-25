@@ -39,6 +39,7 @@
     <string name="error_password_length">Password length should be between %1$d and %2$d characters</string>
     <string name="share_text">Hey, @%1$s invites you join Tellyou! It\'s a voting and Q&amp;A app between you and your friends!\n\nhttps://play.google.com/store/apps/details?id=com.globalbit.tellyou</string>
     <string name="error_username">Username must be without spaces and special characters</string>
+    <string name="error_birthday">Birthday is empty</string>
     <string name="error">Error</string>
     <string name="tab_contacts">Contacts</string>
     <string name="tab_suggestions">Search</string>
@@ -115,6 +116,7 @@
     <string name="btn_send">Send</string>
     <string name="label_load_more_comments">Load more comments</string>
     <string name="hint_user_name">Enter username</string>
+    <string name="hint_birthday">Enter birthday</string>
     <string name="hint_full_name">Enter full name</string>
     <string name="hint_bio">Tell about yourself</string>
     <string name="label_original_question">The original question was</string>
@@ -221,6 +223,12 @@
     <string name="snack_bar_report_submitted">Your report has been submitted</string>
     <string name="error_reporting_your_video">Your cannot report your own video!</string>
     <string name="error_reporting_your_reply">Your cannot report your own reply!</string>
+    <string name="error_birthday_future">Date of birth cannot past the current date</string>
+    <string name="error_birthday_invalid">Date of birth is invalid</string>
+    <string name="tutorial_swipe_up_down">Swipe up and down to change videos</string>
+    <string name="tutorial_tap">Tap on video to pause and play it</string>
+    <string name="tutorial_drag_left_right">Drag left right to rewind</string>
+    <string name="label_popular_videos">Popular videos</string>
 
     <plurals name="replies">
         <item quantity="zero">No replies</item>

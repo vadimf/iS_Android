@@ -67,26 +67,6 @@ public class SharedPrefsUtils {
     }
 
     public static void setUserDetails(User user) {
-        if(user!=null) {
-            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-            if(!StringUtils.isEmpty(refreshedToken)) {
-                Log.i("SharedUtils", "Token: "+refreshedToken);
-                PushNotificationTokenRequest request=new PushNotificationTokenRequest();
-                request.setToken(refreshedToken);
-                NetworkManager.getInstance().sendToken(new IBaseNetworkResponseListener<BaseResponse>() {
-                    @Override
-                    public void onSuccess(BaseResponse response) {
-
-                    }
-
-                    @Override
-                    public void onError(int errorCode, String errorMessage) {
-
-                    }
-                }, request);
-            }
-
-        }
         Gson gson=new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
                 .create();

@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * Created by alex on 29/10/2017.
  */
@@ -25,6 +27,9 @@ public class Profile implements Parcelable {
 
     @SerializedName("website")
     private String mWebsite;
+
+    @SerializedName("birthday")
+    private String mBirthday;
 
     public String getFirstName() {
         return mFirstName;
@@ -65,6 +70,7 @@ public class Profile implements Parcelable {
         mLastName=in.readString();
         mPicture=in.readParcelable(Picture.class.getClassLoader());
         mBio=in.readString();
+        mBirthday=in.readString();
     }
 
     public static final Creator<Profile> CREATOR=new Creator<Profile>() {
@@ -90,6 +96,7 @@ public class Profile implements Parcelable {
         dest.writeString(mLastName);
         dest.writeParcelable(mPicture, flags);
         dest.writeString(mBio);
+        dest.writeString(mBirthday);
     }
 
     public String getWebsite() {
@@ -98,5 +105,13 @@ public class Profile implements Parcelable {
 
     public void setWebsite(String website) {
         mWebsite=website;
+    }
+
+    public String getBirthday() {
+        return mBirthday;
+    }
+
+    public void setBirthday(String birthday) {
+        mBirthday=birthday;
     }
 }

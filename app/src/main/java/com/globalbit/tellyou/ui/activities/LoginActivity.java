@@ -13,12 +13,17 @@ import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityLoginBinding;
 import com.globalbit.tellyou.model.User;
+import com.globalbit.tellyou.network.NetworkManager;
+import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
+import com.globalbit.tellyou.network.requests.PushNotificationTokenRequest;
+import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.ui.fragments.ForgotPasswordFragment;
 import com.globalbit.tellyou.ui.fragments.SignInFragment;
 import com.globalbit.tellyou.ui.fragments.SignUpFragment;
 import com.globalbit.tellyou.ui.interfaces.ILoginListener;
 import com.globalbit.tellyou.utils.Enums;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 /**
  * Created by alex on 06/11/2017.
@@ -85,6 +90,26 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onSignSuccess(User user) {
         SharedPrefsUtils.setUserDetails(user);
+        if(user!=null) {
+            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+            if(!StringUtils.isEmpty(refreshedToken)) {
+                Log.i("SharedUtils", "Token: "+refreshedToken);
+                PushNotificationTokenRequest request=new PushNotificationTokenRequest();
+                request.setToken(refreshedToken);
+                NetworkManager.getInstance().sendToken(new IBaseNetworkResponseListener<BaseResponse>() {
+                    @Override
+                    public void onSuccess(BaseResponse response) {
+
+                    }
+
+                    @Override
+                    public void onError(int errorCode, String errorMessage) {
+
+                    }
+                }, request);
+            }
+
+        }
         if(StringUtils.isEmpty(user.getUsername())) {
             Log.i(TAG, "onSignSuccess: First time screen");
             Intent intent=new Intent(this, ProfileActivity.class);

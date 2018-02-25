@@ -33,6 +33,7 @@ import com.globalbit.tellyou.network.responses.UserResponse;
 import com.globalbit.tellyou.network.responses.UsernameExistResponse;
 import com.globalbit.tellyou.ui.activities.CropActivity;
 import com.globalbit.tellyou.ui.activities.DiscoverActivity;
+import com.globalbit.tellyou.ui.dialogs.BirthdayPickerDialogFragment;
 import com.globalbit.tellyou.utils.GeneralUtils;
 import com.globalbit.tellyou.utils.ObservableHelper;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
@@ -40,6 +41,10 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,12 +58,13 @@ import io.reactivex.schedulers.Schedulers;
  * Created by alex on 06/11/2017.
  */
 
-public class EditProfileFragment extends BaseFragment implements View.OnClickListener, IBaseNetworkResponseListener<UserResponse> {
+public class EditProfileFragment extends BaseFragment implements View.OnClickListener, IBaseNetworkResponseListener<UserResponse> , BirthdayPickerDialogFragment.OnDateSet{
     private FragmentEditProfileBinding mBinding;
     private Pattern mUserNamePattern;
     private User mUser;
     private File mFile;
     private Uri mUri;
+    private String mBirthDay=null;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
 
     public static EditProfileFragment newInstance() {
@@ -189,6 +195,20 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                 Picasso.with(getActivity()).load(mUser.getProfile().getPicture().getThumbnail()).into(mBinding.imgViewPhoto);
             }
             mBinding.inputUsername.setText(mUser.getUsername());
+            if(!StringUtils.isEmpty(mUser.getProfile().getBirthday())) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                Date date =null;
+                try {
+                    date=sdf.parse(mUser.getProfile().getBirthday());
+                } catch(ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+
+                mBinding.txtViewBirthday.setText(String.format(Locale.getDefault(), "%02d/%02d/%d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH)+1, cal.get(Calendar.YEAR)));
+                mBirthDay=String.format(Locale.getDefault(), "%d-%02d-%02d", cal.get(Calendar.YEAR), cal.get(Calendar.MONTH)+1, cal.get(Calendar.DAY_OF_MONTH));
+            }
         }
         if(StringUtils.isEmpty(mUser.getUsername())) {
             mBinding.btnContinue.setText(R.string.btn_continue);
@@ -198,6 +218,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
         }
         mBinding.btnContinue.setOnClickListener(this);
         mBinding.lnrLayoutProfileImage.setOnClickListener(this);
+        mBinding.lnrLayoutBirthday.setOnClickListener(this);
 
         return mBinding.getRoot();
     }
@@ -212,12 +233,13 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btnContinue:
-                showLoadingDialog();
                 String errorMessage=validate();
                 if(StringUtils.isEmpty(errorMessage)) {
+                    showLoadingDialog();
                     final User user=new User();
                     user.setProfile(new Profile());
                     user.setUsername(mBinding.inputUsername.getText().toString());
+                    user.getProfile().setBirthday(mBirthDay);
                     String[] nameArray=mBinding.inputName.getText().toString().trim().split(" ");
                     if(nameArray.length==1) {
                         user.getProfile().setFirstName(nameArray[0]);
@@ -300,6 +322,10 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                     }
                 });
                 break;
+            case R.id.lnrLayoutBirthday:
+                BirthdayPickerDialogFragment datePickerDialogFragment = BirthdayPickerDialogFragment.newInstance(this);
+                datePickerDialogFragment.show(getChildFragmentManager(), "datePicker");
+                break;
         }
     }
 
@@ -368,6 +394,9 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                 errorMessage.append(String.format(Locale.getDefault(),"%s",getString(R.string.error_username)));
             }
         }
+        if(StringUtils.isEmpty(mBirthDay)) {
+            errorMessage.append(String.format(Locale.getDefault(),"%s",getString(R.string.error_birthday)));
+        }
 
         return errorMessage.toString();
     }
@@ -404,6 +433,37 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
             intent.putExtra(Constants.DATA_IMAGE_URI, mUri);
             intent.putExtra(Constants.DATA_IMAGE, Constants.TYPE_IMAGE_PROFILE);
             startActivityForResult(intent, Constants.REQUEST_CROP_IMAGE);
+        }
+    }
+
+    @Override
+    public void onDateSet(int year, int monthOfYear, int dayOfMonth, boolean isProperDate) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, monthOfYear);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        c.set(Calendar.HOUR_OF_DAY, 23);
+        c.set(Calendar.MINUTE, 59);
+        c.set(Calendar.SECOND, 59);
+        c.set(Calendar.MILLISECOND, 0);
+        if(c.getTimeInMillis()>=Calendar.getInstance().getTimeInMillis()) {
+            new MaterialDialog.Builder(getActivity())
+                    .title(R.string.error)
+                    .content(R.string.error_birthday_future)
+                    .positiveText(R.string.btn_ok)
+                    .show();
+        }
+        else if(!isProperDate) {
+            new MaterialDialog.Builder(getActivity())
+                    .title(R.string.error)
+                    .content(R.string.error_birthday_invalid)
+                    .positiveText(R.string.btn_ok)
+                    .show();
+        }
+        else {
+            mBinding.txtViewBirthday.setText(String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, monthOfYear+1, year));
+            mBirthDay=String.format(Locale.getDefault(), "%d-%02d-%02d", year, monthOfYear+1, dayOfMonth);
+            //mTxtViewBirthdayDate.setTextColor(getResources().getColor(R.color.black));
         }
     }
 }

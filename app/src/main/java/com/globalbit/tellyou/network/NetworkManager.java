@@ -261,6 +261,12 @@ public class NetworkManager {
         call.enqueue(callback);
     }
 
+    public void getPopularPosts(IBaseNetworkResponseListener<PostsResponse> listener, int page) {
+        Call<PostsResponse> call=mIRetrofitApiInterface.getPopularPosts(page);
+        PostsNetworkCallback callback=new PostsNetworkCallback(listener);
+        call.enqueue(callback);
+    }
+
     public void createPost(IBaseNetworkResponseListener<PostResponse> listener, MultipartBody.Part video, MultipartBody.Part thumbnail, RequestBody text, RequestBody duration) {
 
         Call<PostResponse> call=mIRetrofitApiInterface.createPost(video, thumbnail, text, duration);

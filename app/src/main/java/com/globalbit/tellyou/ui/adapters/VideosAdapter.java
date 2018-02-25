@@ -136,6 +136,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
             holder.mBinding.gestureView.setGesterEventsListener(new IGestureEventsListener() {
                 @Override
                 public void onTap() {
+                    holder.mBinding.imgViewPreview.setVisibility(View.GONE);
                     if(holder.wantsToPlay()) {
                         if(holder.isPlaying()) {
                             if(holder.mHelper!=null) {
@@ -449,12 +450,14 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 
         @Override
         public void play() {
-            mBinding.imgViewPreview.setVisibility(View.GONE);
-            if (mHelper != null) mHelper.play();
-            scheduleSeekbarUpdate();
-            mTimer.start();
-            mElapsedTime=(int)mHelper.getLatestPlaybackInfo().getResumePosition();
-            mBinding.progressBarPortrait.setProgress(mElapsedTime);
+            if(!SharedPrefsUtils.isShowTutorial()) {
+                mBinding.imgViewPreview.setVisibility(View.GONE);
+                if(mHelper!=null) mHelper.play();
+                scheduleSeekbarUpdate();
+                mTimer.start();
+                mElapsedTime=(int) mHelper.getLatestPlaybackInfo().getResumePosition();
+                mBinding.progressBarPortrait.setProgress(mElapsedTime);
+            }
         }
 
         @Override
