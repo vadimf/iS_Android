@@ -12,10 +12,11 @@
                 android:id="@+id/videoViewPlayer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:resize_mode="fixed_height"
+                app:resize_mode="fill"
                 app:surface_type="texture_view"
-                app:use_controller="false"
-                />
+                app:use_controller="true"
+                app:show_timeout="0"
+                app:controller_layout_id="@layout/custom_playback_control"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
