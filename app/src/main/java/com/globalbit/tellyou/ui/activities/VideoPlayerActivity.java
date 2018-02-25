@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.view.View;
 
+import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityVideoBinding;
@@ -120,6 +121,14 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         }
         else {
             mBinding.swipeLayout.setEnabled(false);
+            String postId=getIntent().getStringExtra(Constants.DATA_POST_ID);
+            if(!StringUtils.isEmpty(postId)) {
+                String commentId=getIntent().getStringExtra(Constants.DATA_COMMENT_ID);
+                Intent intent=new Intent(this, ReplyActivity.class);
+                intent.putExtra(Constants.DATA_POST_ID, postId);
+                intent.putExtra(Constants.DATA_COMMENT_ID, commentId);
+                startActivityForResult(intent, Constants.REQUEST_COMMENTS);
+            }
         }
     }
 

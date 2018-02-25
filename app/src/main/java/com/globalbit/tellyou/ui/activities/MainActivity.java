@@ -21,16 +21,19 @@ import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.CustomApplication;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityMainBinding;
+import com.globalbit.tellyou.model.Post;
 import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.network.responses.UserResponse;
+import com.globalbit.tellyou.service.fcm.FCMHandler;
 import com.globalbit.tellyou.ui.fragments.PostsFragment;
 import com.globalbit.tellyou.ui.fragments.ProfileFragment;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class MainActivity extends BaseActivity implements IMainListener, View.OnClickListener {
@@ -94,7 +97,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
         PostsFragment fragment=PostsFragment.newInstance(Constants.TYPE_FEED_HOME, null);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "HomeTag").commit();
 
-        /*int pushType=getIntent().getIntExtra(Constants.DATA_PUSH,-1);
+        int pushType=getIntent().getIntExtra(Constants.DATA_PUSH,-1);
         if(pushType==FCMHandler.PUSH_NOTIFICATION_FOLLOW) {
             User user=getIntent().getParcelableExtra(Constants.DATA_USER);
             if(user!=null) {
@@ -106,14 +109,30 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
         }
         else if(pushType==FCMHandler.PUSH_NOTIFICATION_COMMENT) {
             String postId=getIntent().getStringExtra(Constants.DATA_POST_ID);
+            Post post=getIntent().getParcelableExtra(Constants.DATA_POST);
             String commentId=getIntent().getStringExtra(Constants.DATA_COMMENT_ID);
             if(!StringUtils.isEmpty(postId)) {
-                Intent intent=new Intent(this, CommentsActivity.class);
+                if(post!=null) {
+                    Intent intent=new Intent(this, VideoPlayerActivity.class);
+                    ArrayList<Post> tmpPosts=new ArrayList<>();
+                    tmpPosts.add(post);
+                    intent.putExtra(Constants.DATA_POSTS, tmpPosts);
+                    intent.putExtra(Constants.DATA_INDEX, -1);
+                    intent.putExtra(Constants.DATA_PAGE, 1);
+                    intent.putExtra(Constants.DATA_COMMENT_ID, commentId);
+                    intent.putExtra(Constants.DATA_POST_ID, postId);
+                    startActivityForResult(intent, Constants.REQUEST_VIDEO_PLAYER);
+                }
+                else {
+                Intent intent=new Intent(this, ReplyActivity.class);
                 intent.putExtra(Constants.DATA_POST_ID, postId);
                 intent.putExtra(Constants.DATA_COMMENT_ID, commentId);
                 startActivityForResult(intent, Constants.REQUEST_COMMENTS);
+                }
             }
         }
+        /*
+
         else if(pushType==FCMHandler.PUSH_NOTIFICATION_MENTION) {
             String postId=getIntent().getStringExtra(Constants.DATA_POST_ID);
             String commentId=getIntent().getStringExtra(Constants.DATA_COMMENT_ID);
@@ -282,7 +301,6 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
     @Override
     protected void onStop() {
         super.onStop();
-        CustomApplication.setPostId(null);
         CustomApplication.setPost(null);
     }
 

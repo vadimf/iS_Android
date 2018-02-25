@@ -11,12 +11,15 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.globalbit.tellyou.Constants;
+import com.globalbit.tellyou.CustomApplication;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.CommentResponse;
 import com.globalbit.tellyou.network.responses.PostResponse;
+import com.globalbit.tellyou.ui.activities.ReplyActivity;
 import com.globalbit.tellyou.ui.activities.SplashScreenActivity;
+import com.globalbit.tellyou.utils.SharedPrefsUtils;
 
 import java.io.File;
 
@@ -45,7 +48,7 @@ public class UploadService extends Service {
             String text=intent.getStringExtra(Constants.DATA_TEXT);
             int duration=intent.getIntExtra(Constants.DATA_DURATION, -1);
             int videoRecordingType=intent.getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
-            String postId=intent.getStringExtra(Constants.DATA_POST_ID);
+            final String postId=intent.getStringExtra(Constants.DATA_POST_ID);
             RequestBody requestFile =RequestBody.create(
                     MediaType.parse("video/mp4"),
                     file
@@ -69,24 +72,13 @@ public class UploadService extends Service {
                                         }
                                     }
                                     Intent notificationIntent = new Intent(UploadService.this, SplashScreenActivity.class);
+                                    CustomApplication.setPost(response.getPost());
                                     notificationIntent.setAction(MAIN_ACTION);
                                     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                             | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     PendingIntent pendingIntent = PendingIntent.getActivity(UploadService.this, 0,
                                             notificationIntent, 0);
-                                    Notification notification =
-                                            new NotificationCompat.Builder(UploadService.this, "UploadChannel")
-                                                    .setContentTitle("Uploaded")
-                                                    .setContentText("Your video was uploaded")
-                                                    .setSmallIcon(R.mipmap.ic_launcher)
-                                                    .setContentIntent(pendingIntent)
-                                                    .setAutoCancel(true)
-                                                    .build();
-                                    final NotificationManager notificationManager = (NotificationManager) getApplicationContext()
-                                            .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
-
-                                    notificationManager.notify(1, notification);
-                                    stopForeground(false);
+                                    showReplyNotification(pendingIntent);
                                 }
 
                                 @Override
@@ -121,7 +113,7 @@ public class UploadService extends Service {
                 case Constants.TYPE_REPLY_VIDEO_RECORDING:
                     NetworkManager.getInstance().createComment(new IBaseNetworkResponseListener<CommentResponse>() {
                             @Override
-                            public void onSuccess(CommentResponse response) {
+                            public void onSuccess(final CommentResponse response) {
                                 if(file.exists()) {
                                     if(file.delete()) {
                                         Log.i(TAG, "File deleted successfully");
@@ -130,25 +122,47 @@ public class UploadService extends Service {
                                         Log.i(TAG, "Couldn't delete the file");
                                     }
                                 }
-                                Intent notificationIntent = new Intent(UploadService.this, SplashScreenActivity.class);
-                                notificationIntent.setAction(MAIN_ACTION);
-                                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                PendingIntent pendingIntent = PendingIntent.getActivity(UploadService.this, 0,
-                                        notificationIntent, 0);
-                                Notification notification =
-                                        new NotificationCompat.Builder(UploadService.this, "UploadChannel")
-                                                .setContentTitle("Uploaded")
-                                                .setContentText("Your video was uploaded")
-                                                .setSmallIcon(R.mipmap.ic_launcher)
-                                                .setContentIntent(pendingIntent)
-                                                .setAutoCancel(true)
-                                                .build();
-                                final NotificationManager notificationManager = (NotificationManager) getApplicationContext()
-                                        .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+                                NetworkManager.getInstance().getPostById(new IBaseNetworkResponseListener<PostResponse>() {
+                                    @Override
+                                    public void onSuccess(PostResponse postResponse) {
+                                        PendingIntent pendingIntent;
+                                        if(response.getComment()!=null) {
+                                            Intent intent;
+                                            if(SharedPrefsUtils.isInBackground()) {
+                                                intent=new Intent(UploadService.this, SplashScreenActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            } else {
+                                                intent=new Intent(UploadService.this, ReplyActivity.class);
+                                            }
+                                            intent.putExtra(Constants.DATA_PUSH, 2);
+                                            intent.putExtra(Constants.DATA_POST_ID, postId);
+                                            intent.putExtra(Constants.DATA_POST, postResponse.getPost());
+                                            intent.putExtra(Constants.DATA_COMMENT_ID, response.getComment().getId());
+                                            pendingIntent=PendingIntent.getActivity(UploadService.this, 2, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        }
+                                        else {
+                                            Intent notificationIntent=new Intent(UploadService.this, SplashScreenActivity.class);
+                                            notificationIntent.setAction(MAIN_ACTION);
+                                            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                                    |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            pendingIntent=PendingIntent.getActivity(UploadService.this, 0,
+                                                    notificationIntent, 0);
+                                        }
+                                        showReplyNotification(pendingIntent);
+                                    }
 
-                                notificationManager.notify(1, notification);
-                                stopForeground(false);
+                                    @Override
+                                    public void onError(int errorCode, String errorMessage) {
+                                        Intent notificationIntent=new Intent(UploadService.this, SplashScreenActivity.class);
+                                        notificationIntent.setAction(MAIN_ACTION);
+                                        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                                |Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        PendingIntent pendingIntent=PendingIntent.getActivity(UploadService.this, 0,
+                                                notificationIntent, 0);
+                                        showReplyNotification(pendingIntent);
+                                    }
+                                }, postId);
+
                             }
 
                             @Override
@@ -184,6 +198,22 @@ public class UploadService extends Service {
         }
 
         return START_STICKY;
+    }
+
+    private void showReplyNotification(PendingIntent pendingIntent) {
+        Notification notification =
+                new NotificationCompat.Builder(UploadService.this, "UploadChannel")
+                        .setContentTitle("Uploaded")
+                        .setContentText("Your video was uploaded")
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true)
+                        .build();
+        final NotificationManager notificationManager = (NotificationManager) getApplicationContext()
+                .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+
+        notificationManager.notify(1, notification);
+        stopForeground(false);
     }
 
     @Override

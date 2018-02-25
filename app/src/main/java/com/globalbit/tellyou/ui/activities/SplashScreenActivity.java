@@ -62,7 +62,6 @@ public class SplashScreenActivity extends BaseActivity implements IBaseNetworkRe
                         String[] array=deepLink.split("/share/");
                         if(array.length==2) {
                             Log.i(TAG, "Post id "+array[1]);
-                            CustomApplication.setPostId(array[1]);
                             if(!StringUtils.isEmpty(array[1])) {
                                 NetworkManager.getInstance().getPostById(new IBaseNetworkResponseListener<PostResponse>() {
                                     @Override
@@ -157,6 +156,7 @@ public class SplashScreenActivity extends BaseActivity implements IBaseNetworkRe
                         }
                         else if(pushType==FCMHandler.PUSH_NOTIFICATION_COMMENT) {
                             intent.putExtra(Constants.DATA_POST_ID, getIntent().getStringExtra(Constants.DATA_POST_ID));
+                            intent.putExtra(Constants.DATA_POST, getIntent().getParcelableExtra(Constants.DATA_POST));
                             intent.putExtra(Constants.DATA_COMMENT_ID, getIntent().getStringExtra(Constants.DATA_COMMENT_ID));
                         }
                         else if(pushType==FCMHandler.PUSH_NOTIFICATION_MENTION) {

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.globalbit.androidutils.CollectionUtils;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ItemReplyBinding;
@@ -66,6 +67,18 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
         }
         mItems.addAll(items);
         notifyDataSetChanged();
+    }
+
+    public int getIndex(String id) {
+        if(!CollectionUtils.isEmpty(mItems)) {
+            for(int i=0; i<mItems.size(); i++) {
+                Comment comment=mItems.get(i);
+                if(comment.getId().equals(id)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
 

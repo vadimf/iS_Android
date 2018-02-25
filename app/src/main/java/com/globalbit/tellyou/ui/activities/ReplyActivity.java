@@ -13,6 +13,7 @@ import android.support.v7.widget.SnapHelper;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityReplyBinding;
@@ -34,6 +35,7 @@ import com.globalbit.tellyou.utils.SharedPrefsUtils;
 public class ReplyActivity extends BaseActivity implements View.OnClickListener, IBaseNetworkResponseListener<CommentsResponse>, IReplyListener {
     private ActivityReplyBinding mBinding;
     private String mPostId;
+    private String mCommentId;
     private RepliesAdapter mAdapter;
     private int mPage=1;
     private boolean mLoading = true;
@@ -48,6 +50,7 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
         mBinding=DataBindingUtil.setContentView(this, R.layout.activity_reply);
         mUser=SharedPrefsUtils.getUserDetails();
         mPostId=getIntent().getStringExtra(Constants.DATA_POST_ID);
+        mCommentId=getIntent().getStringExtra(Constants.DATA_COMMENT_ID);
         mBinding.imgViewAddReply.setOnClickListener(this);
         mBinding.toolbar.btnBack.setOnClickListener(this);
         mBinding.imgViewBackToStart.setOnClickListener(this);
@@ -124,6 +127,13 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
         mBinding.swipeLayout.setRefreshing(false);
         mBinding.swipeLayout.setEnabled(false);
         mAdapter.addItems(response.getComments());
+        if(!StringUtils.isEmpty(mCommentId)) {
+            int index=mAdapter.getIndex(mCommentId);
+            if(index!=-1) {
+                mBinding.recyclerViewReplies.scrollToPosition(index);
+            }
+            mCommentId=null;
+        }
         mCommentsCount=response.getPagination().getResults();
         if(mCommentsCount==0) {
             mBinding.toolbar.txtViewTitle.setText(R.string.title_comments);

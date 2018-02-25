@@ -22,16 +22,7 @@ import io.fabric.sdk.android.Fabric;
 public class CustomApplication extends MultiDexApplication {
     private static Context mApplicationContext;
     private static SystemPreferencesKT mSystemPreference;
-    private static String mPostId;
     private static Post mPost;
-
-    public static Post getPost() {
-        return mPost;
-    }
-
-    public static void setPost(Post mPost) {
-        CustomApplication.mPost=mPost;
-    }
 
 
     @Override
@@ -57,12 +48,12 @@ public class CustomApplication extends MultiDexApplication {
         CustomApplication.mSystemPreference=mSystemPreference;
     }
 
-    public static String getPostId() {
-        return mPostId;
+    public static Post getPost() {
+        return mPost;
     }
 
-    public static void setPostId(String mPostId) {
-        CustomApplication.mPostId=mPostId;
+    public static void setPost(Post mPost) {
+        CustomApplication.mPost=mPost;
     }
 
 }

@@ -48,6 +48,18 @@
         <activity android:name=".ui.activities.ReplyActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.VideoPlayerActivity" android:screenOrientation="portrait"/>
         <service android:name=".service.UploadService"/>
+        <service
+            android:name=".service.fcm.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.fcm.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="2a2f1a11c3b59a0bc6aca1ffc12345a256cc2878" />
