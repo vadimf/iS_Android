@@ -1,73 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_centerHorizontal="true"
-            android:text="@string/app_name"
-            android:textSize="48sp"
-            android:fontFamily="@font/pacifico_regular"
-            android:textColor="@color/border_active"/>
-
-
-        <ImageView
+        android:background="@drawable/app_background"
+        android:orientation="vertical">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/imgViewBackground"
-            android:adjustViewBounds="true"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/ic_connection_background"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_above="@id/imgViewBackground"
-            android:id="@+id/btnSignIn"
-            android:text="@string/label_login"
-            style="@style/TextRegularBlueStyle"/>
-        <Button
-            android:id="@+id/btnSignUp"
-            style="@style/ButtonRegularStyle"
-            android:layout_centerHorizontal="true"
-            android:layout_above="@id/btnSignIn"
-            android:layout_marginBottom="40dp"
-            android:text="@string/btn_create_account"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:gravity="center_horizontal"
-            android:layout_centerHorizontal="true"
-            style="@style/LabelRegularLightStyle"
-            android:layout_above="@id/btnSignUp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/label_connection_description"/>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtViewSplash"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/assistant_regular"
+                android:textSize="13sp"
+                android:textColor="@color/grey"
+                android:textAllCaps="true"
+                android:text="@string/label_splash"
+                android:layout_alignParentBottom="true"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgViewLogo"
+                android:layout_above="@id/txtViewSplash"
+                android:src="@drawable/logo_splash"/>
+        </RelativeLayout>
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="80dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <Button
+                android:id="@+id/btnSignUp"
+                style="@style/ButtonRegularStyle"
+                android:text="@string/btn_create_account"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:id="@+id/btnSignIn"
+                android:textColor="@color/grey_light"
+                android:textSize="13sp"
+                android:fontFamily="@font/assistant_regular"
+                android:text="@string/label_login"/>
+        </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_alignParentBottom="true"
             android:layout_marginBottom="20dp"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
             android:gravity="center_vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_developed_by"
-                android:fontFamily="@font/montserrat_regular"
+                android:fontFamily="@font/assistant_regular"
                 android:textSize="13sp"
-                android:textColor="#334654"/>
+                android:textColor="@color/grey_dark"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:src="@drawable/ic_globalbit"/>
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 </layout>

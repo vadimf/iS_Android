@@ -65,4 +65,10 @@ public class Enums {
         NoPermissions
     }
 
+    public enum InputType {
+        Email,
+        Password,
+        Text
+    }
+
 }

@@ -88,8 +88,11 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
             }
         });
         mBinding.btnSignUp.setOnClickListener(this);
-
-        mBinding.inputEmail.addTextChangedListener(new TextWatcher() {
+        if(CustomApplication.getSystemPreference()!=null) {
+            mBinding.inputPassword.getInputValue().setHint(String.format(Locale.getDefault(),getString(R.string.password_hint),
+                    CustomApplication.getSystemPreference().getValidations().getPassword().getMinLength()));
+        }
+        mBinding.inputEmail.getInputValue().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -99,11 +102,11 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(android.util.Patterns.EMAIL_ADDRESS.matcher(charSequence).matches()) {
                     mBinding.btnSignUp.setEnabled(true);
-                    mBinding.btnSignUp.setTextColor(getResources().getColor(R.color.border_active));
+                    mBinding.btnSignUp.setTextColor(getResources().getColor(R.color.red_border));
                 }
                 else {
                     mBinding.btnSignUp.setEnabled(false);
-                    mBinding.btnSignUp.setTextColor(getResources().getColor(R.color.border_inactive));
+                    mBinding.btnSignUp.setTextColor(getResources().getColor(R.color.grey_dark));
                 }
             }
 
@@ -148,8 +151,8 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
                 if(StringUtils.isEmpty(errorMessage)) {
                     showLoadingDialog();
                     SignInUpRequest request=new SignInUpRequest();
-                    request.setEmail(mBinding.inputEmail.getText().toString());
-                    request.setPassword(mBinding.inputPassword.getText().toString());
+                    request.setEmail(mBinding.inputEmail.getInputValue().getText().toString());
+                    request.setPassword(mBinding.inputPassword.getInputValue().getText().toString());
                     NetworkManager.getInstance().signUp(this,request);
                 }
                 else {
@@ -172,13 +175,13 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
 
     private String validate() {
         String errorMessage="";
-        if(StringUtils.isEmpty(mBinding.inputPassword.getText().toString())) {
+        if(StringUtils.isEmpty(mBinding.inputPassword.getInputValue().getText().toString())) {
             errorMessage+=getString(R.string.error_password_empty)+"\n";
         }
         else {
             if(CustomApplication.getSystemPreference()!=null) {
-                if(mBinding.inputPassword.getText().toString().length()<CustomApplication.getSystemPreference().getValidations().getPassword().getMinLength()
-                        ||mBinding.inputPassword.getText().toString().length()>CustomApplication.getSystemPreference().getValidations().getPassword().getMaxLength()) {
+                if(mBinding.inputPassword.getInputValue().getText().toString().length()<CustomApplication.getSystemPreference().getValidations().getPassword().getMinLength()
+                        ||mBinding.inputPassword.getInputValue().getText().toString().length()>CustomApplication.getSystemPreference().getValidations().getPassword().getMaxLength()) {
                     errorMessage+=String.format(Locale.getDefault(), getString(R.string.error_password_length),CustomApplication.getSystemPreference().getValidations().getPassword().getMinLength(),
                             CustomApplication.getSystemPreference().getValidations().getPassword().getMaxLength())+"\n";
                 }

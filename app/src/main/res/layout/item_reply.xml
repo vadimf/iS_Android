@@ -47,7 +47,7 @@
                 android:id="@+id/txtViewDate"
                 android:textSize="12sp"
                 android:textColor="@color/grey"
-                android:fontFamily="@font/montserrat_light"
+                android:fontFamily="@font/assistant_regular"
                 android:layout_alignStart="@id/txtViewUsername"
                 android:layout_below="@id/txtViewUsername"
                 tools:text="3 days ago"/>

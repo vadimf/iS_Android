@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
 
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.30'
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'

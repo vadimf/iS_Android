@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomEditText">
+        <attr name="name" format="string" />
+        <attr name="label" format="string" />
+        <attr name="hint" format="string" />
+        <attr name="required" format="boolean"/>
+        <attr name="type" format="enum" >
+            <enum name="Email" value="0"/>
+            <enum name="Password" value="1"/>
+            <enum name="Text" value="2"/>
+        </attr>
+    </declare-styleable>
+</resources>

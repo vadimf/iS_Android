@@ -71,14 +71,14 @@
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@id/imgViewCake"
                     android:textSize="36sp"
-                    android:fontFamily="@font/pacifico_regular"
+                    android:fontFamily="@font/assistant_regular"
                     android:textColor="@color/share"
                     android:layout_centerVertical="true"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/txtViewVersionName"
-                    android:fontFamily="@font/pacifico_regular"
+                    android:fontFamily="@font/assistant_regular"
                     android:textSize="14sp"
                     android:textColor="@color/share"
                     android:layout_toEndOf="@id/txtViewCake"
@@ -136,7 +136,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:fontFamily="@font/montserrat_regular"
+                    android:fontFamily="@font/assistant_regular"
                     android:textColor="@color/label_regular"
                     android:text="@string/powered_by"/>
                 <TextView
@@ -146,7 +146,7 @@
                     android:id="@+id/txtViewGlobalbitLink"
                     android:textColor="@color/border_active"
                     android:textSize="12sp"
-                    android:fontFamily="@font/montserrat_regular"
+                    android:fontFamily="@font/assistant_regular"
                     android:text="@string/globalbit_url"/>
             </LinearLayout>
         </LinearLayout>

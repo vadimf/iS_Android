@@ -134,7 +134,7 @@
     <string name="label_user_following_empty">%1$s not following anyone yet</string>
     <string name="label_share_title">%1$s shared a video from TellYou app\n\n\"%2$s\"</string>
     <string name="label_share_via">Share via&#8230;</string>
-    <string name="label_sign_up_agreement"><![CDATA[By signing up you agree to <u>Terms of Use</u> & <u>Privacy Policy</u>]]></string>
+    <string name="label_sign_up_agreement">By signing up you agree to <u>Terms of Use</u>\n&amp;\n<u>Privacy Policy</u></string>
     <string name="label_log_in_agreement"><![CDATA[By logging in you agree to <u>Terms of Use</u> & <u>Privacy Policy</u>]]></string>
     <string name="label_sign_up_agree">By signing up you agree to</string>
     <string name="label_sign_in_agree">By logging in you agree to</string>
@@ -146,7 +146,7 @@
     <string name="btn_reset_password">Send Instructions</string>
     <string name="hint_email">Email</string>
     <string name="btn_login">Log in</string>
-    <string name="label_login"><u>Log in</u></string>
+    <string name="label_login"><u>LOG IN</u></string>
     <string name="hint_password">Password</string>
     <string name="btn_sign_up">Sign up</string>
     <string name="dialog_title_delete_post">Are you sure you want to delete this post?</string>
@@ -177,6 +177,7 @@
     <string name="label_how_to_log_in">Choose how to log in</string>
     <string name="label_how_to_create_account">Choose how to create new account</string>
     <string name="label_by_email_and_password">or by email and password</string>
+    <string name="label_by_facebook">or by Facebook</string>
     <string name="error_password_empty">Password cannot be empty</string>
     <string name="label_connection_description">Sign up to see Videos from your friends</string>
     <string name="label_forgot_password_instruction">Enter your Email below and we will send you the instructions on how to reset your password</string>
@@ -229,6 +230,9 @@
     <string name="tutorial_tap">Tap on video to pause and play it</string>
     <string name="tutorial_drag_left_right">Drag left right to rewind</string>
     <string name="label_popular_videos">Popular videos</string>
+    <string name="label_splash">The world\'s podium.</string>
+    <string name="label_email_hint">Your email address</string>
+    <string name="password_hint">At least %1$d characters</string>
 
     <plurals name="replies">
         <item quantity="zero">No replies</item>

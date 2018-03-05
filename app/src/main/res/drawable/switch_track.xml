@@ -1,4 +1,4 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="false" android:color="@color/inactive_opacity" />
-    <item android:state_checked="true"  android:color="@color/active_opacity" />
+    <item android:state_checked="false" android:color="@color/red_border" />
+    <item android:state_checked="true"  android:color="@color/grey" />
 </selector>

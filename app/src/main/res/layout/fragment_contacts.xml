@@ -45,7 +45,7 @@
             android:id="@+id/viewSeparator"
             android:background="@color/border_inactive"/>
         <Button
-            style="@style/ButtonShareStyle"
+            style="@style/ButtonRegularStyle"
             android:layout_marginTop="20dp"
             android:visibility="visible"
             android:layout_gravity="center_horizontal"
