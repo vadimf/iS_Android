@@ -6,13 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.FragmentSuggestionsBinding;
 import com.globalbit.tellyou.model.Pagination;
@@ -25,7 +22,7 @@ import com.globalbit.tellyou.ui.adapters.UsersAdapter;
  * Created by alex on 07/11/2017.
  */
 
-public class SuggestionsFragment extends BaseFragment implements IBaseNetworkResponseListener<UsersResponse>, View.OnClickListener {
+public class SuggestionsFragment extends BaseFragment implements IBaseNetworkResponseListener<UsersResponse> {
     private static final String TAG=SuggestionsFragment.class.getSimpleName();
     private FragmentSuggestionsBinding mBinding;
     private UsersAdapter mAdapter;
@@ -48,8 +45,8 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
         mBinding.recyclerViewUsers.setLayoutManager(layoutManager);
         mAdapter=new UsersAdapter(getActivity(), null);
         mBinding.recyclerViewUsers.setAdapter(mAdapter);
-        mBinding.imgViewClear.setOnClickListener(this);
-        mBinding.inputSearch.addTextChangedListener(new TextWatcher() {
+        //mBinding.imgViewClear.setOnClickListener(this);
+        /*mBinding.inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -82,7 +79,7 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
             public void afterTextChanged(Editable editable) {
 
             }
-        });
+        });*/
         mBinding.recyclerViewUsers.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -103,7 +100,7 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
                         mBinding.swipeLayout.post(new Runnable() {
                             @Override
                             public void run() {
-                                loadItems(mBinding.inputSearch.getText().toString());
+                                loadItems();
                             }
                         });
                     }
@@ -115,7 +112,7 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
             @Override
             public void run() {
                 mPage=1;
-                loadItems(null);
+                loadItems();
             }
         });
 
@@ -126,16 +123,10 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
     public void onPause() {
         super.onPause();
         mIsFirstTime=true;
-        mBinding.inputSearch.setText("");
     }
 
-    private void loadItems(String query) {
-        if(StringUtils.isEmpty(query)) {
-            NetworkManager.getInstance().getSuggestions(this, mPage);
-        }
-        else {
-            NetworkManager.getInstance().searchUsers(this, query, mPage);
-        }
+    private void loadItems() {
+        NetworkManager.getInstance().getSuggestions(this, mPage);
         mBinding.swipeLayout.setEnabled(true);
     }
 
@@ -145,18 +136,9 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
         mBinding.swipeLayout.setRefreshing(false);
         mBinding.swipeLayout.setEnabled(false);
         mLoading=true;
-        if(!StringUtils.isEmpty(response.getQuery())) {
-            if(mBinding.inputSearch.getText().toString().equals(response.getQuery())) {
-                mAdapter.showStatus(false);
-                mAdapter.addItems(response.getUsers());
-                showEmpty();
-            }
-        }
-        else {
-            mAdapter.showStatus(true);
-            mAdapter.addItems(response.getUsers());
-            showEmpty();
-        }
+        mAdapter.showStatus(true);
+        mAdapter.addItems(response.getUsers());
+        showEmpty();
         mPagination=response.getPagination();
     }
 
@@ -177,14 +159,5 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
         mBinding.swipeLayout.setEnabled(false);
         mLoading=true;
         showErrorMessage(errorCode, getString(R.string.error), errorMessage);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch(view.getId()) {
-            case R.id.imgViewClear:
-                mBinding.inputSearch.setText("");
-                break;
-        }
     }
 }

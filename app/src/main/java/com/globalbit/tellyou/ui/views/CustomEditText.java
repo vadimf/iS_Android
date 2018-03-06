@@ -2,10 +2,12 @@ package com.globalbit.tellyou.ui.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -17,8 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.globalbit.androidutils.ConversionUtils;
+import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.R;
+import com.globalbit.tellyou.model.InputData;
 import com.globalbit.tellyou.utils.Enums;
+import com.globalbit.tellyou.utils.ValidationUtils;
 
 /**
  * Created by alex on 05/03/2018.
@@ -79,8 +84,15 @@ public class CustomEditText extends LinearLayout {
                             }
                         });
                         break;
+                    case 3:
+                        //mInputValue.setFocusable(false);
+                        //mInputValue.setFocusableInTouchMode(false);
+                        mInputValue.setCursorVisible(false);
+                        //mInputValue.setClickable(false);
+                        break;
                     default:
                         mInputType=Enums.InputType.Text;
+                        mInputValue.setInputType(InputType.TYPE_CLASS_TEXT);
                         break;
                 }
             }
@@ -88,8 +100,11 @@ public class CustomEditText extends LinearLayout {
         finally {
             a.recycle();
         }
-
-
+        if(mInputType==Enums.InputType.Password) {
+            mInputValue.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            mInputValue.setTypeface(Typeface.DEFAULT);
+            mInputValue.setTransformationMethod(new PasswordTransformationMethod());
+        }
     }
 
     public CustomEditText(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -106,8 +121,9 @@ public class CustomEditText extends LinearLayout {
         mTxtViewLabel.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mTxtViewLabel.setAllCaps(true);
         LinearLayout linearLayout=new LinearLayout(context);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        ((LayoutParams)linearLayout.getLayoutParams()).gravity=Gravity.CENTER_VERTICAL;
+        LayoutParams params=new LayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        params.gravity=Gravity.CENTER_VERTICAL;
+        linearLayout.setLayoutParams(params);
         setInputValue(new EditText(context));
         getInputValue().setTextAppearance(context, R.style.InputTextStyle);
         getInputValue().setBackgroundResource(android.R.color.transparent);
@@ -115,29 +131,35 @@ public class CustomEditText extends LinearLayout {
         inputParams.weight=1;
         inputParams.setMarginEnd((int)ConversionUtils.convertDpToPixel(10, context));
         getInputValue().setLayoutParams(inputParams);
+        getInputValue().setIncludeFontPadding(false);
+        getInputValue().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         mImgViewEye=new ImageView(context);
         mImgViewEye.setImageResource(R.drawable.ic_eye_open_normal);
         mImgViewEye.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mImgViewEye.setVisibility(GONE);
+        ((LayoutParams)mImgViewEye.getLayoutParams()).gravity=Gravity.CENTER_VERTICAL;
         linearLayout.addView(getInputValue());
         linearLayout.addView(mImgViewEye);
         View view=new View(context);
         view.setBackgroundColor(context.getResources().getColor(R.color.separator));
         view.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)ConversionUtils.convertDpToPixel(1, context)));
-        mTxtViewError=new TextView(context);
-        mTxtViewError.setTextAppearance(context, R.style.ErrorTextStyle);
-        LinearLayout.LayoutParams errorParams=new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        errorParams.setMargins(0, (int)ConversionUtils.convertDpToPixel(5,context),0,0);
-        mTxtViewError.setLayoutParams(errorParams);
-
+        setTxtViewError(new TextView(context));
+        getTxtViewError().setTextAppearance(context, R.style.ErrorTextStyle);
+        LinearLayout.LayoutParams errorParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT/*(int)ConversionUtils.convertDpToPixel(20,context)*/);
+        errorParams.setMargins(0, (int)ConversionUtils.convertDpToPixel(5,context),0,(int)ConversionUtils.convertDpToPixel(5,context));
+        getTxtViewError().setLayoutParams(errorParams);
         getInputValue().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                if(mInputType==Enums.InputType.Password) {
+                    //Log.i("Test", "beforeTextChanged: "+charSequence+","+i+","+i1+","+i2);
+                }
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //Log.i("Test", "onTextChanged: "+charSequence+","+i+","+i1+","+i2);
+                getTxtViewError().setText("");
                 if(charSequence.length()>0) {
                     getInputValue().setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                     if(mInputType==Enums.InputType.Password) {
@@ -150,21 +172,26 @@ public class CustomEditText extends LinearLayout {
                     }
                 }
                 else {
-                    mInputValue.setInputType(InputType.TYPE_CLASS_TEXT);
+                    if(mInputType==Enums.InputType.Password&&i1>0) {
+                        mInputValue.setTypeface(Typeface.DEFAULT);
+                        mInputValue.setTransformationMethod(new PasswordTransformationMethod());
+                        mIsPasswordVisible=false;
+                        mImgViewEye.setImageResource(R.drawable.ic_eye_open_normal);
+                    }
                     getInputValue().setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                //Log.i("Test", "afterTextChanged: ");
             }
         });
 
         addView(mTxtViewLabel);
         addView(linearLayout);
         addView(view);
-        addView(mTxtViewError);
+        addView(getTxtViewError());
 
     }
 
@@ -174,5 +201,28 @@ public class CustomEditText extends LinearLayout {
 
     public void setInputValue(EditText inputValue) {
         mInputValue=inputValue;
+    }
+
+    public boolean validate() {
+        boolean isValid=true;
+        InputData data=new InputData();
+        data.setInputType(mInputType);
+        data.setName(mName);
+        data.setValue(mInputValue.getText().toString());
+        data.setRequired(mIsRequired);
+        String errorMessage=ValidationUtils.validate(data);
+        if(!StringUtils.isEmpty(errorMessage)) {
+            getTxtViewError().setText(errorMessage);
+            isValid=false;
+        }
+        return isValid;
+    }
+
+    public TextView getTxtViewError() {
+        return mTxtViewError;
+    }
+
+    public void setTxtViewError(TextView txtViewError) {
+        mTxtViewError=txtViewError;
     }
 }

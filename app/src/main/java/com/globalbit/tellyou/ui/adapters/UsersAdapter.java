@@ -106,11 +106,11 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             else {
                 if(item.isFollowing()) {
                     holder.mBinding.btnFollow.setBackgroundResource(R.drawable.button_share);
-                    holder.mBinding.btnFollow.setTextColor(mContext.getResources().getColor(R.color.share));
+                    holder.mBinding.btnFollow.setTextColor(mContext.getResources().getColor(R.color.red_border));
                     holder.mBinding.btnFollow.setText(R.string.btnFollowing);
                 } else {
-                    holder.mBinding.btnFollow.setBackgroundResource(R.drawable.button_regular);
-                    holder.mBinding.btnFollow.setTextColor(mContext.getResources().getColor(R.color.border_active));
+                    holder.mBinding.btnFollow.setBackgroundResource(R.drawable.background_button);
+                    holder.mBinding.btnFollow.setTextColor(mContext.getResources().getColor(R.color.white));
                     holder.mBinding.btnFollow.setText(R.string.btn_follow);
                 }
             }

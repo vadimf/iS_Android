@@ -9,6 +9,7 @@
             <enum name="Email" value="0"/>
             <enum name="Password" value="1"/>
             <enum name="Text" value="2"/>
+            <enum name="Birthday" value="3"/>
         </attr>
     </declare-styleable>
 </resources>

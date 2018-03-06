@@ -6,14 +6,18 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.globalbit.androidutils.StringUtils;
@@ -62,7 +66,16 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
         mBinding.txtViewPrivacy.setOnClickListener(this);
         mBinding.txtViewTermsOfUse.setOnClickListener(this);
         mBinding.txtViewLogout.setOnClickListener(this);
-        mBinding.txtViewGlobalbitLink.setOnClickListener(this);
+        mBinding.imgViewGlobalbit.setOnClickListener(this);
+        BottomNavigationMenuView bottomNavigationView=(BottomNavigationMenuView)mBinding.navigation.getChildAt(0);
+        for (int i = 0; i < bottomNavigationView.getChildCount(); i++) {
+            final View iconView=bottomNavigationView.getChildAt(i).findViewById(android.support.design.R.id.icon);
+            final ViewGroup.LayoutParams layoutParams=iconView.getLayoutParams();
+            final DisplayMetrics displayMetrics=getResources().getDisplayMetrics();
+            layoutParams.height=(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, displayMetrics);
+            layoutParams.width=(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, displayMetrics);
+            iconView.setLayoutParams(layoutParams);
+        }
         mLastNavigationItem=mBinding.navigation.getMenu().getItem(0);
         mBinding.navigation.getMenu().getItem(1).setCheckable(false);
         mBinding.navigation.setItemIconTintList(null);
@@ -279,7 +292,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                 });
                 mBinding.drawerLayout.closeDrawer(GravityCompat.START);
                 break;
-            case R.id.txtViewGlobalbitLink:
+            case R.id.imgViewGlobalbit:
                 Intent browserIntent=new Intent(Intent.ACTION_VIEW,
                         Uri.parse(getString(R.string.globalbit_website)));
                 startActivity(browserIntent);

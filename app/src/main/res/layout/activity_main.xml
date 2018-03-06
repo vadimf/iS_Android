@@ -7,6 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
+        android:background="@color/toolbar"
         tools:openDrawer="start">
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,7 +25,7 @@
                 android:layout_height="56dp"
                 android:layout_gravity="start"
                 android:elevation="4dp"
-                android:background="@color/white"
+                android:background="@color/toolbar"
                 app:menu="@menu/main_navigation"/>
         </LinearLayout>
         <LinearLayout
@@ -33,8 +34,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
-            android:background="@color/white"
             android:clickable="true"
+            android:background="@color/toolbar"
             android:focusable="true">
             <LinearLayout
                 android:id="@+id/toolbarMenu"
@@ -44,12 +45,11 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:gravity="center_vertical|end">
-
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/imgViewMenuClose"
-                    android:src="@drawable/ic_menu_open"/>
+                    android:src="@drawable/ic_close_navbar"/>
             </LinearLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -60,29 +60,19 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imgViewCake"
-                    android:src="@drawable/ic_cake"
-                    android:layout_centerVertical="true"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/app_name"
-                    android:id="@+id/txtViewCake"
-                    android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@id/imgViewCake"
-                    android:textSize="36sp"
-                    android:fontFamily="@font/assistant_regular"
-                    android:textColor="@color/share"
+                    android:id="@+id/imgViewTellyou"
+                    android:src="@drawable/logo_side_bar"
                     android:layout_centerVertical="true"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/txtViewVersionName"
                     android:fontFamily="@font/assistant_regular"
-                    android:textSize="14sp"
-                    android:textColor="@color/share"
-                    android:layout_toEndOf="@id/txtViewCake"
-                    android:layout_alignBaseline="@id/txtViewCake"
+                    android:textSize="16sp"
+                    android:textColor="@color/red_special"
+                    android:layout_toEndOf="@id/imgViewTellyou"
+                    android:layout_alignBaseline="@id/imgViewTellyou"
+                    android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
                     tools:text="v0.1"/>
             </RelativeLayout>
@@ -93,7 +83,7 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:layout_marginTop="35dp"
-                style="@style/TitleRegularLightStyle"
+                style="@style/LabelTextMediumStyle"
                 android:text="@string/label_about"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -102,7 +92,7 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:layout_marginTop="25dp"
-                style="@style/TitleRegularLightStyle"
+                style="@style/LabelTextMediumStyle"
                 android:text="@string/label_privacy_policy"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -111,7 +101,7 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:layout_marginTop="25dp"
-                style="@style/TitleRegularLightStyle"
+                style="@style/LabelTextMediumStyle"
                 android:text="@string/label_terms_of_service"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -120,7 +110,7 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:layout_marginTop="25dp"
-                style="@style/TitleRegularLightStyle"
+                style="@style/LabelTextMediumStyle"
                 android:text="@string/label_log_out"/>
             <android.support.v4.widget.Space
                 android:layout_width="match_parent"
@@ -132,22 +122,11 @@
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
                 android:layout_marginBottom="30dp">
-                <TextView
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/assistant_regular"
-                    android:textColor="@color/label_regular"
-                    android:text="@string/powered_by"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:id="@+id/txtViewGlobalbitLink"
-                    android:textColor="@color/border_active"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/assistant_regular"
-                    android:text="@string/globalbit_url"/>
+                    android:id="@+id/imgViewGlobalbit"
+                    android:src="@drawable/logo_globalbit"/>
             </LinearLayout>
         </LinearLayout>
     </android.support.v4.widget.DrawerLayout>

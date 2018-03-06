@@ -87,15 +87,15 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         }
         else { //Other profile
             mProfileState=Enums.ProfileState.UserProfile;
-            mBinding.imgViewMenu.setImageResource(R.drawable.ic_left_arrow);
+            mBinding.imgViewMenu.setImageResource(R.drawable.ic_back);
             if(mUser.isFollowing()) {
                 mBinding.btnAction.setBackgroundResource(R.drawable.button_share);
-                mBinding.btnAction.setTextColor(getResources().getColor(R.color.share));
+                mBinding.btnAction.setTextColor(getResources().getColor(R.color.red_border));
                 mBinding.btnAction.setText(R.string.btn_following);
             }
             else {
-                mBinding.btnAction.setBackgroundResource(R.drawable.button_regular);
-                mBinding.btnAction.setTextColor(getResources().getColor(R.color.border_active));
+                mBinding.btnAction.setBackgroundResource(R.drawable.background_button);
+                mBinding.btnAction.setTextColor(getResources().getColor(R.color.white));
                 mBinding.btnAction.setText(R.string.btn_follow);
             }
             mBinding.txtViewMyVideos.setVisibility(View.GONE);
@@ -116,6 +116,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         }
         if(mUser.getProfile()!=null&&!StringUtils.isEmpty(mUser.getProfile().getBio())) {
             mBinding.txtViewBio.setText(mUser.getProfile().getBio());
+            mBinding.txtViewBio.setVisibility(View.VISIBLE);
         }
         else {
             mBinding.txtViewBio.setVisibility(View.GONE);
@@ -169,8 +170,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                                 public void onSuccess(BaseResponse response) {
                                     hideLoadingDialog();
                                     mUser.setFollowing(false);
-                                    mBinding.btnAction.setBackgroundResource(R.drawable.button_regular);
-                                    mBinding.btnAction.setTextColor(getResources().getColor(R.color.border_active));
+                                    mBinding.btnAction.setBackgroundResource(R.drawable.background_button);
+                                    mBinding.btnAction.setTextColor(getResources().getColor(R.color.white));
                                     mBinding.btnAction.setText(getString(R.string.btn_follow));
                                 }
 
@@ -187,7 +188,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                                     hideLoadingDialog();
                                     mUser.setFollowing(true);
                                     mBinding.btnAction.setBackgroundResource(R.drawable.button_share);
-                                    mBinding.btnAction.setTextColor(getResources().getColor(R.color.share));
+                                    mBinding.btnAction.setTextColor(getResources().getColor(R.color.red_border));
                                     mBinding.btnAction.setText(getString(R.string.btn_following));
                                 }
 

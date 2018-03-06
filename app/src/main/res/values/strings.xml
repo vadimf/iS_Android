@@ -115,8 +115,7 @@
     <string name="hint_add_comment">Add a comment&#8230;</string>
     <string name="btn_send">Send</string>
     <string name="label_load_more_comments">Load more comments</string>
-    <string name="hint_user_name">Enter username</string>
-    <string name="hint_birthday">Enter birthday</string>
+    <string name="hint_user_name">Choose a unique username</string>
     <string name="hint_full_name">Enter full name</string>
     <string name="hint_bio">Tell about yourself</string>
     <string name="label_original_question">The original question was</string>
@@ -233,6 +232,14 @@
     <string name="label_splash">The world\'s podium.</string>
     <string name="label_email_hint">Your email address</string>
     <string name="password_hint">At least %1$d characters</string>
+    <string name="error_empty">cannot be empty</string>
+    <string name="error_invalid_mail">Email is not valid</string>
+    <string name="label_name">Name</string>
+    <string name="label_username">Username</string>
+    <string name="label_bio">Bio</string>
+    <string name="label_birthday">Your birthday</string>
+    <string name="birthday">Birthday</string>
+    <string name="hint_birthday">It won\'t be shown publicly</string>
 
     <plurals name="replies">
         <item quantity="zero">No replies</item>

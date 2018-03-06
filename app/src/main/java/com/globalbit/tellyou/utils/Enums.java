@@ -68,7 +68,8 @@ public class Enums {
     public enum InputType {
         Email,
         Password,
-        Text
+        Text,
+        Birthday
     }
 
 }

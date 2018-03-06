@@ -9,7 +9,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TitleMediumLightStyle"
+            style="@style/LabelTextMediumStyle"
             android:layout_marginTop="40dp"
             android:id="@+id/txtViewHeader"
             android:paddingStart="20dp"

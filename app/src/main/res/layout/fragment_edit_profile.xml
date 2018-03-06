@@ -1,152 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:layout_height="match_parent">
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:id="@+id/lnrLayoutProfileImage"
             android:orientation="vertical"
             android:gravity="center_horizontal">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:id="@+id/imgViewPhoto"
-                android:src="@drawable/ic_profile"/>
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:id="@+id/lnrLayoutProfileImage"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:id="@+id/imgViewPhoto"
+                    android:src="@drawable/img_add_photo_profile"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/label_add_photo"
+                    style="@style/LabelTextMediumStyle"/>
+            </LinearLayout>
+            <com.globalbit.tellyou.ui.views.CustomEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="@string/label_add_photo"
-                android:textColor="@color/border_active"
-                style="@style/TextMediumStyle"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:orientation="vertical">
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                style="@style/TextBigLightStyle"
-                android:textColorHint="@color/border_inactive"
-                android:gravity="center"
-                android:background="@android:color/transparent"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 android:id="@+id/inputName"
-                android:inputType="text"
-                android:hint="@string/hint_full_name"/>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/underline"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:orientation="vertical">
-            <EditText
+                app:label="@string/label_name"
+                app:hint="@string/hint_full_name"
+                app:type="Text"
+                app:name="@string/label_name"
+                app:required="true"/>
+            <com.globalbit.tellyou.ui.views.CustomEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                style="@style/TextBigLightStyle"
-                android:textColorHint="@color/border_inactive"
-                android:gravity="center"
-                android:background="@android:color/transparent"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 android:id="@+id/inputUsername"
-                android:inputType="text"
-                android:hint="@string/hint_user_name"/>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/underline"/>
-        </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/txtViewError"
-            style="@style/ErrorSmallLightStyle"
-            android:visibility="gone"
-            android:text="@string/validation_username_taken"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:orientation="vertical"
-            android:id="@+id/lnrLayoutBirthday">
-            <TextView
+                app:label="@string/label_username"
+                app:hint="@string/hint_user_name"
+                app:type="Text"
+                app:name="@string/label_username"
+                app:required="true"/>
+            <com.globalbit.tellyou.ui.views.CustomEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                style="@style/TextBigLightStyle"
-                android:textColorHint="@color/border_inactive"
-                android:gravity="center"
-                android:background="@android:color/transparent"
-                android:id="@+id/txtViewBirthday"
-                android:hint="@string/hint_birthday"/>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/underline"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:orientation="vertical">
-            <EditText
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:id="@+id/inputBirthday"
+                app:label="@string/label_birthday"
+                app:hint="@string/hint_birthday"
+                app:type="Birthday"
+                app:name="@string/birthday"
+                app:required="false"/>
+            <com.globalbit.tellyou.ui.views.CustomEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                style="@style/TextBigLightStyle"
-                android:textColorHint="@color/border_inactive"
-                android:gravity="center"
-                android:background="@android:color/transparent"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 android:id="@+id/inputBio"
-                android:inputType="text"
-                android:hint="@string/hint_bio"/>
-            <View
+                app:label="@string/label_bio"
+                app:hint="@string/hint_bio"
+                app:type="Text"
+                app:name="@string/label_bio"
+                app:required="false"/>
+            <android.support.v4.widget.Space
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/underline"/>
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <Button
+                style="@style/ButtonRegularStyle"
+                android:id="@+id/btnContinue"
+                android:text="@string/btn_continue"
+                android:enabled="false"
+                android:textColor="@color/grey_dark"
+                android:layout_marginTop="@dimen/button_margin"
+                android:layout_marginBottom="@dimen/button_margin"/>
         </LinearLayout>
-        <android.support.v4.widget.Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/border_inactive"/>
-        <Button
-            style="@style/ButtonRegularStyle"
-            android:id="@+id/btnContinue"
-            android:text="@string/btn_continue"
-            android:enabled="false"
-            android:textColor="@color/border_inactive"
-            android:layout_marginTop="@dimen/button_margin"
-            android:layout_marginBottom="@dimen/button_margin"/>
-    </LinearLayout>
+    </ScrollView>
+
 </layout>

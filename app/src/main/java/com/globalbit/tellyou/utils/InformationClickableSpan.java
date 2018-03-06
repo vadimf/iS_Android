@@ -44,7 +44,7 @@ public class InformationClickableSpan extends ClickableSpan {
     @Override
     public void updateDrawState(TextPaint ds) {
         super.updateDrawState(ds);
-        int linkColor = ContextCompat.getColor(mContext, R.color.border_active);
+        int linkColor = ContextCompat.getColor(mContext, R.color.grey_light);
         ds.setColor(linkColor);
         ds.setUnderlineText(true);
         ds.bgColor=ContextCompat.getColor(mContext, android.R.color.transparent);

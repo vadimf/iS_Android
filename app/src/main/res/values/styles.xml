@@ -11,6 +11,7 @@
         <item name="md_content_color">@color/grey</item>
         <item name="md_title_color">@color/grey</item>
         <item name="md_widget_color">@color/grey</item>
+        <item name="md_background_color">@color/toolbar</item>
     </style>
 
     //Parents
@@ -51,9 +52,45 @@
         <item name="android:fontFamily">@font/assistant_regular</item>
     </style>
 
+    <style name="LabelTextSemiBoldStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:fontFamily">@font/assistant_semi_bold</item>
+    </style>
+
+    <style name="TitleTextStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/grey_2</item>
+        <item name="android:fontFamily">@font/assistant_bold</item>
+    </style>
+
+    <style name="LabelTextStyleGreyLight">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/grey_light</item>
+        <item name="android:fontFamily">@font/assistant_regular</item>
+    </style>
+
     <style name="LabelTextMediumStyle">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/grey</item>
+        <item name="android:fontFamily">@font/assistant_regular</item>
+    </style>
+
+    <style name="LabelTextMediumSemiBoldStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:fontFamily">@font/assistant_semi_bold</item>
+    </style>
+
+    <style name="LabelTextWhiteSemiBoldStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/assistant_semi_bold</item>
+    </style>
+
+    <style name="LabelTextWhiteRegularStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:fontFamily">@font/assistant_regular</item>
     </style>
 
@@ -61,12 +98,14 @@
 
     <style name="ButtonFollowingSmall" parent="ButtonRegularStyle">
         <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/red_border</item>
         <item name="android:layout_width">110dp</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:background">@drawable/button_share</item>
     </style>
     <style name="ButtonFollowSmall" parent="ButtonRegularStyle">
         <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:layout_width">110dp</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:background">@drawable/background_button</item>
@@ -93,8 +132,8 @@
 
     <style name="NavigationTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textColor">@color/grey</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:fontFamily">@font/assistant_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/assistant_semi_bold</item>
     </style>
 
     <style name="Widget">
@@ -144,9 +183,9 @@
 
 
     <style name="LabelBigSemiBoldStyle">
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:fontFamily">@font/assistant_semi_bold</item>
-        <item name="android:textColor">@color/dark</item>
+        <item name="android:textColor">@color/red_dark</item>
     </style>
     <style name="HintBigLightStyle">
         <item name="android:textSize">22sp</item>
@@ -159,9 +198,14 @@
         <item name="android:textColor">@color/label_regular</item>
     </style>
     <style name="TextBigLightDarkStyle">
-        <item name="android:textSize">22sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">@font/assistant_light</item>
-        <item name="android:textColor">@color/dark</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="TextMediumLightDarkStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/assistant_light</item>
+        <item name="android:textColor">@color/grey</item>
     </style>
     <style name="ErrorSmallLightStyle">
         <item name="android:textSize">14sp</item>

@@ -56,7 +56,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         Resources resources = mContext.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         mImgWidth=metrics.widthPixels/2;
-        mImgHeight=(int)(mImgWidth*1.33);
+        mImgHeight=mImgWidth;
         mLayoutParams=new RelativeLayout.LayoutParams(mImgWidth, mImgHeight);
     }
 
@@ -106,7 +106,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 Glide.with(mContext).load(item.getVideo().getThumbnail()).into(holder.mBinding.imgViewPost);
             }
             else {
-                holder.mBinding.imgViewUser.setImageResource(R.drawable.big_image_profile_default);
+                holder.mBinding.imgViewUser.setImageResource(R.drawable.img_xs_no_photo_user);
             }
             switch(mFeedType) {
                 case Constants.TYPE_FEED_HOME:
@@ -115,7 +115,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         Picasso.with(mContext).load(item.getUser().getProfile().getPicture().getThumbnail()).into(holder.mBinding.imgViewUser);
                     }
                     else {
-                        holder.mBinding.imgViewUser.setImageResource(R.drawable.small_image_profile_default);
+                        holder.mBinding.imgViewUser.setImageResource(R.drawable.img_xs_no_photo_user);
                     }
                     break;
                 case Constants.TYPE_FEED_USER:
@@ -124,10 +124,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                     break;
             }
             if(item.getUser().getUsername().equals(mUser.getUsername())) {
-                holder.mBinding.imgViewAction.setVisibility(View.VISIBLE);
+                holder.mBinding.frmLayoutAction.setVisibility(View.VISIBLE);
             }
             else {
-                holder.mBinding.imgViewAction.setVisibility(View.GONE);
+                holder.mBinding.frmLayoutAction.setVisibility(View.GONE);
             }
             holder.mBinding.txtViewDescription.setText(item.getText());
             holder.mBinding.txtViewViews.setText(String.format(Locale.getDefault(),"%d", item.getViews()));
@@ -135,7 +135,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 @Override
                 public void onClick(View v, final int position) {
                     switch(v.getId()) {
-                        case R.id.imgViewAction:
+                        case R.id.frmLayoutAction:
                             final MaterialDialog dialog=new MaterialDialog.Builder(mContext)
                                     .customView(R.layout.dialog_my_videos_actions, false)
                                     .show();
@@ -220,7 +220,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             super(v);
             mBinding=DataBindingUtil.bind(v);
             mBinding.imgViewUser.setOnClickListener(this);
-            mBinding.imgViewAction.setOnClickListener(this);
+            mBinding.frmLayoutAction.setOnClickListener(this);
             mBinding.rltvLayoutPost.setOnClickListener(this);
         }
 

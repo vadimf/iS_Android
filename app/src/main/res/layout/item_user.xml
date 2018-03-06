@@ -11,10 +11,10 @@
         android:gravity="center_vertical"
         android:id="@+id/lnrLayoutUser">
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/imgViewPhoto"
-            android:src="@drawable/small_image_profile_default"/>
+            android:src="@drawable/img_small_no_photo_user"/>
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -25,12 +25,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TitleMediumLightStyle"
+                style="@style/LabelTextStyleGreyLight"
                 android:id="@+id/txtViewName"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TextVerySmallLightStyle"
+                style="@style/LabelTextStyle"
                 android:id="@+id/txtViewStatus"
                 android:text="@string/label_popular_on_cake"
                 android:visibility="gone"/>

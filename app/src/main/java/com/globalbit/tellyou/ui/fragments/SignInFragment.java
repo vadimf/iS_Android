@@ -87,8 +87,11 @@ public class SignInFragment extends BaseFragment implements View.OnClickListener
         });
         mBinding.btnSignIn.setOnClickListener(this);
         mBinding.txtViewForgotPassword.setOnClickListener(this);
-
-        mBinding.inputEmail.addTextChangedListener(new TextWatcher() {
+        if(CustomApplication.getSystemPreference()!=null) {
+            mBinding.inputPassword.getInputValue().setHint(String.format(Locale.getDefault(),getString(R.string.password_hint),
+                    CustomApplication.getSystemPreference().getValidations().getPassword().getMinLength()));
+        }
+        mBinding.inputEmail.getInputValue().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -98,11 +101,11 @@ public class SignInFragment extends BaseFragment implements View.OnClickListener
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(android.util.Patterns.EMAIL_ADDRESS.matcher(charSequence).matches()) {
                     mBinding.btnSignIn.setEnabled(true);
-                    mBinding.btnSignIn.setTextColor(getResources().getColor(R.color.border_active));
+                    mBinding.btnSignIn.setTextColor(getResources().getColor(R.color.red_border));
                 }
                 else {
                     mBinding.btnSignIn.setEnabled(false);
-                    mBinding.btnSignIn.setTextColor(getResources().getColor(R.color.border_inactive));
+                    mBinding.btnSignIn.setTextColor(getResources().getColor(R.color.grey_dark));
                 }
             }
 
@@ -122,9 +125,9 @@ public class SignInFragment extends BaseFragment implements View.OnClickListener
         SpannableStringBuilder spannableString=new SpannableStringBuilder(getString(R.string.label_sign_in_agree));
         spannableString.append(" ");
         spannableString.append(spannableStringTermsOfService);
-        spannableString.append(" ");
+        spannableString.append("\n");
         spannableString.append("&");
-        spannableString.append(" ");
+        spannableString.append("\n");
         spannableString.append(spannableStringPrivacyPolicy);
 
         mBinding.txtViewAgreement.setText(spannableString);
@@ -144,16 +147,12 @@ public class SignInFragment extends BaseFragment implements View.OnClickListener
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btnSignIn:
-                String errorMessage=validate();
-                if(StringUtils.isEmpty(errorMessage)) {
+                if(mBinding.inputPassword.validate()) {
                     showLoadingDialog();
                     SignInUpRequest request=new SignInUpRequest();
-                    request.setEmail(mBinding.inputEmail.getText().toString());
-                    request.setPassword(mBinding.inputPassword.getText().toString());
+                    request.setEmail(mBinding.inputEmail.getInputValue().getText().toString());
+                    request.setPassword(mBinding.inputPassword.getInputValue().getText().toString());
                     NetworkManager.getInstance().sigIn(this,request);
-                }
-                else {
-                    showMessage(getString(R.string.error), errorMessage);
                 }
                 break;
             case R.id.txtViewForgotPassword:
@@ -173,22 +172,6 @@ public class SignInFragment extends BaseFragment implements View.OnClickListener
         }
     }
 
-    private String validate() {
-        String errorMessage="";
-        if(StringUtils.isEmpty(mBinding.inputPassword.getText().toString())) {
-            errorMessage+=getString(R.string.error_password_empty)+"\n";
-        }
-        else {
-            if(CustomApplication.getSystemPreference()!=null) {
-                if(mBinding.inputPassword.getText().toString().length()<CustomApplication.getSystemPreference().getValidations().getPassword().getMinLength()
-                        ||mBinding.inputPassword.getText().toString().length()>CustomApplication.getSystemPreference().getValidations().getPassword().getMaxLength()) {
-                    errorMessage+=String.format(Locale.getDefault(), getString(R.string.error_password_length),CustomApplication.getSystemPreference().getValidations().getPassword().getMinLength(),
-                            CustomApplication.getSystemPreference().getValidations().getPassword().getMaxLength())+"\n";
-                }
-            }
-        }
-        return errorMessage;
-    }
 
     @Override
     public void onSuccess(AuthenticateUserResponse response) {

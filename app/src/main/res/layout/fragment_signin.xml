@@ -18,7 +18,48 @@
                 android:layout_marginTop="@dimen/sign_margin_top"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/label_how_to_log_in"
-                style="@style/LabelRegularLightStyle"/>
+                style="@style/LabelTextMediumStyle"/>
+
+            <com.globalbit.tellyou.ui.views.CustomEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sign_margin_top"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:id="@+id/inputEmail"
+                app:label="@string/hint_email"
+                app:hint="@string/label_email_hint"
+                app:type="Email"
+                app:name="@string/hint_email"
+                app:required="true"/>
+
+            <com.globalbit.tellyou.ui.views.CustomEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:id="@+id/inputPassword"
+                app:label="@string/hint_password"
+                app:type="Password"
+                app:name="@string/hint_password"
+                app:required="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtViewForgotPassword"
+                android:layout_marginTop="10dp"
+                style="@style/LabelTextStyleGreyLight"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/label_forgot_password"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/label_by_facebook"
+                style="@style/LabelTextMediumStyle"/>
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/btnFacebook"
@@ -29,54 +70,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/sign_margin_top"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_margin_top"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/label_by_email_and_password"
-                style="@style/HintSmallLightDarkStyle"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_margin_top"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/hint_email"
-                android:textAllCaps="true"
-                style="@style/HintMediumLightStyle"/>
-
-            <EditText
-                style="@style/InputTextStyle"
-                android:id="@+id/inputEmail"
-                android:layout_marginTop="10dp"
-                android:inputType="textEmailAddress"
-                android:hint="@string/hint_email"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/hint_password"
-                android:textAllCaps="true"
-                style="@style/HintMediumLightStyle"/>
-
-            <EditText
-                style="@style/InputTextStyle"
-                android:id="@+id/inputPassword"
-                android:layout_marginTop="10dp"
-                android:inputType="textPassword"
-                android:hint="@string/hint_password"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtViewForgotPassword"
-                android:layout_marginTop="20dp"
-                style="@style/TextSmallLightBlueStyle"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/label_forgot_password"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -86,7 +80,7 @@
                 android:gravity="center"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                style="@style/HintSmallLightDarkStyle"
+                style="@style/LabelTextStyle"
                 android:text="@string/label_log_in_agreement"/>
 
             <Button
@@ -94,7 +88,7 @@
                 android:enabled="false"
                 android:layout_marginTop="@dimen/sign_margin_top"
                 style="@style/ButtonRegularStyle"
-                android:textColor="@color/border_inactive"
+                android:textColor="@color/grey_dark"
                 android:text="@string/btn_login"
                 android:layout_marginBottom="10dp"/>
         </LinearLayout>

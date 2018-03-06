@@ -37,7 +37,7 @@ public class ForgotPasswordFragment extends BaseFragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_forgot_password, container,false);
         mBinding.btnResetPassword.setOnClickListener(this);
-        mBinding.inputEmail.addTextChangedListener(new TextWatcher() {
+        mBinding.inputEmail.getInputValue().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -47,11 +47,11 @@ public class ForgotPasswordFragment extends BaseFragment implements View.OnClick
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(android.util.Patterns.EMAIL_ADDRESS.matcher(charSequence).matches()) {
                     mBinding.btnResetPassword.setEnabled(true);
-                    mBinding.btnResetPassword.setTextColor(getResources().getColor(R.color.border_active));
+                    mBinding.btnResetPassword.setTextColor(getResources().getColor(R.color.red_border));
                 }
                 else {
                     mBinding.btnResetPassword.setEnabled(false);
-                    mBinding.btnResetPassword.setTextColor(getResources().getColor(R.color.border_inactive));
+                    mBinding.btnResetPassword.setTextColor(getResources().getColor(R.color.grey_dark));
                 }
             }
 
@@ -70,7 +70,7 @@ public class ForgotPasswordFragment extends BaseFragment implements View.OnClick
             case R.id.btnResetPassword:
                 showLoadingDialog();
                 ForgotPasswordRequest request=new ForgotPasswordRequest();
-                request.setEmail(mBinding.inputEmail.getText().toString());
+                request.setEmail(mBinding.inputEmail.getInputValue().getText().toString());
                 NetworkManager.getInstance().forgotPassword(this, request);
                 break;
         }
@@ -79,7 +79,7 @@ public class ForgotPasswordFragment extends BaseFragment implements View.OnClick
     @Override
     public void onSuccess(BaseResponse response) {
         hideLoadingDialog();
-        mBinding.inputEmail.setText("");
+        mBinding.inputEmail.getInputValue().setText("");
         //showMessage(getString(R.string.dialog_title_forgot_password),getString(R.string.dialog_content_forgot_password));
         new MaterialDialog.Builder(getActivity())
                 .title(R.string.dialog_title_forgot_password)

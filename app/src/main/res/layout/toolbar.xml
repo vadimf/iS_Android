@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txtViewTitle"
                 android:layout_centerInParent="true"
-                style="@style/TitleRegularLightStyle"/>
+                style="@style/TitleTextStyle"/>
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 </layout>

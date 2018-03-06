@@ -125,9 +125,9 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
         SpannableStringBuilder spannableString=new SpannableStringBuilder(getString(R.string.label_sign_up_agree));
         spannableString.append(" ");
         spannableString.append(spannableStringTermsOfService);
-        spannableString.append(" ");
+        spannableString.append("\n");
         spannableString.append("&");
-        spannableString.append(" ");
+        spannableString.append("\n");
         spannableString.append(spannableStringPrivacyPolicy);
 
         mBinding.txtViewAgreement.setText(spannableString);
@@ -147,16 +147,12 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btnSignUp:
-                String errorMessage=validate();
-                if(StringUtils.isEmpty(errorMessage)) {
+                if(mBinding.inputPassword.validate()) {
                     showLoadingDialog();
                     SignInUpRequest request=new SignInUpRequest();
                     request.setEmail(mBinding.inputEmail.getInputValue().getText().toString());
                     request.setPassword(mBinding.inputPassword.getInputValue().getText().toString());
                     NetworkManager.getInstance().signUp(this,request);
-                }
-                else {
-                    showMessage(getString(R.string.error), errorMessage);
                 }
                 break;
         }
@@ -171,24 +167,6 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
         else {
             throw new ClassCastException(context.toString() + " must implement ILoginListener.");
         }
-    }
-
-    private String validate() {
-        String errorMessage="";
-        if(StringUtils.isEmpty(mBinding.inputPassword.getInputValue().getText().toString())) {
-            errorMessage+=getString(R.string.error_password_empty)+"\n";
-        }
-        else {
-            if(CustomApplication.getSystemPreference()!=null) {
-                if(mBinding.inputPassword.getInputValue().getText().toString().length()<CustomApplication.getSystemPreference().getValidations().getPassword().getMinLength()
-                        ||mBinding.inputPassword.getInputValue().getText().toString().length()>CustomApplication.getSystemPreference().getValidations().getPassword().getMaxLength()) {
-                    errorMessage+=String.format(Locale.getDefault(), getString(R.string.error_password_length),CustomApplication.getSystemPreference().getValidations().getPassword().getMinLength(),
-                            CustomApplication.getSystemPreference().getValidations().getPassword().getMaxLength())+"\n";
-                }
-            }
-        }
-
-        return errorMessage;
     }
 
     @Override

@@ -39,9 +39,9 @@
     <color name="red_special_2">#f26500</color>
     <color name="red_border">#fe6b01</color>
     <color name="white">#ffffff</color>
-    <color name="black">#000000</color>
     <color name="separator">#666870</color>
     <color name="background">#222327</color>
     <color name="toolbar">#1a1b1f</color>
+    <color name="black">#121315</color>
 
 </resources>
