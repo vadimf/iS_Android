@@ -3,19 +3,17 @@ package com.globalbit.tellyou.ui.activities;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.MediaController;
-import android.widget.SeekBar;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -52,12 +50,15 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
         mBinding=DataBindingUtil.setContentView(this, R.layout.activity_create_post);
         mVideoRecordingType=getIntent().getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
         mPostId=getIntent().getStringExtra(Constants.DATA_POST_ID);
+        mBinding.inputTitle.txtViewTitle.setVisibility(View.GONE);
+        mBinding.inputTitle.inputValue.setHint(R.string.hint_add_title);
+        mBinding.inputTitle.inputValue.setFilters(new InputFilter[] { new InputFilter.LengthFilter(Constants.TITLE_SIZE_MAX) } );
         switch(mVideoRecordingType) {
             case Constants.TYPE_POST_VIDEO_RECORDING:
-                mBinding.inputTitle.setVisibility(View.VISIBLE);
+                mBinding.inputTitle.lnrLayoutEdit.setVisibility(View.VISIBLE);
                 break;
             case Constants.TYPE_REPLY_VIDEO_RECORDING:
-                mBinding.inputTitle.setVisibility(View.GONE);
+                mBinding.inputTitle.lnrLayoutEdit.setVisibility(View.GONE);
                 break;
         }
         mBinding.btnTellIt.setOnClickListener(this);
@@ -71,14 +72,31 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
             playerHelper.setPlayerView(mBinding.videoViewPlayer);
             mBinding.videoViewPlayer.setOnClickListener(this);
         }
+        mBinding.inputTitle.inputValue.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mBinding.inputTitle.txtViewError.setText("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     @Override
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btnTellIt:
-                if(mVideoRecordingType==Constants.TYPE_POST_VIDEO_RECORDING&&StringUtils.isEmpty(mBinding.inputTitle.getText().toString())) {
-                    showMessage(getString(R.string.error),getString(R.string.error_new_video_title_empty));
+                if(mVideoRecordingType==Constants.TYPE_POST_VIDEO_RECORDING&&StringUtils.isEmpty(mBinding.inputTitle.inputValue.getText().toString())) {
+                    mBinding.inputTitle.txtViewError.setText(R.string.error_new_video_title_empty);
+                    //showMessage(getString(R.string.error),getString(R.string.error_new_video_title_empty));
                 }
                 else {
                     File file=new File(mVideoPath);
@@ -101,7 +119,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                     Intent intent=new Intent(this, UploadService.class);
                     intent.putExtra(Constants.DATA_VIDEO_FILE, file);
                     intent.putExtra(Constants.DATA_GIF_FILE, gifFile);
-                    intent.putExtra(Constants.DATA_TEXT, mBinding.inputTitle.getText().toString());
+                    intent.putExtra(Constants.DATA_TEXT, mBinding.inputTitle.inputValue.getText().toString());
                     intent.putExtra(Constants.DATA_DURATION, mBinding.videoViewPlayer.getPlayer().getDuration()/1000);
                     intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, mVideoRecordingType);
                     intent.putExtra(Constants.DATA_POST_ID, mPostId);

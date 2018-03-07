@@ -118,7 +118,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
                 Picasso.with(mContext).load(item.getProfile().getPicture().getThumbnail()).into(holder.mBinding.imgViewPhoto);
             }
             else {
-                holder.mBinding.imgViewPhoto.setImageResource(R.drawable.small_image_profile_default);
+                holder.mBinding.imgViewPhoto.setImageResource(R.drawable.img_xs_no_photo_user);
             }
             holder.setClickListener(new ViewHolder.ClickListener() {
                 @Override

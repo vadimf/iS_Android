@@ -25,35 +25,40 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ProgressBar
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:id="@+id/progressBarPortrait"
-                style="@style/Widget.ProgressBar.Vertical"
-                android:progressDrawable="@drawable/progressbar"
-                android:indeterminate="false"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtViewViews"
-                android:drawableStart="@drawable/ic_remove_red_eye_black_24dp"
-                android:drawableTint="@color/white"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_below="@id/progressBarPortrait"
-                android:gravity="center"
-                tools:text="5"
-                android:textColor="@color/white"
-                android:drawablePadding="5dp"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imgViewCancel"
-                android:src="@drawable/ic_close_light"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/progressBarPortrait"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"/>
+                android:layout_height="80dp"
+                android:background="@drawable/background_alpha_reverse">
+                <ProgressBar
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:id="@+id/progressBarPortrait"
+                    style="@style/Widget.ProgressBar.Vertical"
+                    android:progressDrawable="@drawable/progressbar"
+                    android:indeterminate="false"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtViewViews"
+                    android:drawableStart="@drawable/ic_eye_views"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@id/progressBarPortrait"
+                    android:gravity="center"
+                    tools:text="5"
+                    style="@style/TimerTextStyle"
+                    android:drawablePadding="5dp"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imgViewCancel"
+                    android:src="@drawable/ic_close_views"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/progressBarPortrait"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"/>
+            </RelativeLayout>
+
             <include layout="@layout/layout_player_actions"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"

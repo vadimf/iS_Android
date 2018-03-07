@@ -386,7 +386,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
             case Initial:
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutExit.setVisibility(View.VISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutRecordStop.setVisibility(View.VISIBLE);
-                mBinding.lnrLayoutVideoRecordingActions.imgViewRecordStop.setImageResource(R.drawable.ic_fiber_manual_record_black_24dp);
+                mBinding.lnrLayoutVideoRecordingActions.imgViewRecordStop.setImageResource(R.drawable.ic_btn_record_step_2);
                 mBinding.lnrLayoutVideoRecordingActions.imgViewReShoot.setVisibility(View.INVISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutFinish.setVisibility(View.GONE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutSwitchCamera.setVisibility(View.VISIBLE);
@@ -394,7 +394,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
             case Recording:
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutExit.setVisibility(View.GONE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutRecordStop.setVisibility(View.VISIBLE);
-                mBinding.lnrLayoutVideoRecordingActions.imgViewRecordStop.setImageResource(R.drawable.ic_stop_black_24dp);
+                mBinding.lnrLayoutVideoRecordingActions.imgViewRecordStop.setImageResource(R.drawable.btn_stop);
                 mBinding.lnrLayoutVideoRecordingActions.imgViewReShoot.setVisibility(View.INVISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutFinish.setVisibility(View.GONE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutSwitchCamera.setVisibility(View.GONE);
@@ -402,7 +402,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
             case Stopped:
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutExit.setVisibility(View.VISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutRecordStop.setVisibility(View.VISIBLE);
-                mBinding.lnrLayoutVideoRecordingActions.imgViewRecordStop.setImageResource(R.drawable.ic_fiber_manual_record_black_24dp);
+                mBinding.lnrLayoutVideoRecordingActions.imgViewRecordStop.setImageResource(R.drawable.ic_btn_record_step_2);
                 mBinding.lnrLayoutVideoRecordingActions.imgViewReShoot.setVisibility(View.VISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutFinish.setVisibility(View.VISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutSwitchCamera.setVisibility(View.GONE);

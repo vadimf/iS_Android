@@ -5,19 +5,26 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.internal.MDButton;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.CustomApplication;
@@ -37,6 +44,7 @@ import com.globalbit.tellyou.ui.dialogs.BirthdayPickerDialogFragment;
 import com.globalbit.tellyou.utils.GeneralUtils;
 import com.globalbit.tellyou.utils.ObservableHelper;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.shawnlin.numberpicker.NumberPicker;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -58,7 +66,8 @@ import io.reactivex.schedulers.Schedulers;
  * Created by alex on 06/11/2017.
  */
 
-public class EditProfileFragment extends BaseFragment implements View.OnClickListener, IBaseNetworkResponseListener<UserResponse> , BirthdayPickerDialogFragment.OnDateSet{
+public class EditProfileFragment extends BaseFragment implements View.OnClickListener, IBaseNetworkResponseListener<UserResponse> {
+    private static final String TAG=EditProfileFragment.class.getSimpleName();
     private FragmentEditProfileBinding mBinding;
     private Pattern mUserNamePattern;
     private User mUser;
@@ -66,6 +75,8 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
     private Uri mUri;
     private String mBirthDay=null;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
+    private String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    private Calendar mCurrentDate=Calendar.getInstance();
 
     public static EditProfileFragment newInstance() {
         EditProfileFragment fragment=new EditProfileFragment();
@@ -218,13 +229,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
         }
         mBinding.btnContinue.setOnClickListener(this);
         mBinding.lnrLayoutProfileImage.setOnClickListener(this);
-        mBinding.inputBirthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BirthdayPickerDialogFragment datePickerDialogFragment = BirthdayPickerDialogFragment.newInstance(EditProfileFragment.this);
-                datePickerDialogFragment.show(getChildFragmentManager(), "datePicker");
-            }
-        });
+        mBinding.inputBirthday.setOnClickListener(this);
 
         return mBinding.getRoot();
     }
@@ -314,18 +319,37 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                     public void onClick(View v) {
                         dialog.dismiss();
                         checkForPermissions(2, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
-                        /*Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        intent.setType("image*//*");
-                        startActivityForResult(intent, Constants.REQUEST_GALLERY);*/
                     }
                 });
                 break;
-            /*case R.id.inputBirthday:
-                BirthdayPickerDialogFragment datePickerDialogFragment = BirthdayPickerDialogFragment.newInstance(this);
-                datePickerDialogFragment.show(getChildFragmentManager(), "datePicker");
-                break;*/
+            case R.id.inputBirthday:
+                final MaterialDialog dialogBirthday=new MaterialDialog.Builder(getActivity())
+                        .customView(R.layout.dialog_birthday_picker, false)
+                        .positiveText(R.string.btn_set)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+                                NumberPicker pickerDays=(NumberPicker) dialog.findViewById(R.id.pickerDays);
+                                NumberPicker pickerMonths=(NumberPicker) dialog.findViewById(R.id.pickerMonths);
+                                NumberPicker pickerYears=(NumberPicker) dialog.findViewById(R.id.pickerYears);
+                                setDate(pickerDays, pickerMonths, pickerYears);
+                            }
+                        })
+                        .negativeText(R.string.btn_cancel)
+                        .show();
+                Typeface typeface = ResourcesCompat.getFont(getActivity(), R.font.assistant_regular);
+                final NumberPicker pickerDays=(NumberPicker) dialogBirthday.findViewById(R.id.pickerDays);
+                final NumberPicker pickerMonths=(NumberPicker) dialogBirthday.findViewById(R.id.pickerMonths);
+                final NumberPicker pickerYears=(NumberPicker) dialogBirthday.findViewById(R.id.pickerYears);
+                pickerDays.setTypeface(typeface);
+                pickerMonths.setTypeface(typeface);
+                pickerYears.setTypeface(typeface);
+                prepareDatePicker(pickerDays, pickerMonths, pickerYears);
+                break;
         }
     }
+
 
     @Override
     protected void permissionAccepted() {
@@ -356,7 +380,6 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
         if(requestCode==Constants.REQUEST_GALLERY) {
             if(resultCode==Activity.RESULT_OK) {
                 mUri=data.getData();
-                /*Picasso.with(getActivity()).load(mUri).into(mBinding.imgViewPhoto);*/
                 cropImage();
             }
             mFile=null;
@@ -364,7 +387,6 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
         else if(requestCode==Constants.REQUEST_CAMERA) {
             if(resultCode==Activity.RESULT_OK) {
                 mUri=Uri.fromFile(mFile);
-                /*Picasso.with(getActivity()).load(mUri).into(mBinding.imgViewPhoto);*/
                 cropImage();
             }
             mFile=null;
@@ -434,15 +456,78 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    @Override
-    public void onDateSet(int year, int monthOfYear, int dayOfMonth, boolean isProperDate) {
+    private void prepareDatePicker(final NumberPicker pickerDays, final NumberPicker pickerMonths, final NumberPicker pickerYears) {
+        pickerMonths.setMinValue(1);
+        pickerMonths.setMaxValue(months.length);
+        pickerMonths.setDisplayedValues(months);
+        pickerMonths.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                if(newVal==1||newVal==3||newVal==5||newVal==7||newVal==8||newVal==10||newVal==12) {
+                    pickerDays.setMaxValue(31);
+                }
+                else if(newVal==2) {
+                    int year=pickerYears.getValue();
+                    if(year%4==0) {
+                        pickerDays.setMaxValue(29);
+                        if(pickerDays.getValue()>29) {
+                            pickerDays.setValue(29);
+                        }
+                    }
+                    else {
+                        pickerDays.setMaxValue(28);
+                        if(pickerDays.getValue()>28) {
+                            pickerDays.setValue(28);
+                        }
+                    }
+                }
+                else {
+                    pickerDays.setMaxValue(30);
+                    if(pickerDays.getValue()>30) {
+                        pickerDays.setValue(30);
+                    }
+                }
+            }
+        });
+        pickerYears.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                if(pickerMonths.getValue()==2) {
+                    if(newVal%4==0) {
+                        pickerDays.setMaxValue(29);
+                        if(pickerDays.getValue()>29) {
+                            pickerDays.setValue(29);
+                        }
+                    }
+                    else {
+                        pickerDays.setMaxValue(28);
+                        if(pickerDays.getValue()>28) {
+                            pickerDays.setValue(28);
+                        }
+                    }
+                }
+            }
+        });
+        int day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
+        int month=mCurrentDate.get(Calendar.MONTH);
+        int year=mCurrentDate.get(Calendar.YEAR);
+        Log.i(TAG, "onClick: "+day+","+month+","+year);
+        pickerDays.setValue(day);
+        pickerYears.setValue(year);
+        pickerMonths.setValue(month+1);
+    }
+
+    private void setDate(NumberPicker pickerDays, NumberPicker pickerMonths, NumberPicker pickerYears) {
+        int day=pickerDays.getValue();
+        int month=pickerMonths.getValue();
+        int year=pickerYears.getValue();
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, monthOfYear);
-        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        c.set(Calendar.HOUR_OF_DAY, 23);
-        c.set(Calendar.MINUTE, 59);
-        c.set(Calendar.SECOND, 59);
+        c.set(Calendar.MONTH, month-1);
+        c.set(Calendar.DAY_OF_MONTH, day);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
         if(c.getTimeInMillis()>=Calendar.getInstance().getTimeInMillis()) {
             new MaterialDialog.Builder(getActivity())
@@ -451,16 +536,9 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                     .positiveText(R.string.btn_ok)
                     .show();
         }
-        else if(!isProperDate) {
-            new MaterialDialog.Builder(getActivity())
-                    .title(R.string.error)
-                    .content(R.string.error_birthday_invalid)
-                    .positiveText(R.string.btn_ok)
-                    .show();
-        }
         else {
-            mBinding.inputBirthday.getInputValue().setText(String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, monthOfYear+1, year));
-            mBirthDay=String.format(Locale.getDefault(), "%d-%02d-%02d", year, monthOfYear+1, dayOfMonth);
+            mBinding.inputBirthday.getInputValue().setText(String.format(Locale.getDefault(), "%02d/%02d/%d", day, month, year));
+            mBirthDay=String.format(Locale.getDefault(), "%d-%02d-%02d", year, month, day);
         }
     }
 }

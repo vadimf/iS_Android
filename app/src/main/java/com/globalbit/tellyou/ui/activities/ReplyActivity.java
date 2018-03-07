@@ -5,11 +5,14 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.util.Log;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -24,8 +27,13 @@ import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.CommentsResponse;
 import com.globalbit.tellyou.ui.adapters.RepliesAdapter;
+import com.globalbit.tellyou.ui.events.NextVideoEvent;
 import com.globalbit.tellyou.ui.interfaces.IReplyListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 
 /**
@@ -59,18 +67,28 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mBinding.recyclerViewReplies.setLayoutManager(layoutManager);
         mBinding.recyclerViewReplies.setAdapter(mAdapter);
+        DividerItemDecoration itemDecorator = new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL);
+        itemDecorator.setDrawable(getResources().getDrawable(R.drawable.horizontal_divider));
+        mBinding.recyclerViewReplies.addItemDecoration(itemDecorator);
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(mBinding.recyclerViewReplies);
         mBinding.recyclerViewReplies.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(dy<0) {
+                pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+                if(pastVisiblesItems>0) {
+                    mBinding.imgViewBackToStart.setVisibility(View.VISIBLE);
+                }
+                else {
+                    mBinding.imgViewBackToStart.setVisibility(View.GONE);
+                }
+                if(dx<0) {
                     return;
                 }
                 visibleItemCount = layoutManager.getChildCount();
                 totalItemCount = layoutManager.getItemCount();
-                pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+                //pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
                 if (mLoading) {
                     if(mPagination!=null&&mPagination.getPage()>=mPagination.getPages()) {
                         return;
@@ -101,7 +119,6 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.imgViewAddReply:
-                //TODO add new reply
                 Intent intent=new Intent(ReplyActivity.this, VideoRecordingActivity.class);
                 intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_REPLY_VIDEO_RECORDING);
                 intent.putExtra(Constants.DATA_POST_ID, mPostId);
@@ -111,7 +128,8 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
                 onBackPressed();
                 break;
             case R.id.imgViewBackToStart:
-                //TODO scroll to first item
+                mBinding.recyclerViewReplies.smoothScrollToPosition(0);
+                mBinding.imgViewBackToStart.setVisibility(View.GONE);
                 break;
         }
     }
@@ -199,5 +217,25 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
 
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNextVideoEvent(NextVideoEvent event) {
+        int position=event.position+1;
+        if(position<mAdapter.getItemCount()) {
+            mBinding.recyclerViewReplies.smoothScrollToPosition(position);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
     }
 }

@@ -14,8 +14,10 @@
         android:paddingTop="4dp"
         android:orientation="horizontal">
 
-        <ImageButton android:id="@id/exo_play"
-                     style="@style/ExoMediaButton.Play"/>
+        <ImageView android:id="@id/exo_play"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:src="@drawable/ic_play_button"/>
 
         <ImageButton android:id="@id/exo_pause"
                      style="@style/ExoMediaButton.Pause"/>

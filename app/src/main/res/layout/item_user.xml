@@ -9,6 +9,7 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:gravity="center_vertical"
+        android:background="@color/background"
         android:id="@+id/lnrLayoutUser">
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="50dp"

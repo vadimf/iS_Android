@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/lnrLayoutPortrait"
             android:orientation="vertical"
+            android:background="@drawable/background_alpha_reverse"
             android:visibility="gone">
             <ProgressBar
                 android:layout_width="match_parent"
@@ -32,20 +33,13 @@
                 style="@style/Widget.ProgressBar.Vertical"
                 android:progressDrawable="@drawable/progressbar"
                 android:indeterminate="false"/>
-            <FrameLayout
+            <Button
                 android:layout_width="50dp"
                 android:layout_height="40dp"
-                android:background="#20000000">
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
-                    android:id="@+id/viewTimePortrait"
-                    android:background="@android:color/transparent"
-                    android:text="@string/label_start_time"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"/>
-            </FrameLayout>
-
-        </LinearLayout>
+                android:id="@+id/viewTimePortrait"
+                android:background="@android:color/transparent"
+                android:text="@string/label_start_time"
+                style="@style/TimerTextStyle"/>
+    </LinearLayout>
     </FrameLayout>
 </layout>

@@ -5,12 +5,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@drawable/app_background">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:elevation="4dp"
-            android:background="@color/white"
+            android:background="@color/toolbar"
             android:paddingStart="20dp"
             android:paddingEnd="20dp">
             <FrameLayout
@@ -21,27 +21,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center_vertical"
-                    android:src="@drawable/ic_left_arrow"/>
+                    android:src="@drawable/ic_back"/>
             </FrameLayout>
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="50dp"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/btnTellIt"
-                android:text="Tell it!"
+                android:text="@string/btn_say_it"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:src="@drawable/btn_sayit"/>
         </RelativeLayout>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            style="@style/TextMediumLightStyle"
-            android:textColorHint="@color/border_inactive"
-            android:id="@+id/inputTitle"
-            android:inputType="text"
-            android:hint="@string/hint_add_title"/>
+        <include layout="@layout/layout_edit_text"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginStart="20dp"
+                 android:layout_marginEnd="20dp"
+            android:id="@+id/inputTitle"/>
 
         <!--<EditText
             android:layout_width="match_parent"
@@ -55,28 +51,25 @@
             android:inputType="text"
             android:hint="@string/hint_add_hash_tags"/>-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/label_review_video"
-            android:layout_gravity="center_horizontal"/>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="20dp">
-            <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-                android:id="@+id/videoViewPlayer"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"
-                app:resize_mode="fill"
-                app:surface_type="texture_view"
-                app:show_timeout="0"
-                app:controller_layout_id="@layout/custom_playback_control"/>
-        </FrameLayout>
-
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+                <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                    android:id="@+id/videoViewPlayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    app:resize_mode="fill"
+                    app:surface_type="texture_view"
+                    app:show_timeout="0"
+                    app:controller_layout_id="@layout/custom_playback_control"/>
+            </android.support.v7.widget.CardView>
     </LinearLayout>
 </layout>

@@ -12,7 +12,7 @@
             <solid android:color="@color/background"/>
         </shape>
     </item>
-    <item>
+    <!--<item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
                android:shape="rectangle">
             <gradient
@@ -21,5 +21,5 @@
                 android:endColor="#a10c0c0d"
                 android:type="linear"/>
         </shape>
-    </item>
+    </item>-->
 </layer-list>

@@ -70,21 +70,21 @@ public class ReportActivity extends BaseActivity implements View.OnClickListener
                 mBinding.imgViewReportReasonInappropriate.setVisibility(View.INVISIBLE);
                 mBinding.imgViewReportReasonNotLike.setVisibility(View.INVISIBLE);
                 mBinding.btnReport.setEnabled(true);
-                mBinding.btnReport.setTextColor(getResources().getColor(R.color.border_active));
+                mBinding.btnReport.setTextColor(getResources().getColor(R.color.red_border));
                 break;
             case 2:
                 mBinding.imgViewReportReasonSpam.setVisibility(View.INVISIBLE);
                 mBinding.imgViewReportReasonInappropriate.setVisibility(View.VISIBLE);
                 mBinding.imgViewReportReasonNotLike.setVisibility(View.INVISIBLE);
                 mBinding.btnReport.setEnabled(true);
-                mBinding.btnReport.setTextColor(getResources().getColor(R.color.border_active));
+                mBinding.btnReport.setTextColor(getResources().getColor(R.color.red_border));
                 break;
             case 3:
                 mBinding.imgViewReportReasonSpam.setVisibility(View.INVISIBLE);
                 mBinding.imgViewReportReasonInappropriate.setVisibility(View.INVISIBLE);
                 mBinding.imgViewReportReasonNotLike.setVisibility(View.VISIBLE);
                 mBinding.btnReport.setEnabled(true);
-                mBinding.btnReport.setTextColor(getResources().getColor(R.color.border_active));
+                mBinding.btnReport.setTextColor(getResources().getColor(R.color.red_border));
                 break;
         }
     }

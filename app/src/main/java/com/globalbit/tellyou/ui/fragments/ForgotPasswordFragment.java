@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,10 @@ public class ForgotPasswordFragment extends BaseFragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_forgot_password, container,false);
         mBinding.btnResetPassword.setOnClickListener(this);
-        mBinding.inputEmail.getInputValue().addTextChangedListener(new TextWatcher() {
+        mBinding.inputEmail.txtViewTitle.setText(R.string.hint_email);
+        mBinding.inputEmail.inputValue.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        mBinding.inputEmail.inputValue.setHint(R.string.label_email_hint);
+        mBinding.inputEmail.inputValue.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -70,7 +74,7 @@ public class ForgotPasswordFragment extends BaseFragment implements View.OnClick
             case R.id.btnResetPassword:
                 showLoadingDialog();
                 ForgotPasswordRequest request=new ForgotPasswordRequest();
-                request.setEmail(mBinding.inputEmail.getInputValue().getText().toString());
+                request.setEmail(mBinding.inputEmail.inputValue.getText().toString());
                 NetworkManager.getInstance().forgotPassword(this, request);
                 break;
         }
@@ -79,7 +83,7 @@ public class ForgotPasswordFragment extends BaseFragment implements View.OnClick
     @Override
     public void onSuccess(BaseResponse response) {
         hideLoadingDialog();
-        mBinding.inputEmail.getInputValue().setText("");
+        mBinding.inputEmail.inputValue.setText("");
         //showMessage(getString(R.string.dialog_title_forgot_password),getString(R.string.dialog_content_forgot_password));
         new MaterialDialog.Builder(getActivity())
                 .title(R.string.dialog_title_forgot_password)

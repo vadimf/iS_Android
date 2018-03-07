@@ -22,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.CustomApplication;
@@ -323,20 +324,30 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                             break;
                         case R.id.btnAction:
                             if(item.getUser().isFollowing()) {
-                                NetworkManager.getInstance().unfollow(new IBaseNetworkResponseListener<BaseResponse>() {
-                                    @Override
-                                    public void onSuccess(BaseResponse response) {
-                                        holder.mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_regular);
-                                        holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.border_active));
-                                        holder.mBinding.layoutVideoInformation.btnAction.setText(mContext.getString(R.string.btn_follow));
-                                        item.getUser().setFollowing(false);
-                                    }
+                                new MaterialDialog.Builder(mContext)
+                                        .content(String.format(Locale.getDefault(),"%s %s%s?", mContext.getResources().getString(R.string.dialog_button_unfollow), mContext.getResources().getString(R.string.special), item.getUser().getUsername()))
+                                        .positiveText(R.string.dialog_button_unfollow)
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                NetworkManager.getInstance().unfollow(new IBaseNetworkResponseListener<BaseResponse>() {
+                                                    @Override
+                                                    public void onSuccess(BaseResponse response) {
+                                                        holder.mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_regular);
+                                                        holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.border_active));
+                                                        holder.mBinding.layoutVideoInformation.btnAction.setText(mContext.getString(R.string.btn_follow));
+                                                        item.getUser().setFollowing(false);
+                                                    }
 
-                                    @Override
-                                    public void onError(int errorCode, String errorMessage) {
+                                                    @Override
+                                                    public void onError(int errorCode, String errorMessage) {
 
-                                    }
-                                }, item.getUser().getUsername());
+                                                    }
+                                                }, item.getUser().getUsername());
+                                            }
+                                        })
+                                        .negativeText(R.string.btn_cancel)
+                                        .show();
                             }
                             else {
                                 NetworkManager.getInstance().follow(new IBaseNetworkResponseListener<BaseResponse>() {
@@ -471,7 +482,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 
                 @Override
                 public void onPlaying() {
-
+                    mBinding.imgViewPreview.setVisibility(View.GONE);
                 }
 
                 @Override
@@ -494,7 +505,6 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         @Override
         public void play() {
             if(!SharedPrefsUtils.isShowTutorial()) {
-                mBinding.imgViewPreview.setVisibility(View.GONE);
                 if(mHelper!=null) mHelper.play();
                 scheduleSeekbarUpdate();
                 mTimer.start();

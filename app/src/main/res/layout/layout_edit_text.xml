@@ -4,6 +4,7 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/lnrLayoutEdit"
     android:orientation="vertical">
     <TextView
         android:layout_width="match_parent"
@@ -23,12 +24,13 @@
             android:background="@android:color/transparent"
             android:id="@+id/inputValue"
             style="@style/InputTextStyle"
-            android:layout_marginEnd="10dp"
             tools:hint="Hint"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:id="@+id/imgViewEye"
+            android:visibility="gone"
             android:src="@drawable/ic_eye_open_normal"/>
     </LinearLayout>
     <View

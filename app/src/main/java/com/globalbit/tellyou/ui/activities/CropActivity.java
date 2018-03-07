@@ -40,18 +40,14 @@ public class CropActivity extends BaseActivity implements View.OnClickListener, 
         }
         mImageType=getIntent().getIntExtra(Constants.DATA_IMAGE, Constants.TYPE_IMAGE_GENERAL);
         if(mImageType==Constants.TYPE_IMAGE_GENERAL) {
-            mBinding.frmLayoutCaption.setVisibility(View.GONE);
             mBinding.imgViewCrop.setCropShape(CropImageView.CropShape.RECTANGLE);
         }
         else if(mImageType==Constants.TYPE_IMAGE_PHOTO_POLL) {
-            mBinding.frmLayoutCaption.setVisibility(View.VISIBLE);
             mBinding.imgViewCrop.setCropShape(CropImageView.CropShape.RECTANGLE);
         }
         else if(mImageType==Constants.TYPE_IMAGE_PROFILE) {
-            mBinding.frmLayoutCaption.setVisibility(View.GONE);
             mBinding.imgViewCrop.setCropShape(CropImageView.CropShape.OVAL);
         }
-        mBinding.inputImageCaption.setFilters(new InputFilter[] { new InputFilter.LengthFilter(Constants.IMAGE_CAPTION_SIZE_MAX) } );
     }
 
     @Override
@@ -76,9 +72,6 @@ public class CropActivity extends BaseActivity implements View.OnClickListener, 
             String path = MediaStore.Images.Media.insertImage(getContentResolver(), result.getBitmap(), "Title", null);
             Intent intent=new Intent();
             intent.putExtra(Constants.DATA_IMAGE_URI, Uri.parse(path));
-            if(mImageType==Constants.TYPE_IMAGE_PHOTO_POLL) {
-                intent.putExtra(Constants.DATA_IMAGE_CAPTION, mBinding.inputImageCaption.getText().toString());
-            }
             setResult(RESULT_OK, intent);
             finish();
         }

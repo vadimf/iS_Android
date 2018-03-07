@@ -46,7 +46,7 @@ public class UploadService extends Service {
             final File file=(File)intent.getSerializableExtra(Constants.DATA_VIDEO_FILE);
             File gif=(File)intent.getSerializableExtra(Constants.DATA_GIF_FILE);
             String text=intent.getStringExtra(Constants.DATA_TEXT);
-            int duration=intent.getIntExtra(Constants.DATA_DURATION, -1);
+            int duration=(int)intent.getLongExtra(Constants.DATA_DURATION, -1);
             int videoRecordingType=intent.getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
             final String postId=intent.getStringExtra(Constants.DATA_POST_ID);
             RequestBody requestFile =RequestBody.create(

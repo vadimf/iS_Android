@@ -17,6 +17,7 @@ import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.UsersResponse;
 import com.globalbit.tellyou.ui.adapters.UsersAdapter;
+import com.globalbit.tellyou.utils.SimpleDividerItemDecoration;
 
 /**
  * Created by alex on 07/11/2017.
@@ -45,6 +46,7 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
         mBinding.recyclerViewUsers.setLayoutManager(layoutManager);
         mAdapter=new UsersAdapter(getActivity(), null);
         mBinding.recyclerViewUsers.setAdapter(mAdapter);
+        mBinding.recyclerViewUsers.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         //mBinding.imgViewClear.setOnClickListener(this);
         /*mBinding.inputSearch.addTextChangedListener(new TextWatcher() {
             @Override

@@ -21,8 +21,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_more_vert_black_24dp"
-                    android:tint="@color/white"/>
+                    android:src="@drawable/ic_more_touch_bar"/>
             </FrameLayout>
             <FrameLayout
                 android:layout_width="0dp"
@@ -34,8 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:src="@drawable/ic_info_black_24dp"
-                    android:tint="@color/white"/>
+                    android:src="@drawable/ic_info"/>
             </FrameLayout>
             <FrameLayout
                 android:layout_width="0dp"
@@ -48,13 +46,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:id="@+id/txtViewComments"
-                    android:drawableTint="@color/white"
-                    android:drawableStart="@drawable/ic_mode_comment_black_24dp"
+                    android:drawableStart="@drawable/ic_comments"
                     tools:text="5"
                     android:gravity="center"
-                    android:textColor="@color/white"
-                    android:drawablePadding="5dp"
-                    android:tint="@color/white"/>
+                    style="@style/TextStyle"
+                    android:drawablePadding="5dp"/>
             </FrameLayout>
             <FrameLayout
                 android:layout_width="0dp"
@@ -66,8 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:src="@drawable/ic_reply_black_24dp"
-                    android:tint="@color/white"/>
+                    android:src="@drawable/ic_export"/>
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>

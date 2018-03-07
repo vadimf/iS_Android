@@ -3,7 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
-                  android:layout_height="match_parent"
+                  android:layout_height="wrap_content"
                   android:id="@+id/lnrLayoutVideoMenu"
                   android:orientation="vertical"
                   android:background="@color/background_opacity">
@@ -18,7 +18,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtViewAutoplay"
-                android:textColor="@color/white"
+                style="@style/InputTextStyle"
                 android:text="@string/label_autoplay"/>
             <android.support.v4.widget.Space
                 android:layout_width="0dp"
@@ -42,7 +42,7 @@
             android:id="@+id/txtViewReport"
             android:gravity="center_vertical"
             android:text="@string/label_report_video"
-            android:textColor="@color/white"
+            style="@style/InputTextStyle"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"/>
         <View

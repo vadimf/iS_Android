@@ -6,13 +6,10 @@ package com.globalbit.tellyou;
 
 public class Constants {
     //Sizes
-    public static final int QUESTION_SIZE_MAX=140;
-    public static final int TEXT_VOTE_SIZE_MAX=25;
-    public static final int IMAGE_CAPTION_SIZE_MAX=15;
-    public static final int QUESTION_TEXT_OPTION_MAX=5;
-    public static final int QUESTION_IMAGE_OPTION_MAX=4;
-    public static final int QUESTION_TEXT_OPTION_MIN=2;
-    public static final int QUESTION_IMAGE_OPTION_MIN=2;
+    public static final int TITLE_SIZE_MAX=140;
+    public static final int NAME_SIZE_MAX=50;
+    public static final int BIO_SIZE_MAX=120;
+    public static final int USERNAME_SIZE_MAX=25;
     public static final int POST_VIDEO_MAX_SIZE=120000;
     public static final int REPLY_VIDEO_MAX_SIZE=30000;
 

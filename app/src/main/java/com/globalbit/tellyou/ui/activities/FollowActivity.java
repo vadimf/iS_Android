@@ -19,6 +19,7 @@ import com.globalbit.tellyou.network.responses.UsersResponse;
 import com.globalbit.tellyou.ui.adapters.UsersAdapter;
 import com.globalbit.tellyou.ui.interfaces.IUserListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.globalbit.tellyou.utils.SimpleDividerItemDecoration;
 
 import java.util.Locale;
 
@@ -71,6 +72,7 @@ public class FollowActivity extends BaseActivity implements IBaseNetworkResponse
             mAdapter=new UsersAdapter(this, this);
         }
         mBinding.recyclerViewUsers.setAdapter(mAdapter);
+        mBinding.recyclerViewUsers.addItemDecoration(new SimpleDividerItemDecoration(this));
         mBinding.recyclerViewUsers.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

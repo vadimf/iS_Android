@@ -52,8 +52,20 @@
         <item name="android:fontFamily">@font/assistant_regular</item>
     </style>
 
+    <style name="LabelTextBoldStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/grey_light</item>
+        <item name="android:fontFamily">@font/assistant_bold</item>
+    </style>
+
     <style name="LabelTextSemiBoldStyle">
         <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:fontFamily">@font/assistant_semi_bold</item>
+    </style>
+
+    <style name="LabelTextBigSemiBoldStyle">
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/grey</item>
         <item name="android:fontFamily">@font/assistant_semi_bold</item>
     </style>
@@ -62,6 +74,18 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/grey_2</item>
         <item name="android:fontFamily">@font/assistant_bold</item>
+    </style>
+
+    <style name="TimerTextStyle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/assistant_semi_bold</item>
+    </style>
+
+    <style name="TextStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/assistant_semi_bold</item>
     </style>
 
     <style name="LabelTextStyleGreyLight">
@@ -91,6 +115,17 @@
     <style name="LabelTextWhiteRegularStyle">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/assistant_regular</item>
+    </style>
+
+    <style name="LabelTextGreyRegularStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:fontFamily">@font/assistant_regular</item>
+    </style>
+    <style name="LabelTextGreyLightRegularStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/grey_light</item>
         <item name="android:fontFamily">@font/assistant_regular</item>
     </style>
 

@@ -5,11 +5,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@drawable/app_background">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             style="@style/Base.Widget.AppCompat.Toolbar"
+            android:background="@color/toolbar"
+            android:elevation="4dp"
             android:layout_height="?attr/actionBarSize">
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -23,7 +25,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center_vertical"
                         android:id="@+id/imgViewBack"
-                        android:src="@drawable/ic_left_arrow"/>
+                        android:src="@drawable/ic_back"/>
                 </FrameLayout>
                 <TextView
                     android:layout_width="wrap_content"
@@ -31,7 +33,7 @@
                     android:layout_centerInParent="true"
                     android:text="@string/title_crop_image"
                     android:gravity="center"
-                    style="@style/TitleRegularLightStyle"/>
+                    style="@style/TitleTextStyle"/>
                 <FrameLayout
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
@@ -39,18 +41,17 @@
                     android:layout_marginEnd="5dp"
                     android:id="@+id/btnCancel">
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:id="@+id/imgViewSelect"
-                        android:src="@drawable/ic_check_bar"/>
+                        android:src="@drawable/ic_check"/>
                 </FrameLayout>
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/black">
+            android:layout_height="match_parent">
             <com.theartofdev.edmodo.cropper.CropImageView
                 android:id="@+id/imgViewCrop"
                 android:layout_width="match_parent"
@@ -58,23 +59,6 @@
                 custom:cropAspectRatioX="1"
                 custom:cropAspectRatioY="1"
                 custom:cropAutoZoomEnabled="false"/>
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_gravity="bottom"
-                android:id="@+id/frmLayoutCaption"
-                android:background="@color/grey">
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    style="@style/TitleMediumLightStyle"
-                    android:textColorHint="@color/border_inactive"
-                    android:id="@+id/inputImageCaption"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/hint_caption"/>
-            </FrameLayout>
         </FrameLayout>
     </LinearLayout>
 </layout>

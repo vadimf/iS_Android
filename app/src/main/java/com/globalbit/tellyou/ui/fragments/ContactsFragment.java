@@ -31,6 +31,7 @@ import com.globalbit.tellyou.network.responses.UsersResponse;
 import com.globalbit.tellyou.ui.adapters.UsersAdapter;
 import com.globalbit.tellyou.utils.ObservableHelper;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.globalbit.tellyou.utils.SimpleDividerItemDecoration;
 
 import java.util.Locale;
 
@@ -93,6 +94,7 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
         mBinding.recyclerViewUsers.setLayoutManager(layoutManager);
         mAdapter=new UsersAdapter(getActivity(), null);
         mBinding.recyclerViewUsers.setAdapter(mAdapter);
+        mBinding.recyclerViewUsers.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         mBinding.recyclerViewUsers.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -119,7 +121,6 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
                 }
             }
         });
-        mBinding.btnShare.setOnClickListener(this);
         if(mState==Constants.TYPE_FRIENDS_FACEBOOK) {
             mBinding.btnFacebook.setReadPermissions("email", "user_friends");
             mBinding.btnFacebook.setFragment(this);
@@ -134,8 +135,6 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
                     request.setFacebookToken(mToken);
                     mBinding.swipeLayout.setVisibility(View.VISIBLE);
                     mBinding.btnFacebook.setVisibility(View.GONE);
-                    mBinding.btnShare.setVisibility(View.VISIBLE);
-                    mBinding.viewSeparator.setVisibility(View.VISIBLE);
                     mBinding.txtViewHeader.setText(R.string.label_header_facebook_connected);
                     mBinding.swipeLayout.post(new Runnable() {
                         @Override
@@ -161,14 +160,10 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
                 mBinding.swipeLayout.setVisibility(View.GONE);
                 mBinding.btnFacebook.setVisibility(View.VISIBLE);
                 mBinding.txtViewHeader.setText(R.string.label_header_facebook_connect);
-                mBinding.btnShare.setVisibility(View.GONE);
-                mBinding.viewSeparator.setVisibility(View.GONE);
             } else {
                 mBinding.swipeLayout.setVisibility(View.VISIBLE);
                 mBinding.btnFacebook.setVisibility(View.GONE);
                 mBinding.txtViewHeader.setText(R.string.label_header_facebook_connected);
-                mBinding.btnShare.setVisibility(View.VISIBLE);
-                mBinding.viewSeparator.setVisibility(View.VISIBLE);
                 mBinding.swipeLayout.post(new Runnable() {
                     @Override
                     public void run() {
@@ -262,15 +257,6 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
         switch(view.getId()) {
             case R.id.btnFacebook:
 
-                break;
-            case R.id.btnShare:
-                Intent share = new Intent(Intent.ACTION_SEND);
-                share.setType("text/plain");
-                //share.putExtra(Intent.EXTRA_SUBJECT, String.format(Locale.getDefault(), "%s @%s",getString(R.string.label_share_title), SharedPrefsUtils.getUserDetails().getUsername()));
-                share.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(),getString(R.string.share_text), SharedPrefsUtils.getUserDetails().getUsername()));
-                if (share.resolveActivity(getActivity().getPackageManager()) != null) {
-                    startActivity(Intent.createChooser(share, getString(R.string.label_share_via)));
-                }
                 break;
         }
     }

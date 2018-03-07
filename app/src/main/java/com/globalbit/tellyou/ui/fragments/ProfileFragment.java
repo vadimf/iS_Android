@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
@@ -162,26 +164,36 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                         intent.putExtra(Constants.DATA_PROFILE, Constants.REQUEST_EDIT_PROFILE);
                         startActivityForResult(intent,Constants.REQUEST_EDIT_PROFILE);
                         break;
-                    case UserProfile:
-                        showLoadingDialog();
-                        if(mUser.isFollowing()) {
-                            NetworkManager.getInstance().unfollow(new IBaseNetworkResponseListener<BaseResponse>() {
-                                @Override
-                                public void onSuccess(BaseResponse response) {
-                                    hideLoadingDialog();
-                                    mUser.setFollowing(false);
-                                    mBinding.btnAction.setBackgroundResource(R.drawable.background_button);
-                                    mBinding.btnAction.setTextColor(getResources().getColor(R.color.white));
-                                    mBinding.btnAction.setText(getString(R.string.btn_follow));
-                                }
+                    case UserProfile:if(mUser.isFollowing()) {
+                            new MaterialDialog.Builder(getActivity())
+                                    .content(String.format(Locale.getDefault(),"%s %s%s?", getResources().getString(R.string.dialog_button_unfollow), getResources().getString(R.string.special), mUser.getUsername()))
+                                    .positiveText(R.string.dialog_button_unfollow)
+                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                        @Override
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                            showLoadingDialog();
+                                            NetworkManager.getInstance().unfollow(new IBaseNetworkResponseListener<BaseResponse>() {
+                                                @Override
+                                                public void onSuccess(BaseResponse response) {
+                                                    hideLoadingDialog();
+                                                    mUser.setFollowing(false);
+                                                    mBinding.btnAction.setBackgroundResource(R.drawable.background_button);
+                                                    mBinding.btnAction.setTextColor(getResources().getColor(R.color.white));
+                                                    mBinding.btnAction.setText(getString(R.string.btn_follow));
+                                                }
 
-                                @Override
-                                public void onError(int errorCode, String errorMessage) {
-                                    hideLoadingDialog();
-                                }
-                            }, mUser.getUsername());
+                                                @Override
+                                                public void onError(int errorCode, String errorMessage) {
+                                                    hideLoadingDialog();
+                                                }
+                                            }, mUser.getUsername());
+                                        }
+                                    })
+                                    .negativeText(R.string.btn_cancel)
+                                    .show();
                         }
                         else {
+                            showLoadingDialog();
                             NetworkManager.getInstance().follow(new IBaseNetworkResponseListener<BaseResponse>() {
                                 @Override
                                 public void onSuccess(BaseResponse response) {

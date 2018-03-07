@@ -5,7 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="red">#ff0000</color>
-    <color name="underline">#C4C4C4</color>
+    <color name="underline">#d6d6d6</color>
     <color name="background_option">#dddddd</color>
     <color name="background_option_selected">#b0b0b0</color>
     <color name="background_caption">#b3ffffff</color>
@@ -35,6 +35,7 @@
     <color name="orange">#fb6901</color>
     <color name="red_light">#ed4c4c</color>
     <color name="red_dark">#ff6b00</color>
+    <color name="red_darker">#ff2121</color>
     <color name="red_special">#e76100</color>
     <color name="red_special_2">#f26500</color>
     <color name="red_border">#fe6b01</color>

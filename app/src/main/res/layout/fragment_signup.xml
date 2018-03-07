@@ -17,29 +17,20 @@
                 android:text="@string/label_how_to_create_account"
                 style="@style/LabelTextMediumStyle"/>
 
-            <com.globalbit.tellyou.ui.views.CustomEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sign_margin_top"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:id="@+id/inputEmail"
-                app:label="@string/hint_email"
-                app:hint="@string/label_email_hint"
-                app:type="Email"
-                app:name="@string/hint_email"
-                app:required="true"/>
-
-            <com.globalbit.tellyou.ui.views.CustomEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:id="@+id/inputPassword"
-                app:label="@string/hint_password"
-                app:type="Password"
-                app:name="@string/hint_password"
-                app:required="true"/>
+            <include layout="@layout/layout_edit_text"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="@dimen/sign_margin_top"
+                     android:layout_marginStart="20dp"
+                     android:layout_marginEnd="20dp"
+                     android:id="@+id/inputEmail"/>
+            <include layout="@layout/layout_edit_text"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="@dimen/sign_margin_top"
+                     android:layout_marginStart="20dp"
+                     android:layout_marginEnd="20dp"
+                     android:id="@+id/inputPassword"/>
 
             <TextView
                 android:layout_width="wrap_content"

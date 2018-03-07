@@ -1,15 +1,18 @@
 package com.globalbit.tellyou.ui.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -20,9 +23,12 @@ import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ItemReplyBinding;
 import com.globalbit.tellyou.model.Comment;
 import com.globalbit.tellyou.model.User;
+import com.globalbit.tellyou.ui.events.NextVideoEvent;
 import com.globalbit.tellyou.ui.interfaces.IReplyListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -41,11 +47,17 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
     private ArrayList<Comment> mItems;
     private Context mContext;
     private IReplyListener mListener;
+    private int mImgWidth;
+    private LinearLayout.LayoutParams mParams;
 
 
     public RepliesAdapter(Context context, IReplyListener listener) {
         mContext=context;
         mListener=listener;
+        Resources resources = mContext.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        mImgWidth=(int)(metrics.widthPixels*0.7);
+        mParams=new LinearLayout.LayoutParams(mImgWidth, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     public void setItems(ArrayList<Comment> items) {
@@ -87,6 +99,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
         View v=LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_reply, parent, false);
         ViewHolder viewHolder=new ViewHolder(v);
+        viewHolder.mBinding.cardViewReply.setLayoutParams(mParams);
         return viewHolder;
     }
 
@@ -95,10 +108,15 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
         if(mItems!=null) {
             final Comment item=mItems.get(position);
             Uri uri=Uri.parse(item.getVideo().getUrl());
+            if(!StringUtils.isEmpty(item.getVideo().getThumbnail())) {
+                holder.mBinding.imgViewPreview.setVisibility(View.VISIBLE);
+                Picasso.with(mContext).load(item.getVideo().getThumbnail()).fit().into(holder.mBinding.imgViewPreview);
+            }
+            else {
+                holder.mBinding.imgViewPreview.setVisibility(View.GONE);
+            }
             holder.mediaUri=uri;
-            /*holder.mBinding.videoViewPlayer.setVideoURI(uri);
-            holder.mBinding.videoViewPlayer.requestFocus();
-            holder.mBinding.videoViewPlayer.start();*/
+            holder.mPosition=position;
             holder.mBinding.txtViewUsername.setText(String.format(Locale.getDefault(),"@%s",item.getUser().getUsername()));
             if(item.getUser().getProfile()!=null&&item.getUser().getProfile().getPicture()!=null&&!StringUtils.isEmpty(item.getUser().getProfile().getPicture().getThumbnail())) {
                 Picasso.with(mContext).load(item.getUser().getProfile().getPicture().getThumbnail()).into(holder.mBinding.imgViewPhoto);
@@ -132,6 +150,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
         private ClickListener mClickListener;
         ToroPlayerHelper helper;
         Uri mediaUri;
+        private int mPosition;
 
         public ViewHolder(View v) {
             super(v);
@@ -157,6 +176,27 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
                 helper = new SimpleExoPlayerViewHelper(container, this, mediaUri);
             }
             helper.initialize(playbackInfo);
+            helper.addPlayerEventListener(new ToroPlayer.EventListener() {
+                @Override
+                public void onBuffering() {
+
+                }
+
+                @Override
+                public void onPlaying() {
+                    mBinding.imgViewPreview.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onPaused() {
+                }
+
+                @Override
+                public void onCompleted() {
+                    EventBus.getDefault().post(new NextVideoEvent(mPosition));
+
+                }
+            });
         }
 
         @Override
