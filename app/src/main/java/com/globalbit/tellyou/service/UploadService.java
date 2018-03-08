@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -102,8 +103,8 @@ public class UploadService extends Service {
                             RequestBody.create(MultipartBody.FORM, String.valueOf(duration)));
                     notification =
                             new NotificationCompat.Builder(this, "UploadChannel")
-                                    .setContentTitle("Uploading")
-                                    .setContentText("Your video is uploading")
+                                    .setContentTitle(getString(R.string.label_uploading))
+                                    .setContentText(getString(R.string.notification_uploading))
                                     .setSmallIcon(R.mipmap.ic_launcher)
                                     .setContentIntent(null)
                                     .build();
@@ -169,8 +170,8 @@ public class UploadService extends Service {
                             public void onError(int errorCode, String errorMessage) {
                                 Notification notification =
                                         new NotificationCompat.Builder(UploadService.this, "UploadChannel")
-                                                .setContentTitle("Error")
-                                                .setContentText("Your video failed to upload")
+                                                .setContentTitle(getString(R.string.error))
+                                                .setContentText(getString(R.string.notification_error_uploading))
                                                 .setSmallIcon(R.mipmap.ic_launcher)
                                                 .setContentIntent(null)
                                                 .setAutoCancel(true)
@@ -185,8 +186,8 @@ public class UploadService extends Service {
                         RequestBody.create(MultipartBody.FORM, String.valueOf(duration)));
                     notification =
                             new NotificationCompat.Builder(this, "UploadChannel")
-                                    .setContentTitle("Uploading")
-                                    .setContentText("Your video is uploading")
+                                    .setContentTitle(getString(R.string.label_uploading))
+                                    .setContentText(getString(R.string.notification_uploading))
                                     .setSmallIcon(R.mipmap.ic_launcher)
                                     .setContentIntent(null)
                                     .build();
@@ -203,10 +204,12 @@ public class UploadService extends Service {
     private void showReplyNotification(PendingIntent pendingIntent) {
         Notification notification =
                 new NotificationCompat.Builder(UploadService.this, "UploadChannel")
-                        .setContentTitle("Uploaded")
-                        .setContentText("Your video was uploaded")
+                        .setContentTitle(getString(R.string.label_uploaded))
+                        .setContentText(getString(R.string.notification_video_uploaded))
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentIntent(pendingIntent)
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true)
                         .build();
         final NotificationManager notificationManager = (NotificationManager) getApplicationContext()

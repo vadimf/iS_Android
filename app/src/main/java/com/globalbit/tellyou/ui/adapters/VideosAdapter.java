@@ -223,7 +223,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 Picasso.with(mContext).load(item.getUser().getProfile().getPicture().getThumbnail()).into(holder.mBinding.layoutVideoInformation.imgViewPhoto);
             }
             else {
-                holder.mBinding.layoutVideoInformation.imgViewPhoto.setImageResource(R.drawable.small_image_profile_default);
+                holder.mBinding.layoutVideoInformation.imgViewPhoto.setImageResource(R.drawable.img_xs_no_photo_user);
             }
             if(item.getCreatedAt()!=null) {
                 holder.mBinding.layoutVideoInformation.txtViewDate.setText(DateUtils.getRelativeTimeSpanString(item.getCreatedAt().getTime()));
@@ -236,12 +236,12 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 holder.mBinding.layoutVideoInformation.btnAction.setVisibility(View.VISIBLE);
                 if(item.getUser().isFollowing()) {
                     holder.mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_share);
-                    holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.share));
+                    holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.red_border));
                     holder.mBinding.layoutVideoInformation.btnAction.setText(R.string.btn_following);
                 }
                 else {
-                    holder.mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_regular);
-                    holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.border_active));
+                    holder.mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.background_button);
+                    holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.white));
                     holder.mBinding.layoutVideoInformation.btnAction.setText(R.string.btn_follow);
                 }
             }
@@ -333,8 +333,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                                                 NetworkManager.getInstance().unfollow(new IBaseNetworkResponseListener<BaseResponse>() {
                                                     @Override
                                                     public void onSuccess(BaseResponse response) {
-                                                        holder.mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_regular);
-                                                        holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.border_active));
+                                                        holder.mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.background_button);
+                                                        holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.white));
                                                         holder.mBinding.layoutVideoInformation.btnAction.setText(mContext.getString(R.string.btn_follow));
                                                         item.getUser().setFollowing(false);
                                                     }
@@ -354,7 +354,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                                     @Override
                                     public void onSuccess(BaseResponse response) {
                                         holder.mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_share);
-                                        holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.share));
+                                        holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.red_border));
                                         holder.mBinding.layoutVideoInformation.btnAction.setText(mContext.getString(R.string.btn_following));
                                         item.getUser().setFollowing(true);
                                     }

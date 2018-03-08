@@ -100,7 +100,8 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 mBinding.btnAction.setTextColor(getResources().getColor(R.color.white));
                 mBinding.btnAction.setText(R.string.btn_follow);
             }
-            mBinding.txtViewMyVideos.setVisibility(View.GONE);
+            mBinding.txtViewMyVideos.setText(R.string.label_videos);
+            //mBinding.txtViewMyVideos.setVisibility(View.GONE);
         }
         mProfilePagerAdapter=new ProfilePagerAdapter(getChildFragmentManager(), getActivity(), new String[]{getString(R.string.tab_videos)} ,mUser );
         mBinding.viewpager.setAdapter(mProfilePagerAdapter);

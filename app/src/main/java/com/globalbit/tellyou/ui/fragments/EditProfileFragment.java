@@ -87,7 +87,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(CustomApplication.getSystemPreference()!=null&&CustomApplication.getSystemPreference().getValidations()!=null) {
+        if(CustomApplication.getSystemPreference()!=null) {
             mUserNamePattern=Pattern.compile(CustomApplication.getSystemPreference().getValidations().getUsername().getRegex());
         }
     }
@@ -96,12 +96,17 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
-        if(CustomApplication.getSystemPreference()!=null&&CustomApplication.getSystemPreference().getValidations()!=null) {
-            //mBinding.inputBio.setFilters(new InputFilter[] { new InputFilter.LengthFilter(CustomApplication.getSystemPreference().getValidations().getBio().getMaxLength()) } );
-            InputFilter[] fArray = new InputFilter[1];
-            fArray[0] = new InputFilter.LengthFilter(CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength());
-            mBinding.inputUsername.getInputValue().setFilters(fArray);
-            mBinding.inputUsername.getInputValue().addTextChangedListener(new TextWatcher() {
+        if(CustomApplication.getSystemPreference()!=null) {
+            mBinding.inputName.inputValue.setFilters(new InputFilter[] { new InputFilter.LengthFilter(Constants.NAME_SIZE_MAX) } );
+            mBinding.inputName.txtViewTitle.setText(R.string.label_name);
+            mBinding.inputName.inputValue.setHint(R.string.hint_full_name);
+            mBinding.inputBio.inputValue.setFilters(new InputFilter[] { new InputFilter.LengthFilter(CustomApplication.getSystemPreference().getValidations().getBio().getMaxLength()) } );
+            mBinding.inputBio.txtViewTitle.setText(R.string.label_bio);
+            mBinding.inputBio.inputValue.setHint(R.string.hint_bio);
+            mBinding.inputUsername.inputValue.setFilters(new InputFilter[] {new InputFilter.LengthFilter(CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength())});
+            mBinding.inputUsername.txtViewTitle.setText(R.string.label_username);
+            mBinding.inputUsername.inputValue.setHint(R.string.hint_user_name);
+            mBinding.inputUsername.inputValue.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -112,18 +117,18 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                     if(charSequence.length()>0) {
                         if(charSequence.length()>=CustomApplication.getSystemPreference().getValidations().getUsername().getMinLength()
                                 &&charSequence.length()<=CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength()) {
-                            if(mUser!=null/*&&!StringUtils.isEmpty(mUser.getUsername())*/&&!mUser.getUsername().equals(mBinding.inputUsername.getInputValue().getText().toString())) {
+                            if(mUser!=null/*&&!StringUtils.isEmpty(mUser.getUsername())*/&&!mUser.getUsername().equals(mBinding.inputUsername.inputValue.getText().toString())) {
                                 NetworkManager.getInstance().usernameExist(new IBaseNetworkResponseListener<UsernameExistResponse>() {
                                     @Override
                                     public void onSuccess(UsernameExistResponse response) {
-                                        if(mBinding.inputUsername.getInputValue().getText().toString().equals(response.getUsername())) {
+                                        if(mBinding.inputUsername.inputValue.getText().toString().equals(response.getUsername())) {
                                             if(response.isExists()) {
                                                 
-                                                mBinding.inputUsername.getTxtViewError().setText(R.string.validation_username_taken);
+                                                mBinding.inputUsername.txtViewError.setText(R.string.validation_username_taken);
                                                 mBinding.btnContinue.setTextColor(getResources().getColor(R.color.grey_dark));
                                                 mBinding.btnContinue.setEnabled(false);
                                             } else {
-                                                mBinding.inputUsername.getTxtViewError().setText("");
+                                                mBinding.inputUsername.txtViewError.setText("");
                                                 mBinding.btnContinue.setEnabled(true);
                                                 mBinding.btnContinue.setTextColor(getResources().getColor(R.color.red_border));
                                             }
@@ -132,15 +137,15 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
 
                                     @Override
                                     public void onError(int errorCode, String errorMessage) {
-                                        if(!StringUtils.isEmpty(mBinding.inputUsername.getInputValue().getText().toString())) {
+                                        if(!StringUtils.isEmpty(mBinding.inputUsername.inputValue.getText().toString())) {
                                             
                                             mBinding.btnContinue.setEnabled(false);
                                             mBinding.btnContinue.setTextColor(getResources().getColor(R.color.grey_dark));
-                                            mBinding.inputUsername.getTxtViewError().setText(String.format(Locale.getDefault(), getString(R.string.error_username_response)
+                                            mBinding.inputUsername.txtViewError.setText(String.format(Locale.getDefault(), getString(R.string.error_username_response)
                                                     , CustomApplication.getSystemPreference().getValidations().getUsername().getMinLength()
                                                     , CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength()));
                                         } else {
-                                            mBinding.inputUsername.getTxtViewError().setText("");
+                                            mBinding.inputUsername.txtViewError.setText("");
                                             mBinding.btnContinue.setEnabled(false);
                                             mBinding.btnContinue.setTextColor(getResources().getColor(R.color.grey_dark));
                                         }
@@ -148,32 +153,48 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                                 }, charSequence.toString());
                             }
                             else {
-                                mBinding.inputUsername.getTxtViewError().setText("");
+                                mBinding.inputUsername.txtViewError.setText("");
                                 mBinding.btnContinue.setEnabled(true);
                                 mBinding.btnContinue.setTextColor(getResources().getColor(R.color.red_border));
                             }
 
                         }
                         else {
-                            if(!StringUtils.isEmpty(mBinding.inputUsername.getInputValue().getText().toString())) {
+                            if(!StringUtils.isEmpty(mBinding.inputUsername.inputValue.getText().toString())) {
                                 
                                 mBinding.btnContinue.setEnabled(false);
                                 mBinding.btnContinue.setTextColor(getResources().getColor(R.color.border_inactive));
-                                mBinding.inputUsername.getTxtViewError().setText(String.format(Locale.getDefault(), getString(R.string.error_username_response)
+                                mBinding.inputUsername.txtViewError.setText(String.format(Locale.getDefault(), getString(R.string.error_username_response)
                                         , CustomApplication.getSystemPreference().getValidations().getUsername().getMinLength()
                                         , CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength()));
                             } else {
-                                mBinding.inputUsername.getTxtViewError().setText("");
+                                mBinding.inputUsername.txtViewError.setText("");
                                 mBinding.btnContinue.setEnabled(false);
                                 mBinding.btnContinue.setTextColor(getResources().getColor(R.color.grey_dark));
                             }
                         }
                     }
                     else {
-                        mBinding.inputUsername.getTxtViewError().setText("");
+                        mBinding.inputUsername.txtViewError.setText("");
                         mBinding.btnContinue.setEnabled(false);
                         mBinding.btnContinue.setTextColor(getResources().getColor(R.color.grey_dark));
                     }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+            mBinding.inputName.inputValue.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    mBinding.inputName.txtViewError.setText("");
                 }
 
                 @Override
@@ -199,13 +220,13 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                 fullName=mUser.getProfile().getLastName();
             }
             if(!StringUtils.isEmpty(fullName)) {
-                mBinding.inputName.getInputValue().setText(fullName);
+                mBinding.inputName.inputValue.setText(fullName);
             }
-            mBinding.inputBio.getInputValue().setText(mUser.getProfile().getBio());
+            mBinding.inputBio.inputValue.setText(mUser.getProfile().getBio());
             if(mUser.getProfile().getPicture()!=null&&!StringUtils.isEmpty(mUser.getProfile().getPicture().getThumbnail())) {
                 Picasso.with(getActivity()).load(mUser.getProfile().getPicture().getThumbnail()).into(mBinding.imgViewPhoto);
             }
-            mBinding.inputUsername.getInputValue().setText(mUser.getUsername());
+            mBinding.inputUsername.inputValue.setText(mUser.getUsername());
             if(!StringUtils.isEmpty(mUser.getProfile().getBirthday())) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 Date date =null;
@@ -217,7 +238,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(date);
 
-                mBinding.inputBirthday.getInputValue().setText(String.format(Locale.getDefault(), "%02d/%02d/%d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH)+1, cal.get(Calendar.YEAR)));
+                mBinding.inputBirthday.setText(String.format(Locale.getDefault(), "%s %02d, %d", months[cal.get(Calendar.MONTH)], cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.YEAR)));
                 mBirthDay=String.format(Locale.getDefault(), "%d-%02d-%02d", cal.get(Calendar.YEAR), cal.get(Calendar.MONTH)+1, cal.get(Calendar.DAY_OF_MONTH));
             }
         }
@@ -229,7 +250,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
         }
         mBinding.btnContinue.setOnClickListener(this);
         mBinding.lnrLayoutProfileImage.setOnClickListener(this);
-        mBinding.inputBirthday.setOnClickListener(this);
+        mBinding.lnrLayoutBirthday.setOnClickListener(this);
 
         return mBinding.getRoot();
     }
@@ -244,13 +265,13 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btnContinue:
-                if(mBinding.inputName.validate()) {
+                if(validate()) {
                     showLoadingDialog();
                     final User user=new User();
                     user.setProfile(new Profile());
-                    user.setUsername(mBinding.inputUsername.getInputValue().getText().toString());
+                    user.setUsername(mBinding.inputUsername.inputValue.getText().toString());
                     user.getProfile().setBirthday(mBirthDay);
-                    String[] nameArray=mBinding.inputName.getInputValue().getText().toString().trim().split(" ");
+                    String[] nameArray=mBinding.inputName.inputValue.getText().toString().trim().split(" ");
                     if(nameArray.length==1) {
                         user.getProfile().setFirstName(nameArray[0]);
                         user.getProfile().setLastName(null);
@@ -268,7 +289,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                         }
                         user.getProfile().setLastName(builder.toString().trim());
                     }
-                    user.getProfile().setBio(mBinding.inputBio.getInputValue().getText().toString());
+                    user.getProfile().setBio(mBinding.inputBio.inputValue.getText().toString());
                     user.setCreatedAt(mUser.getCreatedAt());
                     if(mUri!=null) {
                         user.getProfile().setPicture(new Picture());
@@ -322,7 +343,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                     }
                 });
                 break;
-            case R.id.inputBirthday:
+            case R.id.lnrLayoutBirthday:
                 final MaterialDialog dialogBirthday=new MaterialDialog.Builder(getActivity())
                         .customView(R.layout.dialog_birthday_picker, false)
                         .positiveText(R.string.btn_set)
@@ -399,26 +420,37 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    private String validate() {
-        StringBuilder errorMessage=new StringBuilder();
+    private boolean validate() {
+        boolean isValid=true;
         if(CustomApplication.getSystemPreference()!=null) {
-            if(mBinding.inputUsername.getInputValue().getText().length()>CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength()
-                ||mBinding.inputUsername.getInputValue().getText().length()<CustomApplication.getSystemPreference().getValidations().getUsername().getMinLength()) {
-                errorMessage.append(String.format(Locale.getDefault(), getString(R.string.error_username_length)
+            if(mBinding.inputUsername.inputValue.getText().length()>CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength()
+                ||mBinding.inputUsername.inputValue.getText().length()<CustomApplication.getSystemPreference().getValidations().getUsername().getMinLength()) {
+                mBinding.inputUsername.txtViewError.setText(String.format(Locale.getDefault(), getString(R.string.error_username_length)
                         ,CustomApplication.getSystemPreference().getValidations().getUsername().getMinLength()
                         ,CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength()));
+                isValid=false;
             }
             Pattern pattern=Pattern.compile(CustomApplication.getSystemPreference().getValidations().getUsername().getRegex());
-            Matcher m=pattern.matcher(mBinding.inputUsername.getInputValue().getText());
+            Matcher m=pattern.matcher(mBinding.inputUsername.inputValue.getText());
             if(!m.matches()) {
-                errorMessage.append(String.format(Locale.getDefault(),"%s",getString(R.string.error_username)));
+                mBinding.inputUsername.txtViewError.setText(String.format(Locale.getDefault(),"%s",getString(R.string.error_username)));
+                isValid=false;
             }
         }
+        if(StringUtils.isEmpty(mBinding.inputName.inputValue.getText().toString())) {
+            mBinding.inputName.txtViewError.setText(String.format(Locale.getDefault(),"%s",getString(R.string.error_name_empty)));
+            isValid=false;
+        }
+        if(mBinding.inputName.inputValue.getText().length()<3) {
+            mBinding.inputName.txtViewError.setText(String.format(Locale.getDefault(),"%s",getString(R.string.error_name_short)));
+            isValid=false;
+        }
         if(StringUtils.isEmpty(mBirthDay)) {
-            errorMessage.append(String.format(Locale.getDefault(),"%s",getString(R.string.error_birthday)));
+            mBinding.txtViewBirthdayError.setText(String.format(Locale.getDefault(),"%s",getString(R.string.error_birthday_empty)));
+            isValid=false;
         }
 
-        return errorMessage.toString();
+        return isValid;
     }
 
     @Override
@@ -429,6 +461,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
             Intent intent=new Intent(getActivity(), DiscoverActivity.class);
             intent.putExtra(Constants.DATA_FIRST_TIME, true);
             startActivity(intent);
+            getActivity().finish();
         }
         else {
             getActivity().setResult(Activity.RESULT_OK);
@@ -537,7 +570,8 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                     .show();
         }
         else {
-            mBinding.inputBirthday.getInputValue().setText(String.format(Locale.getDefault(), "%02d/%02d/%d", day, month, year));
+            mBinding.txtViewBirthdayError.setText("");
+            mBinding.inputBirthday.setText(String.format(Locale.getDefault(), "%s %02d, %d", months[month-1], day, year));
             mBirthDay=String.format(Locale.getDefault(), "%d-%02d-%02d", year, month, day);
         }
     }

@@ -8,20 +8,24 @@
         android:background="@drawable/app_background">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
-            <FrameLayout
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="4dp"
+            android:background="@color/toolbar"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtViewTitle"
+                android:layout_centerInParent="true"
+                style="@style/TitleTextStyle"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgViewClose"
+                android:src="@drawable/ic_close_navbar"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="5dp"
-                android:id="@+id/btnBack">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:id="@+id/imgViewBack"
-                    android:src="@drawable/ic_close_navbar"/>
-            </FrameLayout>
+                android:layout_centerVertical="true"/>
         </RelativeLayout>
         <WebView
             android:layout_width="match_parent"

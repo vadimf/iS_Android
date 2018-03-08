@@ -44,5 +44,5 @@
     <color name="background">#222327</color>
     <color name="toolbar">#1a1b1f</color>
     <color name="black">#121315</color>
-
+    <color name="background_new">#16161a</color>
 </resources>

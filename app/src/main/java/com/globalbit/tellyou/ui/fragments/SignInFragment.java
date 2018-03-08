@@ -130,7 +130,9 @@ public class SignInFragment extends BaseFragment implements View.OnClickListener
 
             }
         });
+        mBinding.inputPassword.inputValue.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
         mBinding.inputPassword.inputValue.setTypeface(mTypeface);
+        mBinding.inputPassword.inputValue.setTransformationMethod(new PasswordTransformationMethod());
         mBinding.inputPassword.inputValue.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

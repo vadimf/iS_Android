@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/switchAutoplay"
                 android:thumb="@drawable/switch_thumb"
-                app:trackTint="@drawable/switch_track"
+                app:track="@drawable/switch_track"
                 android:gravity="center_vertical"/>
         </LinearLayout>
         <View

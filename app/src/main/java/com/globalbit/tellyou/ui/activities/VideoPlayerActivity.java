@@ -186,7 +186,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     public void onNextVideo(int position) {
         position++;
         if(position<mAdapter.getItemCount()) {
-            mBinding.recyclerViewVideos.scrollToPosition(position);
+            mBinding.recyclerViewVideos.smoothScrollToPosition(position);
         }
     }
 

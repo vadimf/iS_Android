@@ -170,7 +170,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                 Picasso.with(this).load(mPost.getUser().getProfile().getPicture().getThumbnail()).into(mBinding.layoutVideoInformation.imgViewPhoto);
             }
             else {
-                mBinding.layoutVideoInformation.imgViewPhoto.setImageResource(R.drawable.small_image_profile_default);
+                mBinding.layoutVideoInformation.imgViewPhoto.setImageResource(R.drawable.img_xs_no_photo_user);
             }
             if(mPost.getCreatedAt()!=null) {
                 mBinding.layoutVideoInformation.txtViewDate.setText(DateUtils.getRelativeTimeSpanString(mPost.getCreatedAt().getTime()));
@@ -187,8 +187,8 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                     mBinding.layoutVideoInformation.btnAction.setText(R.string.btn_following);
                 }
                 else {
-                    mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_regular);
-                    mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.border_active));
+                    mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.background_button);
+                    mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.white));
                     mBinding.layoutVideoInformation.btnAction.setText(R.string.btn_follow);
                 }
             }
@@ -472,8 +472,8 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                                     NetworkManager.getInstance().unfollow(new IBaseNetworkResponseListener<BaseResponse>() {
                                         @Override
                                         public void onSuccess(BaseResponse response) {
-                                            mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_regular);
-                                            mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.border_active));
+                                            mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.background_button);
+                                            mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.white));
                                             mBinding.layoutVideoInformation.btnAction.setText(getString(R.string.btn_follow));
                                             mPost.getUser().setFollowing(false);
                                         }
@@ -493,7 +493,7 @@ public class PlayerActivity extends BaseActivity implements View.OnClickListener
                         @Override
                         public void onSuccess(BaseResponse response) {
                             mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_share);
-                            mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.share));
+                            mBinding.layoutVideoInformation.btnAction.setTextColor(getResources().getColor(R.color.red_border));
                             mBinding.layoutVideoInformation.btnAction.setText(getString(R.string.btn_following));
                             mPost.getUser().setFollowing(true);
                         }

@@ -19,8 +19,10 @@
                    android:layout_height="wrap_content"
                    android:src="@drawable/ic_play_button"/>
 
-        <ImageButton android:id="@id/exo_pause"
-                     style="@style/ExoMediaButton.Pause"/>
+        <ImageView android:id="@id/exo_pause"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/ic_stop"/>
     </LinearLayout>
 
 </RelativeLayout>

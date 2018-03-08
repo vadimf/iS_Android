@@ -116,7 +116,7 @@
     <string name="btn_send">Send</string>
     <string name="label_load_more_comments">Load more comments</string>
     <string name="hint_user_name">Choose a unique username</string>
-    <string name="hint_full_name">Enter full name</string>
+    <string name="hint_full_name">Your full name</string>
     <string name="hint_bio">Tell about yourself</string>
     <string name="label_original_question">The original question was</string>
     <string name="hint_cake_it">How things evolved?</string>
@@ -234,14 +234,23 @@
     <string name="password_hint">At least %1$d characters</string>
     <string name="error_empty">cannot be empty</string>
     <string name="error_invalid_mail">Email is not valid</string>
-    <string name="label_name">Name</string>
-    <string name="label_username">Username</string>
+    <string name="label_name">Name*</string>
+    <string name="label_username">Username*</string>
     <string name="label_bio">Bio</string>
-    <string name="label_birthday">Your birthday</string>
+    <string name="label_birthday">Your birthday*</string>
     <string name="birthday">Birthday</string>
     <string name="hint_birthday">It won\'t be shown publicly</string>
     <string name="btn_say_it">Say it!</string>
     <string name="dialog_button_unfollow">Unfollow</string>
+    <string name="error_name_empty">Name cannot be empty</string>
+    <string name="error_name_short">Name should be at least 3 characters long</string>
+    <string name="error_birthday_empty">Birthday cannot be empty</string>
+    <string name="label_videos">Videos</string>
+    <string name="notification_uploading">Your video is uploading</string>
+    <string name="label_uploading">Uploading</string>
+    <string name="notification_error_uploading">Your video failed to upload</string>
+    <string name="label_uploaded">Uploaded</string>
+    <string name="notification_video_uploaded">Your video was uploaded</string>
 
     <plurals name="replies">
         <item quantity="zero">No replies</item>

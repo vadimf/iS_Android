@@ -122,7 +122,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
                 Picasso.with(mContext).load(item.getUser().getProfile().getPicture().getThumbnail()).into(holder.mBinding.imgViewPhoto);
             }
             else {
-                holder.mBinding.imgViewPhoto.setImageResource(R.drawable.small_image_profile_default);
+                holder.mBinding.imgViewPhoto.setImageResource(R.drawable.img_xs_no_photo_user);
             }
             if(item.getCreatedAt()!=null) {
                 holder.mBinding.txtViewDate.setText(DateUtils.getRelativeTimeSpanString(item.getCreatedAt().getTime()));

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,7 +21,7 @@
                     android:layout_width="72dp"
                     android:layout_height="72dp"
                     android:id="@+id/imgViewPhoto"
-                    android:src="@drawable/img_add_photo_profile"/>
+                    android:src="@drawable/img_add_photo"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -28,51 +29,64 @@
                     android:text="@string/label_add_photo"
                     style="@style/LabelTextMediumStyle"/>
             </LinearLayout>
-            <com.globalbit.tellyou.ui.views.CustomEditText
+            <include layout="@layout/layout_edit_text"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="20dp"
+                     android:layout_marginStart="20dp"
+                     android:layout_marginEnd="20dp"
+                     android:id="@+id/inputName"/>
+            <include layout="@layout/layout_edit_text"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginStart="20dp"
+                     android:layout_marginEnd="20dp"
+                     android:id="@+id/inputUsername"/>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:id="@+id/lnrLayoutBirthday"
+                android:orientation="vertical"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:id="@+id/inputName"
-                app:label="@string/label_name"
-                app:hint="@string/hint_full_name"
-                app:type="Text"
-                app:name="@string/label_name"
-                app:required="true"/>
-            <com.globalbit.tellyou.ui.views.CustomEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:id="@+id/inputUsername"
-                app:label="@string/label_username"
-                app:hint="@string/hint_user_name"
-                app:type="Text"
-                app:name="@string/label_username"
-                app:required="true"/>
-            <com.globalbit.tellyou.ui.views.CustomEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:id="@+id/inputBirthday"
-                app:label="@string/label_birthday"
-                app:hint="@string/hint_birthday"
-                app:type="Birthday"
-                app:name="@string/birthday"
-                app:required="false"/>
-            <com.globalbit.tellyou.ui.views.CustomEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:id="@+id/inputBio"
-                app:label="@string/label_bio"
-                app:hint="@string/hint_bio"
-                app:type="Text"
-                app:name="@string/label_bio"
-                app:required="false"/>
+                android:paddingEnd="20dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtViewTitle"
+                    style="@style/LabelTextStyle"
+                    android:text="@string/label_birthday"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/inputBirthday"
+                        style="@style/InputTextStyle"
+                        android:hint="@string/hint_birthday"/>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/separator"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtViewBirthdayError"
+                    android:layout_marginTop="5dp"
+                    style="@style/ErrorTextStyle"/>
+            </LinearLayout>
+            <include layout="@layout/layout_edit_text"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginStart="20dp"
+                     android:layout_marginEnd="20dp"
+                     android:id="@+id/inputBio"/>
             <android.support.v4.widget.Space
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
