@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.globalbit.androidutils.ConversionUtils;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
@@ -49,6 +50,7 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
     private boolean mLoading = true;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private int mCurrentActiveReply;
+    private int mLastActiveReply;
     private Pagination mPagination;
     private int mCommentsCount=0;
     private User mUser;
@@ -70,17 +72,35 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
             public int getPaddingLeft() {
                 //int position=this.findFirstCompletelyVisibleItemPosition();
                 if(mAdapter.getItemCount()==1) {
-                    return (int)(mBinding.recyclerViewReplies.getMeasuredWidth()*0.15);
+                    return mBinding.recyclerViewReplies.getMeasuredWidth()/2-(mAdapter.mImgWidth/2);
                 }
                 else {
                     return super.getPaddingLeft();
                 }
-                //return (int)(mBinding.recyclerViewReplies.getMeasuredWidth()*0.15+ConversionUtils.convertDpToPixel(6,ReplyActivity.this));
+                /*//if(mCurrentActiveReply==0) {
+                    int t=mBinding.recyclerViewReplies.getMeasuredWidth()/2-(mAdapter.mImgWidth/2+10);
+                    Log.i(TAG, "getPaddingLeft: "+mCurrentActiveReply+":"+t);
+                    return mBinding.recyclerViewReplies.getMeasuredWidth()/2-(mAdapter.mImgWidth/2+10);
+                //}*/
+                /*else {
+                    int t=(int)(mBinding.recyclerViewReplies.getMeasuredWidth()/2-(mAdapter.mImgWidth/2+ConversionUtils.convertDpToPixel(12, ReplyActivity.this)));
+                    Log.i(TAG, "getPaddingLeft: "+mCurrentActiveReply+":"+t);
+                    return (int)(mBinding.recyclerViewReplies.getMeasuredWidth()/2-(mAdapter.mImgWidth/2+ConversionUtils.convertDpToPixel(12, ReplyActivity.this)));
+                }*/
             }
 
             /*@Override
             public int getPaddingRight() {
-                return (int)(mBinding.recyclerViewReplies.getMeasuredWidth()*0.15);
+                //if(mLastActiveReply==mAdapter.getItemCount()-1) {
+                    int t=mBinding.recyclerViewReplies.getMeasuredWidth()/2-(mAdapter.mImgWidth/2+10);
+                    Log.i(TAG, "getPaddingRight: "+mCurrentActiveReply+":"+t);
+                    return mBinding.recyclerViewReplies.getMeasuredWidth()/2-(mAdapter.mImgWidth/2+10);
+                //}
+               *//* else {
+                    int t=(int)(mBinding.recyclerViewReplies.getMeasuredWidth()/2-(mAdapter.mImgWidth/2+ConversionUtils.convertDpToPixel(12, ReplyActivity.this)));
+                    Log.i(TAG, "getPaddingRight: "+mCurrentActiveReply+":"+t);
+                    return (int) (mBinding.recyclerViewReplies.getMeasuredWidth()/2-(mAdapter.mImgWidth/2+ConversionUtils.convertDpToPixel(12, ReplyActivity.this)));
+                }*//*
             }*/
 
 
@@ -98,8 +118,9 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 mCurrentActiveReply= layoutManager.findFirstCompletelyVisibleItemPosition();
+                mLastActiveReply=layoutManager.findLastCompletelyVisibleItemPosition();
                 Log.i(TAG, "onScrolled: "+mCurrentActiveReply);
-                if(mCurrentActiveReply==0) {
+                if(mCurrentActiveReply==0||mAdapter.getItemCount()==1) {
                     mBinding.imgViewBackToStart.setVisibility(View.GONE);
                 }
                 else {
