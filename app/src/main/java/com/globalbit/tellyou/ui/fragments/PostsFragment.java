@@ -28,15 +28,12 @@ import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.PostsResponse;
 import com.globalbit.tellyou.ui.activities.DiscoverActivity;
-import com.globalbit.tellyou.ui.activities.MainActivity;
-import com.globalbit.tellyou.ui.activities.PlayerActivity;
 import com.globalbit.tellyou.ui.activities.VideoPlayerActivity;
 import com.globalbit.tellyou.ui.activities.VideoRecordingActivity;
 import com.globalbit.tellyou.ui.adapters.PostsAdapter;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
 import com.globalbit.tellyou.ui.interfaces.IPostListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
-import com.globalbit.tellyou.utils.SimpleDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Locale;

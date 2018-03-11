@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,9 @@ import java.util.Locale;
 
 import im.ene.toro.ToroPlayer;
 import im.ene.toro.ToroUtil;
+import im.ene.toro.exoplayer.Config;
+import im.ene.toro.exoplayer.ExoPlayerViewHelper;
+import im.ene.toro.exoplayer.MediaSourceBuilder;
 import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
 import im.ene.toro.helper.ToroPlayerHelper;
 import im.ene.toro.media.PlaybackInfo;
@@ -47,8 +52,9 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
     private ArrayList<Comment> mItems;
     private Context mContext;
     private IReplyListener mListener;
-    private int mImgWidth;
+    public int mImgWidth;
     private LinearLayout.LayoutParams mParams;
+    private static final String TAG=RepliesAdapter.class.getSimpleName();
 
 
     public RepliesAdapter(Context context, IReplyListener listener) {
@@ -79,6 +85,12 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
         }
         mItems.addAll(items);
         notifyDataSetChanged();
+    }
+
+    public void clearItems() {
+        if(mItems!=null) {
+            mItems.clear();
+        }
     }
 
     public int getIndex(String id) {
@@ -171,11 +183,13 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
         }
 
         @Override
-        public void initialize(@NonNull Container container, @Nullable PlaybackInfo playbackInfo) {
+        public void initialize(@NonNull final  Container container, @Nullable final PlaybackInfo playbackInfo) {
             if (helper == null) {
-                helper = new SimpleExoPlayerViewHelper(container, this, mediaUri);
+                mBinding.imgViewPreview.setVisibility(View.VISIBLE);
+                helper = new ExoPlayerViewHelper(this, mediaUri);
             }
-            helper.initialize(playbackInfo);
+
+            helper.initialize(container, playbackInfo);
             helper.addPlayerEventListener(new ToroPlayer.EventListener() {
                 @Override
                 public void onBuffering() {
@@ -193,6 +207,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
 
                 @Override
                 public void onCompleted() {
+                    mBinding.videoViewPlayer.getPlayer().seekTo(0);
                     EventBus.getDefault().post(new NextVideoEvent(mPosition));
 
                 }

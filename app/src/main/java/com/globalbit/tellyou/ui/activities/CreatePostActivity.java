@@ -67,8 +67,8 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
         if(!StringUtils.isEmpty(mVideoPath)) {
             File file=new File(mVideoPath);
             Uri uri=Uri.fromFile(file);
-            playerHelper = ToroExo.with(this).getDefaultCreator().createPlayable(uri);
-            playerHelper.prepare();
+            playerHelper = ToroExo.with(this).getDefaultCreator().createPlayable(uri,"mp4");
+            playerHelper.prepare(true);
             playerHelper.setPlayerView(mBinding.videoViewPlayer);
             mBinding.videoViewPlayer.setOnClickListener(this);
         }

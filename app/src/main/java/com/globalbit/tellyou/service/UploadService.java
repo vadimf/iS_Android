@@ -20,7 +20,10 @@ import com.globalbit.tellyou.network.responses.CommentResponse;
 import com.globalbit.tellyou.network.responses.PostResponse;
 import com.globalbit.tellyou.ui.activities.ReplyActivity;
 import com.globalbit.tellyou.ui.activities.SplashScreenActivity;
+import com.globalbit.tellyou.ui.events.RefreshEvent;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 
@@ -217,6 +220,7 @@ public class UploadService extends Service {
 
         notificationManager.notify(1, notification);
         stopForeground(false);
+        EventBus.getDefault().post(new RefreshEvent());
     }
 
     @Override

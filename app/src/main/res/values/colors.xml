@@ -4,35 +4,16 @@
     <color name="colorPrimaryDark">#161617</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="red">#ff0000</color>
     <color name="underline">#d6d6d6</color>
-    <color name="background_option">#dddddd</color>
-    <color name="background_option_selected">#b0b0b0</color>
-    <color name="background_caption">#b3ffffff</color>
-    <color name="divider">#40000000</color>
-    <color name="border_active">#64BAFF</color>
     <color name="border_inactive">#DADDE0</color>
     <color name="share">#FF949A</color>
-    <color name="hint">#8FA4B7</color>
-    <color name="label_regular">#3E4C69</color>
-    <color name="error">#FF1F2D</color>
     <color name="dark">#222730</color>
-    <color name="app_background">#E5E5E5</color>
-    <color name="option_1">#fe6968</color>
-    <color name="option_2">#ff9436</color>
-    <color name="option_3">#ffe061</color>
-    <color name="option_4">#9ce159</color>
-    <color name="inactive_opacity">#edeef0</color>
-    <color name="active_opacity">#b7ddff</color>
-    <color name="progress_bar">#00ccff</color>
     <color name="background_opacity">#80000000</color>
 
     <color name="grey_light">#d2d3d6</color>
     <color name="grey">#929396</color>
     <color name="grey_2">#8f9094</color>
-    <color name="grey_dark_light">#666870</color>
     <color name="grey_dark">#46474d</color>
-    <color name="orange">#fb6901</color>
     <color name="red_light">#ed4c4c</color>
     <color name="red_dark">#ff6b00</color>
     <color name="red_darker">#ff2121</color>

@@ -33,12 +33,6 @@
         <item name="android:fontFamily">@font/assistant_regular</item>
     </style>
 
-    <style name="HintTextStyle">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/grey_dark</item>
-        <item name="android:fontFamily">@font/assistant_regular</item>
-    </style>
-
     <style name="InputTextStyle">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/grey_light</item>
@@ -177,30 +171,9 @@
     </style>
 
 
-    <style name="TextSmallLightStyle">
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">@font/assistant_light</item>
-    </style>
-
-    <style name="TextRegularStyle">
-        <item name="android:textSize">18sp</item>
-        <item name="android:fontFamily">@font/assistant_regular</item>
-    </style>
-
-
-    <style name="TextRegularLightStyle">
-        <item name="android:textSize">18sp</item>
-        <item name="android:fontFamily">@font/assistant_light</item>
-    </style>
-
     <style name="TextMediumLightStyle">
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/assistant_light</item>
-    </style>
-
-    <style name="TextMediumStyle">
-        <item name="android:textSize">16sp</item>
-        <item name="android:fontFamily">@font/assistant_regular</item>
     </style>
 
     <style name="LabelBigSemiBoldStyle">
@@ -208,16 +181,7 @@
         <item name="android:fontFamily">@font/assistant_semi_bold</item>
         <item name="android:textColor">@color/red_dark</item>
     </style>
-    <style name="HintBigLightStyle">
-        <item name="android:textSize">22sp</item>
-        <item name="android:fontFamily">@font/assistant_light</item>
-        <item name="android:textColor">@color/border_inactive</item>
-    </style>
-    <style name="TextBigLightStyle">
-        <item name="android:textSize">22sp</item>
-        <item name="android:fontFamily">@font/assistant_light</item>
-        <item name="android:textColor">@color/label_regular</item>
-    </style>
+
     <style name="TextBigLightDarkStyle">
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">@font/assistant_light</item>
@@ -229,7 +193,7 @@
         <item name="android:textColor">@color/grey</item>
     </style>
     <style name="TitleMediumLightStyle" parent="TextMediumLightStyle">
-        <item name="android:textColor">@color/dark</item>
+        <item name="android:textColor">@color/grey</item>
     </style>
 
 

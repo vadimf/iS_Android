@@ -14,14 +14,24 @@
             android:layout_weight="1"
             android:id="@+id/swipeLayout"
             android:paddingTop="20dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="20dp"
+            android:visibility="visible">
             <im.ene.toro.widget.Container
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/recyclerViewReplies"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 tools:listitem ="@layout/item_reply"/>
         </android.support.v4.widget.SwipeRefreshLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            style="@style/TitleMediumLightStyle"
+            android:gravity="center"
+            android:id="@+id/txtViewEmpty"
+            android:visibility="gone"
+            android:text="@string/label_no_replies"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

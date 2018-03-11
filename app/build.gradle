@@ -82,10 +82,10 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
     compile 'com.android.support:multidex:1.0.3'
     implementation 'com.googlecode.mp4parser:isoparser:1.1.21'
-    implementation 'com.google.android.exoplayer:exoplayer:2.6.1'
-    implementation 'im.ene.toro3:toro:3.4.0-A2'
-    implementation 'im.ene.toro3:toro-ext-exoplayer:3.4.0-A2'
-    implementation 'com.google.android.exoplayer:exoplayer:2.6.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.7.0'
+    implementation 'im.ene.toro3:toro:3.4.1'
+    implementation 'im.ene.toro3:toro-ext-exoplayer:3.4.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.7.0'
     implementation 'com.shawnlin:number-picker:2.4.6'
 }
 

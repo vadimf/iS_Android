@@ -57,6 +57,7 @@ import java.util.concurrent.TimeUnit;
 import im.ene.toro.CacheManager;
 import im.ene.toro.ToroPlayer;
 import im.ene.toro.ToroUtil;
+import im.ene.toro.exoplayer.ExoPlayerViewHelper;
 import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
 import im.ene.toro.helper.ToroPlayerHelper;
 import im.ene.toro.media.PlaybackInfo;
@@ -66,6 +67,7 @@ import im.ene.toro.widget.Container;
  * Created by alex on 14/06/2016.
  */
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements CacheManager{
+    private static final String TAG=VideosAdapter.class.getSimpleName();
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 1000;
     private static final long HIDE_DETAILS_THRESHOLD=3000;
@@ -445,9 +447,10 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 
         @Override
         public void initialize(@NonNull Container container, @Nullable PlaybackInfo playbackInfo) {
-            mBinding.imgViewPreview.setVisibility(View.VISIBLE);
             if (mHelper == null) {
-                mHelper = new SimpleExoPlayerViewHelper(container, this, mMediaUri);
+                Log.i(TAG, "initialize: "+mPosition);
+                mBinding.imgViewPreview.setVisibility(View.VISIBLE);
+                mHelper = new ExoPlayerViewHelper( this, mMediaUri);
                 NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
                     @Override
                     public void onSuccess(BaseResponse response) {
@@ -460,7 +463,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                     }
                 }, mPost.getId());
             }
-            mHelper.initialize(playbackInfo);
+            mHelper.initialize(container, playbackInfo);
             mElapsedTime=0;
             mBinding.progressBarPortrait.setProgress(mElapsedTime);
             mTimer=new CountDownTimer(HIDE_DETAILS_THRESHOLD, 1000) {
@@ -494,6 +497,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                     stopSeekbarUpdate();
                     mElapsedTime=0;
                     mBinding.progressBarPortrait.setProgress(0);
+                    mBinding.videoViewPlayer.getPlayer().seekTo(0);
+                    mHelper.pause();
                     if(SharedPrefsUtils.isAutoplayNextVideo()) {
                         EventBus.getDefault().post(new NextVideoEvent(mPosition));
                     }

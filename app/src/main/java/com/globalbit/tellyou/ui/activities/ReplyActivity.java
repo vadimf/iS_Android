@@ -5,10 +5,8 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -28,6 +26,7 @@ import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.CommentsResponse;
 import com.globalbit.tellyou.ui.adapters.RepliesAdapter;
 import com.globalbit.tellyou.ui.events.NextVideoEvent;
+import com.globalbit.tellyou.ui.events.RefreshEvent;
 import com.globalbit.tellyou.ui.interfaces.IReplyListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 
@@ -41,6 +40,7 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 
 public class ReplyActivity extends BaseActivity implements View.OnClickListener, IBaseNetworkResponseListener<CommentsResponse>, IReplyListener {
+    private static final String TAG=ReplyActivity.class.getSimpleName();
     private ActivityReplyBinding mBinding;
     private String mPostId;
     private String mCommentId;
@@ -48,6 +48,7 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
     private int mPage=1;
     private boolean mLoading = true;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private int mCurrentActiveReply;
     private Pagination mPagination;
     private int mCommentsCount=0;
     private User mUser;
@@ -64,7 +65,27 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
         mBinding.imgViewBackToStart.setOnClickListener(this);
         mAdapter=new RepliesAdapter(this, this);
         final LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) {
+            @Override
+            public int getPaddingLeft() {
+                //int position=this.findFirstCompletelyVisibleItemPosition();
+                if(mAdapter.getItemCount()==1) {
+                    return (int)(mBinding.recyclerViewReplies.getMeasuredWidth()*0.15);
+                }
+                else {
+                    return super.getPaddingLeft();
+                }
+                //return (int)(mBinding.recyclerViewReplies.getMeasuredWidth()*0.15+ConversionUtils.convertDpToPixel(6,ReplyActivity.this));
+            }
+
+            /*@Override
+            public int getPaddingRight() {
+                return (int)(mBinding.recyclerViewReplies.getMeasuredWidth()*0.15);
+            }*/
+
+
+
+        };
         mBinding.recyclerViewReplies.setLayoutManager(layoutManager);
         mBinding.recyclerViewReplies.setAdapter(mAdapter);
         DividerItemDecoration itemDecorator = new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL);
@@ -76,19 +97,20 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
-                if(pastVisiblesItems>0) {
-                    mBinding.imgViewBackToStart.setVisibility(View.VISIBLE);
+                mCurrentActiveReply= layoutManager.findFirstCompletelyVisibleItemPosition();
+                Log.i(TAG, "onScrolled: "+mCurrentActiveReply);
+                if(mCurrentActiveReply==0) {
+                    mBinding.imgViewBackToStart.setVisibility(View.GONE);
                 }
                 else {
-                    mBinding.imgViewBackToStart.setVisibility(View.GONE);
+                    mBinding.imgViewBackToStart.setVisibility(View.VISIBLE);
                 }
                 if(dx<0) {
                     return;
                 }
                 visibleItemCount = layoutManager.getChildCount();
                 totalItemCount = layoutManager.getItemCount();
-                //pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+                pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
                 if (mLoading) {
                     if(mPagination!=null&&mPagination.getPage()>=mPagination.getPages()) {
                         return;
@@ -155,9 +177,13 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
         mCommentsCount=response.getPagination().getResults();
         if(mCommentsCount==0) {
             mBinding.toolbar.txtViewTitle.setText(R.string.title_comments);
+            mBinding.swipeLayout.setVisibility(View.GONE);
+            mBinding.txtViewEmpty.setVisibility(View.VISIBLE);
         }
         else {
             mBinding.toolbar.txtViewTitle.setText(getResources().getQuantityString(R.plurals.replies, mCommentsCount, mCommentsCount));
+            mBinding.swipeLayout.setVisibility(View.VISIBLE);
+            mBinding.txtViewEmpty.setVisibility(View.GONE);
         }
         mPagination=response.getPagination();
 
@@ -225,6 +251,18 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
         if(position<mAdapter.getItemCount()) {
             mBinding.recyclerViewReplies.smoothScrollToPosition(position);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshEvent(RefreshEvent event) {
+        mBinding.swipeLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.clearItems();
+                mPage=1;
+                loadItems();
+            }
+        });
     }
 
     @Override
