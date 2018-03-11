@@ -55,9 +55,9 @@ public class GestureListener implements GestureDetector.OnGestureListener {
                 if(Math.abs(deltaX)>SWIPE_THRESHOLD) {
                     mListener.onHorizontalScroll(motionEvent1, v, (int) speed);
                     if(v<0) {
-                        Log.i(TAG, "Slide right");
+                        //Log.i(TAG, "Slide right");
                     } else {
-                        Log.i(TAG, "Slide left");
+                        //Log.i(TAG, "Slide left");
                     }
                     return true;
                 }
