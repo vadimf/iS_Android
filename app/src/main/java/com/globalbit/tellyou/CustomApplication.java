@@ -33,7 +33,7 @@ public class CustomApplication extends MultiDexApplication {
         SharedPrefsUtils.init(this);
         Configuration configuration = new Configuration(Resources.getSystem().getConfiguration());
         configuration.setLocale(Locale.ENGLISH);
-        Resources.getSystem().updateConfiguration(configuration, null);
+        mApplicationContext.getResources().updateConfiguration(configuration, null);
     }
 
     public static Context getAppContext() {

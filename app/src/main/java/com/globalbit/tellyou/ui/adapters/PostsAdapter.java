@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.internal.MDButton;
 import com.bumptech.glide.Glide;
+import com.globalbit.androidutils.CollectionUtils;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
@@ -33,6 +34,7 @@ import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -88,6 +90,29 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         }
     }
 
+    public void updateFollowState(HashMap<String, Boolean> usersFollowingStatus) {
+        if(!CollectionUtils.isEmpty(mItems)) {
+            for(int i=0; i<mItems.size(); i++) {
+                Post post=mItems.get(i);
+                if(usersFollowingStatus.containsKey(post.getUser().getUsername())) {
+                    post.getUser().setFollowing(usersFollowingStatus.get(post.getUser().getUsername()));
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void updateComments(String id) {
+        if(!CollectionUtils.isEmpty(mItems)) {
+            for(int i=0; i<mItems.size(); i++) {
+                Post item=mItems.get(i);
+                if(item.getId().equals(id)) {
+                    item.setComments(item.getComments()+1);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -123,7 +148,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                     holder.mBinding.txtViewUsername.setVisibility(View.GONE);
                     break;
             }
-            if(item.getUser().getUsername().equals(mUser.getUsername())) {
+            if(item.getUser().getUsername().equals(mUser.getUsername())&&mFeedType==Constants.TYPE_FEED_USER) {
                 holder.mBinding.frmLayoutAction.setVisibility(View.VISIBLE);
             }
             else {

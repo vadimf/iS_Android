@@ -20,12 +20,14 @@ import com.globalbit.tellyou.network.responses.CommentResponse;
 import com.globalbit.tellyou.network.responses.PostResponse;
 import com.globalbit.tellyou.ui.activities.ReplyActivity;
 import com.globalbit.tellyou.ui.activities.SplashScreenActivity;
+import com.globalbit.tellyou.ui.events.CommentEvent;
 import com.globalbit.tellyou.ui.events.RefreshEvent;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -50,6 +52,7 @@ public class UploadService extends Service {
             final File file=(File)intent.getSerializableExtra(Constants.DATA_VIDEO_FILE);
             File gif=(File)intent.getSerializableExtra(Constants.DATA_GIF_FILE);
             String text=intent.getStringExtra(Constants.DATA_TEXT);
+            ArrayList<String> tags=intent.getStringArrayListExtra(Constants.DATA_HASHTAGS);
             int duration=(int)intent.getLongExtra(Constants.DATA_DURATION, -1);
             int videoRecordingType=intent.getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
             final String postId=intent.getStringExtra(Constants.DATA_POST_ID);
@@ -61,6 +64,12 @@ public class UploadService extends Service {
                     MediaType.parse("image/jpg"),
                     gif
             );
+            ArrayList<RequestBody> hashtags=new ArrayList<>();
+            if(tags!=null&&tags.size()>0) {
+                for(String tag : tags) {
+                    hashtags.add(RequestBody.create(MultipartBody.FORM, tag));
+                }
+            }
             Notification notification;
             switch(videoRecordingType) {
                 case Constants.TYPE_POST_VIDEO_RECORDING:
@@ -102,7 +111,7 @@ public class UploadService extends Service {
                                 }
                             }, MultipartBody.Part.createFormData("video", file.getName(), requestFile),
                             MultipartBody.Part.createFormData("thumbnail", gif.getName(), requestGif),
-                            RequestBody.create(okhttp3.MultipartBody.FORM, text),
+                            RequestBody.create(MultipartBody.FORM, text), hashtags,
                             RequestBody.create(MultipartBody.FORM, String.valueOf(duration)));
                     notification =
                             new NotificationCompat.Builder(this, "UploadChannel")
@@ -152,6 +161,7 @@ public class UploadService extends Service {
                                             pendingIntent=PendingIntent.getActivity(UploadService.this, 0,
                                                     notificationIntent, 0);
                                         }
+                                        EventBus.getDefault().post(new CommentEvent(postId));
                                         showReplyNotification(pendingIntent);
                                     }
 

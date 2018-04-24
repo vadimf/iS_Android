@@ -26,7 +26,9 @@
                 android:layout_gravity="start"
                 android:elevation="4dp"
                 android:background="@color/toolbar"
-                app:menu="@menu/main_navigation"/>
+                app:menu="@menu/main_navigation"
+                android:paddingStart="50dp"
+                android:paddingEnd="50dp"/>
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
@@ -103,6 +105,15 @@
                 android:layout_marginTop="25dp"
                 style="@style/LabelTextMediumStyle"
                 android:text="@string/label_terms_of_service"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtViewContactUs"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:layout_marginTop="25dp"
+                style="@style/LabelTextMediumStyle"
+                android:text="@string/label_contact_us"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

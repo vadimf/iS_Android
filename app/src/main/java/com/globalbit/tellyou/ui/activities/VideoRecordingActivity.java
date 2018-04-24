@@ -10,6 +10,7 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
@@ -58,7 +59,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by alex on 14/02/2018.
  */
 
-public class VideoRecordingActivity extends BaseActivity implements View.OnClickListener {
+public class VideoRecordingActivity extends BaseActivity implements View.OnClickListener, CameraPreview.ISurfaceListener {
     private static final String TAG=VideoRecordingActivity.class.getSimpleName();
     private ActivityVideoRecordingBinding mBinding;
     private int MAX_VIDEO_LENGTH=Constants.POST_VIDEO_MAX_SIZE;
@@ -72,11 +73,12 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
     private Camera.CameraInfo mCameraInfo;
     private int mCamerId=-1;
     private CameraPreview mPreview;
-    private boolean mIsFrontCamera=false;
+    private boolean mIsFrontCamera=true;
     private MediaRecorder mRecorder;
     private boolean mIsRecording=false;
     private ArrayList<String> mFilesPath=new ArrayList<>();
     private OrientationEventListener mOrientationListener;
+    private long lastClickTime = 0;
     private ScheduledFuture<?> mScheduleFuture;
     private final Runnable mUpdateProgressTask = new Runnable() {
         @Override
@@ -112,6 +114,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
         mBinding.lnrLayoutVideoRecordingActions.imgViewSwitchCamera.setOnClickListener(this);
         mBinding.lnrLayoutVideoRecordingActions.imgViewFinish.setOnClickListener(this);
         setRecordingState();
+        mBinding.lnrLayoutVideoRecordingActions.frmLayoutExit.setVisibility(View.INVISIBLE);
         mBinding.progressBarPortrait.setMax(MAX_VIDEO_LENGTH);
         if(checkCameraHardware()) {
             checkForPermissions(1, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO});
@@ -164,9 +167,17 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                 onBackPressed();
                 break;
             case R.id.imgViewRecordStop:
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1500){
+                    return;
+                }
+                lastClickTime = SystemClock.elapsedRealtime();
                 if(mIsRecording) {
                     if(mRecorder!=null) {
-                        mRecorder.stop();
+                        try {
+                            mRecorder.stop();
+                        }
+                        catch(Exception ex) {
+                        }
                         mIsRecording=false;
                         stopSeekbarUpdate();
                     }
@@ -297,7 +308,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                     catch(Exception ex){}
                 }
                 mCamera=getCameraInstance(mIsFrontCamera);
-                mPreview = new CameraPreview(this, mCamera, mCameraInfo);
+                mPreview = new CameraPreview(this, mCamera, mCameraInfo, this);
                 mBinding.cameraPreview.removeAllViews();
                 mBinding.cameraPreview.addView(mPreview);
                 break;
@@ -306,11 +317,12 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
 
     @Override
     protected void permissionAccepted() {
+        mBinding.lnrLayoutVideoRecordingActions.frmLayoutExit.setVisibility(View.VISIBLE);
         // Create an instance of Camera
-        mCamera = getCameraInstance(false);
+        mCamera = getCameraInstance(true);
 
         // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera, mCameraInfo);
+        mPreview = new CameraPreview(this, mCamera, mCameraInfo, this);
         mBinding.cameraPreview.addView(mPreview);
         mRecordingState=Enums.RecordingState.Initial;
         setRecordingState();
@@ -337,6 +349,41 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                     }
                 })
                 .show();
+    }
+
+    @Override
+    protected void onPause() {
+        show();
+        if(mIsRecording) {
+            if(mRecorder!=null) {
+                mRecorder.stop();
+                mIsRecording=false;
+                stopSeekbarUpdate();
+            }
+            mRecordingState=Enums.RecordingState.Stopped;
+            setRecordingState();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: ");
+        if(mCamera!=null) {
+            try {
+                mCamera.stopPreview();
+                mCamera.release();
+            }
+            catch(Exception ex){}
+        }
+        mCamera=getCameraInstance(mIsFrontCamera);
+        //mPreview = new CameraPreview(this, mCamera, mCameraInfo, this);
+        if(mPreview!=null) {
+            mPreview.setCamera(mCamera);
+        }
+        //mBinding.cameraPreview.removeAllViews();
+        //mBinding.cameraPreview.addView(mPreview);
     }
 
     @Override
@@ -589,5 +636,15 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
             Log.e("Test", "Error merging media files. exception: "+e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public void show() {
+        mBinding.viewLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hide() {
+        mBinding.viewLoading.setVisibility(View.GONE);
     }
 }

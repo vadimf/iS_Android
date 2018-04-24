@@ -146,6 +146,9 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
                         case R.id.frmLayoutMenu:
                             mListener.onReport(item);
                             break;
+                        case R.id.imgViewPhoto:
+                            mListener.onProfile(item);
+                            break;
                     }
                 }
             });
@@ -168,6 +171,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
             super(v);
             mBinding=DataBindingUtil.bind(v);
             mBinding.frmLayoutMenu.setOnClickListener(this);
+            mBinding.imgViewPhoto.setOnClickListener(this);
         }
 
         @NonNull

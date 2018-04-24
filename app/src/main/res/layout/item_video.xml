@@ -2,9 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/videoViewPlayer"
             android:layout_width="match_parent"
@@ -12,70 +14,82 @@
             app:resize_mode="fixed_height"
             app:surface_type="texture_view"
             app:use_controller="false"/>
+
         <ImageView
+            android:id="@+id/imgViewPreview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/imgViewPreview"
             android:scaleType="centerCrop"
             android:visibility="gone"/>
+
         <com.globalbit.tellyou.ui.views.GestureControllerView
+            android:id="@+id/gestureView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/gestureView"/>
+            android:layout_height="match_parent"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:background="@drawable/background_alpha_reverse">
+
                 <ProgressBar
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp"
                     android:id="@+id/progressBarPortrait"
                     style="@style/Widget.ProgressBar.Vertical"
-                    android:progressDrawable="@drawable/progressbar"
-                    android:indeterminate="false"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:indeterminate="false"
+                    android:progressDrawable="@drawable/progressbar"/>
+
                 <TextView
+                    android:id="@+id/txtViewViews"
+                    style="@style/TimerTextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/txtViewViews"
-                    android:drawableStart="@drawable/ic_eye_views"
+                    android:layout_below="@id/progressBarPortrait"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_below="@id/progressBarPortrait"
+                    android:drawablePadding="5dp"
+                    android:drawableStart="@drawable/ic_eye_views"
                     android:gravity="center"
-                    tools:text="5"
-                    style="@style/TimerTextStyle"
-                    android:drawablePadding="5dp"/>
+                    tools:text="5"/>
+
                 <ImageView
+                    android:id="@+id/imgViewCancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/imgViewCancel"
-                    android:src="@drawable/ic_close_views"
                     android:layout_alignParentEnd="true"
                     android:layout_below="@id/progressBarPortrait"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:src="@drawable/ic_close_views"/>
             </RelativeLayout>
 
-            <include layout="@layout/layout_player_actions"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:id="@+id/layoutPlayerActions"
-                     android:layout_alignParentBottom="true"/>
-            <include layout="@layout/layout_video_information"
-                     android:id="@+id/layoutVideoInformation"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_above="@id/layoutPlayerActions"
-                     android:visibility="gone"/>
-            <include layout="@layout/layout_video_menu"
-                     android:id="@+id/layoutVideoMenu"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_above="@id/layoutPlayerActions"
-                     android:visibility="gone"/>
+            <include
+                android:id="@+id/layoutPlayerActions"
+                layout="@layout/layout_player_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"/>
+
+            <include
+                android:id="@+id/layoutVideoInformation"
+                layout="@layout/layout_video_information"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/layoutPlayerActions"
+                android:visibility="gone"/>
+
+            <include
+                android:id="@+id/layoutVideoMenu"
+                layout="@layout/layout_video_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/layoutPlayerActions"
+                android:visibility="gone"/>
         </RelativeLayout>
     </FrameLayout>
 </layout>

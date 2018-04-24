@@ -11,6 +11,7 @@ import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.ui.fragments.BaseFragment;
 import com.globalbit.tellyou.ui.fragments.PostsFragment;
+import com.globalbit.tellyou.ui.interfaces.IProfileListener;
 
 /**
  * Created by alex on 23/11/2017.
@@ -22,14 +23,16 @@ public class ProfilePagerAdapter extends FragmentPagerAdapter {
     private String mTabTitles[];
     private SparseArray<Fragment> mRegisteredFragments;
     private User mUser;
+    private IProfileListener mListener;
 
-    public ProfilePagerAdapter(FragmentManager fm, Context context, String[] tabTitles, User user) {
+    public ProfilePagerAdapter(FragmentManager fm, Context context, String[] tabTitles, User user, IProfileListener listener) {
         super(fm);
         mContext=context;
         mUser=user;
         mRegisteredFragments=new SparseArray<>();
         mTabTitles=tabTitles;
         PAGE_COUNT=tabTitles.length;
+        mListener=listener;
     }
 
     @Override
@@ -37,10 +40,10 @@ public class ProfilePagerAdapter extends FragmentPagerAdapter {
         BaseFragment fragment=null;
         switch(position) {
             case 0:
-                fragment=PostsFragment.newInstance(Constants.TYPE_FEED_USER, mUser);
+                fragment=PostsFragment.newInstance(Constants.TYPE_FEED_USER, mUser, mListener);
                 break;
             case 1:
-                fragment=PostsFragment.newInstance(Constants.TYPE_FEED_BOOKMARKS, null);
+                fragment=PostsFragment.newInstance(Constants.TYPE_FEED_BOOKMARKS, null, mListener);
                 break;
         }
 

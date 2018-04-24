@@ -58,6 +58,7 @@
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
                 android:layout_gravity="center_horizontal"
+                app:com_facebook_login_text="with your Facebook"
                 android:layout_marginTop="@dimen/sign_margin_top"/>
 
 

@@ -233,6 +233,7 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
                 else {
                     Intent intent=new Intent(ReplyActivity.this, ReportActivity.class);
                     intent.putExtra(Constants.DATA_POST_ID, comment.getId());
+                    intent.putExtra(Constants.DATA_REPORT_TYPE, Constants.REQUEST_REPORT_REPLY);
                     startActivityForResult(intent, Constants.REQUEST_REPORT);
                 }
 
@@ -242,7 +243,10 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onProfile(Comment comment) {
-
+        Intent intent=new Intent(this, ProfileActivity.class);
+        intent.putExtra(Constants.DATA_PROFILE, Constants.REQUEST_USER_PROFILE);
+        intent.putExtra(Constants.DATA_USER, comment.getUser());
+        startActivityForResult(intent,Constants.REQUEST_USER_PROFILE);
     }
 
     @Override

@@ -6,6 +6,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/lnrLayoutPlayerActions"
         android:orientation="vertical"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
         android:background="@color/background_opacity">
 
         <LinearLayout

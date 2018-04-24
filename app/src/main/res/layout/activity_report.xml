@@ -16,6 +16,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:id="@+id/txtViewTitle"
                 android:text="@string/title_report_video"
                 style="@style/TitleTextStyle"/>
             <ImageView
@@ -29,6 +30,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/txtViewReport"
             android:text="@string/label_reporting_reason"
             style="@style/LabelTextMediumStyle"
             android:gravity="center"

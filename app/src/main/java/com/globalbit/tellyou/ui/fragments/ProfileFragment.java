@@ -30,6 +30,7 @@ import com.globalbit.tellyou.ui.events.BookmarkEvent;
 import com.globalbit.tellyou.ui.events.FollowingEvent;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
 import com.globalbit.tellyou.ui.interfaces.IPostListener;
+import com.globalbit.tellyou.ui.interfaces.IProfileListener;
 import com.globalbit.tellyou.utils.Enums;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.squareup.picasso.Picasso;
@@ -38,13 +39,14 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
  * Created by alex on 08/11/2017.
  */
 
-public class ProfileFragment extends BaseFragment implements View.OnClickListener {
+public class ProfileFragment extends BaseFragment implements View.OnClickListener, IProfileListener {
     private static final String TAG=ProfileFragment.class.getSimpleName();
     private FragmentProfileBinding mBinding;
     private User mUser;
@@ -103,7 +105,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
             mBinding.txtViewMyVideos.setText(R.string.label_videos);
             //mBinding.txtViewMyVideos.setVisibility(View.GONE);
         }
-        mProfilePagerAdapter=new ProfilePagerAdapter(getChildFragmentManager(), getActivity(), new String[]{getString(R.string.tab_videos)} ,mUser );
+        mProfilePagerAdapter=new ProfilePagerAdapter(getChildFragmentManager(), getActivity(), new String[]{getString(R.string.tab_videos)} ,mUser , this);
         mBinding.viewpager.setAdapter(mProfilePagerAdapter);
         //mBinding.tabDiscover.setupWithViewPager(mBinding.viewpager);
         setProfile();
@@ -181,6 +183,11 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                                                     mBinding.btnAction.setBackgroundResource(R.drawable.background_button);
                                                     mBinding.btnAction.setTextColor(getResources().getColor(R.color.white));
                                                     mBinding.btnAction.setText(getString(R.string.btn_follow));
+                                                    if(mUser.getFollowers()>0) {
+                                                        mUser.setFollowers(mUser.getFollowers()-1);
+                                                        mBinding.txtViewFollowers.setText(String.format(Locale.getDefault(), "%d", mUser.getFollowers()));
+                                                    }
+                                                    EventBus.getDefault().post(new FollowingEvent(mUser));
                                                 }
 
                                                 @Override
@@ -203,6 +210,9 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                                     mBinding.btnAction.setBackgroundResource(R.drawable.button_share);
                                     mBinding.btnAction.setTextColor(getResources().getColor(R.color.red_border));
                                     mBinding.btnAction.setText(getString(R.string.btn_following));
+                                    mUser.setFollowers(mUser.getFollowers()+1);
+                                    mBinding.txtViewFollowers.setText(String.format(Locale.getDefault(), "%d", mUser.getFollowers()));
+                                    EventBus.getDefault().post(new FollowingEvent(mUser));
                                 }
 
                                 @Override
@@ -271,42 +281,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookmarkEvent(BookmarkEvent event) {
-        if(mProfileState==Enums.ProfileState.MyProfile) {
-            if(mProfilePagerAdapter!=null&&mProfilePagerAdapter.getCount()==2) {
-                Fragment fragment=mProfilePagerAdapter.getRegisteredFragment(1);
-                if(fragment instanceof PostsFragment) {
-                    ((PostsFragment) fragment).onRefreshPosts();
-                }
-            }
-        }
-    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onFollowingEvent(FollowingEvent event) {
-        if(mProfileState==Enums.ProfileState.MyProfile) {
-            if(event.isFollowing) {
-                mUser.setFollowing(mUser.getFollowing()+1);
-            }
-            else {
-                mUser.setFollowing(mUser.getFollowing()-1);
-            }
-            mBinding.txtViewFollowing.setText(String.format(Locale.getDefault(), "%d", mUser.getFollowing()));
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        EventBus.getDefault().unregister(this);
-    }
 
     @Override
     public void onStart() {
@@ -319,4 +294,27 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         super.onStop();
     }
 
+    @Override
+    public void onUsersFollowingStatus(HashMap<String, Boolean> usersFollowingState) {
+        if(mProfileState==Enums.ProfileState.UserProfile) {
+            if(usersFollowingState.containsKey(mUser.getUsername())) {
+                boolean isFollowing=usersFollowingState.get(mUser.getUsername());
+                if(isFollowing!=mUser.isFollowing()) {
+                    mUser.setFollowing(isFollowing);
+                    if(mUser.isFollowing()) {
+                        mUser.setFollowers(mUser.getFollowers()+1);
+                        mBinding.btnAction.setBackgroundResource(R.drawable.button_share);
+                        mBinding.btnAction.setTextColor(getResources().getColor(R.color.red_border));
+                        mBinding.btnAction.setText(getString(R.string.btn_following));
+                    } else {
+                        mUser.setFollowers(mUser.getFollowers()-1);
+                        mBinding.btnAction.setBackgroundResource(R.drawable.background_button);
+                        mBinding.btnAction.setTextColor(getResources().getColor(R.color.white));
+                        mBinding.btnAction.setText(getString(R.string.btn_follow));
+                    }
+                    mBinding.txtViewFollowers.setText(String.format(Locale.getDefault(), "%d", mUser.getFollowers()));
+                }
+            }
+        }
+    }
 }

@@ -24,6 +24,8 @@ import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.globalbit.androidutils.CollectionUtils;
+import com.globalbit.androidutils.ConversionUtils;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.CustomApplication;
 import com.globalbit.tellyou.R;
@@ -70,7 +72,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
     private static final String TAG=VideosAdapter.class.getSimpleName();
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 1000;
-    private static final long HIDE_DETAILS_THRESHOLD=3000;
+    private static final long HIDE_DETAILS_THRESHOLD=6000;
     private ArrayList<Post> mItems;
     private Context mContext;
     private IVideoListener mListener;
@@ -111,6 +113,30 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
+    public void updateFollowState(User user) {
+        if(!CollectionUtils.isEmpty(mItems)) {
+            for(int i=0; i<mItems.size(); i++) {
+                Post post=mItems.get(i);
+                if(post.getUser().getUsername().equals(user.getUsername())) {
+                    post.getUser().setFollowing(user.isFollowing());
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void updateComments(String id) {
+        if(!CollectionUtils.isEmpty(mItems)) {
+            for(int i=0; i<mItems.size(); i++) {
+                Post item=mItems.get(i);
+                if(item.getId().equals(id)) {
+                    item.setComments(item.getComments()+1);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -127,7 +153,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
             Uri uri=Uri.parse(item.getVideo().getUrl());
             if(!StringUtils.isEmpty(item.getVideo().getThumbnail())) {
                 holder.mBinding.imgViewPreview.setVisibility(View.VISIBLE);
-                Picasso.with(mContext).load(item.getVideo().getThumbnail()).resize(mImgWidth, mImgHeight).into(holder.mBinding.imgViewPreview);
+                Picasso.with(mContext).load(item.getVideo().getThumbnail()).resize(mImgWidth, 0).into(holder.mBinding.imgViewPreview);
             }
             else {
                 holder.mBinding.imgViewPreview.setVisibility(View.GONE);
@@ -230,7 +256,18 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
             if(item.getCreatedAt()!=null) {
                 holder.mBinding.layoutVideoInformation.txtViewDate.setText(DateUtils.getRelativeTimeSpanString(item.getCreatedAt().getTime()));
             }
-            holder.mBinding.layoutVideoInformation.txtViewTitle.setText(item.getText());
+            String title;
+            if(!CollectionUtils.isEmpty(item.getTags())) {
+                title=item.getText()+"\n\n";
+                for(String s : item.getTags()) {
+                    title+=s+" ";
+                }
+                title=title.trim();
+            }
+            else {
+                title=item.getText();
+            }
+            holder.mBinding.layoutVideoInformation.txtViewTitle.setText(title);
             if(mUser.getUsername().equals(item.getUser().getUsername())) {
                 holder.mBinding.layoutVideoInformation.btnAction.setVisibility(View.GONE);
             }
@@ -256,6 +293,9 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 @Override
                 public void onClick(View v, int position) {
                     switch(v.getId()) {
+                        case R.id.imgViewPhoto:
+                            mListener.onProfile(item);
+                            break;
                         case R.id.imgViewCancel:
                             mListener.onClose();
                             break;
@@ -339,6 +379,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                                                         holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.white));
                                                         holder.mBinding.layoutVideoInformation.btnAction.setText(mContext.getString(R.string.btn_follow));
                                                         item.getUser().setFollowing(false);
+                                                        mListener.onFollow(item);
                                                     }
 
                                                     @Override
@@ -359,6 +400,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                                         holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.red_border));
                                         holder.mBinding.layoutVideoInformation.btnAction.setText(mContext.getString(R.string.btn_following));
                                         item.getUser().setFollowing(true);
+                                        mListener.onFollow(item);
                                     }
 
                                     @Override
@@ -425,6 +467,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
             mBinding.layoutPlayerActions.frmLayoutShare.setOnClickListener(this);
             mBinding.layoutVideoInformation.btnAction.setOnClickListener(this);
             mBinding.layoutVideoMenu.txtViewReport.setOnClickListener(this);
+            mBinding.layoutVideoInformation.imgViewPhoto.setOnClickListener(this);
             mBinding.layoutVideoMenu.switchAutoplay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

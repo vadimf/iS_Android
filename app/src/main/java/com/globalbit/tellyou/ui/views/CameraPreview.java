@@ -27,8 +27,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private static final String CAMERA_PARAM_PORTRAIT = "portrait";
     protected Camera.Size mPreviewSize;
     private int mAngle;
+    private ISurfaceListener mListener;
 
-    public CameraPreview(Context context, Camera camera, Camera.CameraInfo cameraInfo) {
+    public CameraPreview(Context context, Camera camera, Camera.CameraInfo cameraInfo, ISurfaceListener listener) {
         super(context);
         mCamera=camera;
         mCameraInfo=cameraInfo;
@@ -37,6 +38,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // underlying surface is created and destroyed.
         mHolder = getHolder();
         mHolder.addCallback(this);
+        mListener=listener;
+    }
+
+    public void setCamera(Camera camera) {
+        mCamera=camera;
     }
 
     @Override
@@ -60,7 +66,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             // preview surface does not exist
             return;
         }
-
+        Log.i("Test", "surfaceChanged: ");
+        /*if(mListener!=null) {
+            mListener.show();
+        }*/
         // stop preview before making changes
         try {
             mCamera.stopPreview();
@@ -82,7 +91,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         } catch (Exception e){
             Log.d("CameraPreview", "Error starting camera preview: " + e.getMessage());
         }
-
+        if(mListener!=null) {
+            mListener.hide();
+        }
     }
 
     @Override
@@ -160,5 +171,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void setAngle(int angle) {
         mAngle=angle;
+    }
+
+    public interface  ISurfaceListener {
+        void show();
+        void hide();
     }
 }

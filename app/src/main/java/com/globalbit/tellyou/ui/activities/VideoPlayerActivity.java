@@ -5,8 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -23,11 +21,10 @@ import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.PostsResponse;
 import com.globalbit.tellyou.ui.adapters.VideosAdapter;
-import com.globalbit.tellyou.ui.events.FollowingEvent;
+import com.globalbit.tellyou.ui.events.CommentEvent;
 import com.globalbit.tellyou.ui.events.NextVideoEvent;
 import com.globalbit.tellyou.ui.interfaces.IVideoListener;
 import com.globalbit.tellyou.utils.CustomLinearLayoutManager;
-import com.globalbit.tellyou.utils.Enums;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,7 +32,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Locale;
+import java.util.HashMap;
 
 /**
  * Created by alex on 21/02/2018.
@@ -51,6 +48,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     private Pagination mPagination;
     private User mUser;
     private int mIndex;
+    HashMap<String, Boolean> usersFollowingState=new HashMap<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -172,6 +170,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     public void onReport(String id) {
         Intent intent=new Intent(this, ReportActivity.class);
         intent.putExtra(Constants.DATA_POST_ID, id);
+        intent.putExtra(Constants.DATA_REPORT_TYPE, Constants.REQUEST_REPORT_POST);
         startActivityForResult(intent, Constants.REQUEST_REPORT);
     }
 
@@ -188,6 +187,20 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         if(position<mAdapter.getItemCount()) {
             mBinding.recyclerViewVideos.smoothScrollToPosition(position);
         }
+    }
+
+    @Override
+    public void onFollow(Post post) {
+        usersFollowingState.put(post.getUser().getUsername(), post.getUser().isFollowing());
+        mAdapter.updateFollowState(post.getUser());
+    }
+
+    @Override
+    public void onProfile(Post post) {
+        Intent intent=new Intent(this, ProfileActivity.class);
+        intent.putExtra(Constants.DATA_PROFILE, Constants.REQUEST_USER_PROFILE);
+        intent.putExtra(Constants.DATA_USER, post.getUser());
+        startActivityForResult(intent,Constants.REQUEST_USER_PROFILE);
     }
 
     @Override
@@ -212,6 +225,11 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCommentEvent(CommentEvent event) {
+        mAdapter.updateComments(event.id);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -222,5 +240,13 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     public void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent=new Intent();
+        intent.putExtra(Constants.DATA_USERS_FOLLOW_STATUS,usersFollowingState);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 }

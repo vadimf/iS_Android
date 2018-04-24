@@ -52,6 +52,7 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -267,9 +268,9 @@ public class NetworkManager {
         call.enqueue(callback);
     }
 
-    public void createPost(IBaseNetworkResponseListener<PostResponse> listener, MultipartBody.Part video, MultipartBody.Part thumbnail, RequestBody text, RequestBody duration) {
+    public void createPost(IBaseNetworkResponseListener<PostResponse> listener, MultipartBody.Part video, MultipartBody.Part thumbnail, RequestBody text, ArrayList<RequestBody> tags, RequestBody duration) {
 
-        Call<PostResponse> call=mIRetrofitApiInterface.createPost(video, thumbnail, text, duration);
+        Call<PostResponse> call=mIRetrofitApiInterface.createPost(video, thumbnail, text, tags, duration);
         PostNetworkCallback callback=new PostNetworkCallback(listener, Enums.RequestType.CakePost);
         call.enqueue(callback);
     }

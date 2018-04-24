@@ -77,7 +77,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 break;
             case ForgotPassword:
                 mLoginState=Enums.LoginState.SignIn;
-                super.onBackPressed();
+                Fragment fragment=SignInFragment.newInstance();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "SignInTag").commit();
+                //super.onBackPressed();
                 break;
         }
     }
@@ -132,6 +134,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     public void onForgotPassword() {
         mLoginState=Enums.LoginState.ForgotPassword;
         ForgotPasswordFragment fragment=ForgotPasswordFragment.newInstance();
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "ForgotPasswordTag").addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "ForgotPasswordTag").commit();
     }
 }

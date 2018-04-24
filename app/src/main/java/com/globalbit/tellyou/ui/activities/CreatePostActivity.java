@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import im.ene.toro.exoplayer.Playable;
 import im.ene.toro.exoplayer.ToroExo;
@@ -43,6 +44,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
     private int mVideoRecordingType;
     private String mPostId;
     private Playable playerHelper;
+    private boolean mIsFirstTime=true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,6 +122,17 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                     intent.putExtra(Constants.DATA_VIDEO_FILE, file);
                     intent.putExtra(Constants.DATA_GIF_FILE, gifFile);
                     intent.putExtra(Constants.DATA_TEXT, mBinding.inputTitle.inputValue.getText().toString());
+                    ArrayList<String> tags=new ArrayList<>();
+                    if(!StringUtils.isEmpty(mBinding.inputHashtag1.getText().toString())) {
+                        tags.add(mBinding.inputHashtag1.getText().toString());
+                    }
+                    if(!StringUtils.isEmpty(mBinding.inputHashtag2.getText().toString())) {
+                        tags.add(mBinding.inputHashtag2.getText().toString());
+                    }
+                    if(!StringUtils.isEmpty(mBinding.inputHashtag3.getText().toString())) {
+                        tags.add(mBinding.inputHashtag3.getText().toString());
+                    }
+                    intent.putExtra(Constants.DATA_HASHTAGS, tags);
                     intent.putExtra(Constants.DATA_DURATION, mBinding.videoViewPlayer.getPlayer().getDuration()/1000);
                     intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, mVideoRecordingType);
                     intent.putExtra(Constants.DATA_POST_ID, mPostId);
@@ -186,6 +199,11 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        playerHelper.play();
+        if(mIsFirstTime) {
+            mIsFirstTime=false;
+        }
+        else {
+            playerHelper.play();
+        }
     }
 }

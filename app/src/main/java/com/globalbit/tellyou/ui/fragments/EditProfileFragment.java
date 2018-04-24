@@ -15,6 +15,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
@@ -98,12 +99,14 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
         if(CustomApplication.getSystemPreference()!=null) {
             mBinding.inputName.inputValue.setFilters(new InputFilter[] { new InputFilter.LengthFilter(Constants.NAME_SIZE_MAX) } );
+            mBinding.inputName.inputValue.setInputType(InputType.TYPE_CLASS_TEXT);
             mBinding.inputName.txtViewTitle.setText(R.string.label_name);
             mBinding.inputName.inputValue.setHint(R.string.hint_full_name);
             mBinding.inputBio.inputValue.setFilters(new InputFilter[] { new InputFilter.LengthFilter(CustomApplication.getSystemPreference().getValidations().getBio().getMaxLength()) } );
             mBinding.inputBio.txtViewTitle.setText(R.string.label_bio);
             mBinding.inputBio.inputValue.setHint(R.string.hint_bio);
             mBinding.inputUsername.inputValue.setFilters(new InputFilter[] {new InputFilter.LengthFilter(CustomApplication.getSystemPreference().getValidations().getUsername().getMaxLength())});
+            mBinding.inputUsername.inputValue.setInputType(InputType.TYPE_CLASS_TEXT);
             mBinding.inputUsername.txtViewTitle.setText(R.string.label_username);
             mBinding.inputUsername.inputValue.setHint(R.string.hint_user_name);
             mBinding.inputUsername.inputValue.addTextChangedListener(new TextWatcher() {

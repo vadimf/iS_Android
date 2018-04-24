@@ -34,7 +34,7 @@
         </LinearLayout>
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="1px"
             android:background="@color/underline"/>
         <TextView
             android:layout_width="match_parent"
@@ -47,7 +47,7 @@
             android:paddingEnd="20dp"/>
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="1px"
             android:background="@color/underline"/>
     </LinearLayout>
 </layout>

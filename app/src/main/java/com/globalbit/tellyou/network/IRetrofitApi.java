@@ -25,6 +25,8 @@ import com.globalbit.tellyou.network.responses.UserResponse;
 import com.globalbit.tellyou.network.responses.UsernameExistResponse;
 import com.globalbit.tellyou.network.responses.UsersResponse;
 
+import java.util.ArrayList;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -133,7 +135,7 @@ public interface IRetrofitApi {
 
     @Multipart
     @POST("post")
-    Call<PostResponse> createPost(@Part MultipartBody.Part video, @Part MultipartBody.Part thumbnail, @Part("text") RequestBody text, @Part("duration") RequestBody duration);
+    Call<PostResponse> createPost(@Part MultipartBody.Part video, @Part MultipartBody.Part thumbnail, @Part("text") RequestBody text, @Part("tags") ArrayList<RequestBody> tags, @Part("duration") RequestBody duration);
 
     @GET("post/{post}")
     Call<PostResponse> getPostById(@Path("post") String postId);

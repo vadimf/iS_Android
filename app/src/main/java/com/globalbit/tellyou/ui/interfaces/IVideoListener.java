@@ -11,4 +11,6 @@ public interface IVideoListener {
     void onReport(String id);
     void onComments(Post post);
     void onNextVideo(int position);
+    void onFollow(Post post);
+    void onProfile(Post post);
 }

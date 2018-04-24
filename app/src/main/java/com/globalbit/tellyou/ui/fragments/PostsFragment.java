@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.globalbit.androidutils.CollectionUtils;
+import com.globalbit.androidutils.ConversionUtils;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.CustomApplication;
@@ -31,11 +32,22 @@ import com.globalbit.tellyou.ui.activities.DiscoverActivity;
 import com.globalbit.tellyou.ui.activities.VideoPlayerActivity;
 import com.globalbit.tellyou.ui.activities.VideoRecordingActivity;
 import com.globalbit.tellyou.ui.adapters.PostsAdapter;
+import com.globalbit.tellyou.ui.events.CommentEvent;
+import com.globalbit.tellyou.ui.events.FollowingEvent;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
 import com.globalbit.tellyou.ui.interfaces.IPostListener;
+import com.globalbit.tellyou.ui.interfaces.IProfileListener;
+import com.globalbit.tellyou.utils.Enums;
+import com.globalbit.tellyou.utils.GridSpacingItemDecoration;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.globalbit.tellyou.utils.SimpleDividerItemDecoration;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -50,6 +62,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
     private IMainListener mListener;
 
     private PostsAdapter mAdapter;
+    private IProfileListener mProfileListener;
 
 
 
@@ -63,8 +76,9 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
     private Post mCurrentPost=null;
     private int mCurrentPosition=-1;
 
-    public static PostsFragment newInstance(int feedType, User user) {
+    public static PostsFragment newInstance(int feedType, User user, IProfileListener listener) {
         PostsFragment fragment=new PostsFragment();
+        fragment.mProfileListener=listener;
         Bundle args=new Bundle();
         args.putInt(Constants.DATA_FEED, feedType);
         args.putParcelable(Constants.DATA_USER, user);
@@ -91,7 +105,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_posts, container, false);
         final GridLayoutManager layoutManager=new GridLayoutManager(getActivity(), 2);
         mBinding.recyclerViewPosts.setLayoutManager(layoutManager);
-        //mBinding.recyclerViewPosts.addItemDecoration(new SimpleDividerItemDecoration(getActivity(), R.drawable.line_divider_4));
+        mBinding.recyclerViewPosts.addItemDecoration(new GridSpacingItemDecoration(2, (int)ConversionUtils.convertDpToPixel(2, getActivity()), true));
         mAdapter=new PostsAdapter(getActivity(), mFeedType, this);
         mBinding.recyclerViewPosts.setAdapter(mAdapter);
         if(mFeedType==Constants.TYPE_FEED_HOME) {
@@ -231,6 +245,17 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             onRefreshPosts();
         }
         else if(requestCode==Constants.REQUEST_VIDEO_PLAYER) {
+            try {
+                HashMap<String, Boolean> usersFollowingStatus=(HashMap<String, Boolean>) data.getSerializableExtra(Constants.DATA_USERS_FOLLOW_STATUS);
+                if(usersFollowingStatus!=null&&usersFollowingStatus.size()>0) {
+                    mAdapter.updateFollowState(usersFollowingStatus);
+                    if(mProfileListener!=null) {
+                        mProfileListener.onUsersFollowingStatus(usersFollowingStatus);
+                    }
+                    //EventBus.getDefault().post(new FollowingEvent(usersFollowingStatus));
+                }
+            }
+            catch(Exception ex){}
             //TODO something when returning from video player
         }
     }
@@ -344,5 +369,29 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onFollowingEvent(FollowingEvent event) {
+        HashMap<String, Boolean> usersFollowingState=new HashMap<>();
+        usersFollowingState.put(event.user.getUsername(), event.user.isFollowing());
+        mAdapter.updateFollowState(usersFollowingState);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCommentEvent(CommentEvent event) {
+        mAdapter.updateComments(event.id);
     }
 }

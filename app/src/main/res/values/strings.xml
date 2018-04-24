@@ -38,7 +38,7 @@
     <string name="error_password_length">Password length should be between %1$d and %2$d characters</string>
     <string name="error_username">Username must be without spaces and special characters</string>
     <string name="error">Error</string>
-    <string name="tab_suggestions">Search</string>
+    <string name="tab_suggestions">Suggestions</string>
     <string name="btn_ok">Ok</string>
     <string name="label_following">Following</string>
     <string name="label_followers">Followers</string>
@@ -47,6 +47,7 @@
     <string name="btn_follow">Follow</string>
     <string name="special">\@</string>
     <string name="label_log_out">Log out</string>
+    <string name="label_contact_us">Contact us</string>
     <string name="label_terms_of_service">Terms of service</string>
     <string name="label_privacy_policy">Privacy policy</string>
     <string name="label_about">About Tellyou</string>
@@ -89,10 +90,10 @@
     <string name="dialog_title_forgot_password">Forgot password</string>
     <string name="dialog_content_forgot_password">Instruction for password recovery was sent to your email</string>
     <string name="btn_reset_password">Send Instructions</string>
-    <string name="hint_email">Email</string>
+    <string name="hint_email">EMAIL</string>
     <string name="btn_login">Log in</string>
     <string name="label_login"><u>LOG IN</u></string>
-    <string name="hint_password">Password</string>
+    <string name="hint_password">PASSWORD</string>
     <string name="btn_sign_up">Sign up</string>
     <string name="tab_facebook">Connect</string>
     <string name="label_header_facebook_connect">Connect your Facebook account to find friends who already use Tellyou</string>
@@ -129,7 +130,9 @@
     <string name="label_autoplay">Autoplay next video</string>
     <string name="label_report_video">Report this video</string>
     <string name="title_report_video">Report this video</string>
+    <string name="title_report_reply">Report this reply</string>
     <string name="label_reporting_reason">Choose a reason for reporting this video</string>
+    <string name="label_reporting_reason_reply">Choose a reason for reporting this reply</string>
     <string name="report_reason_spam">It\'s spam</string>
     <string name="report_reason_inappropriate">It\'s inappropriate</string>
     <string name="report_reason_not_like">I don\'t like this</string>
@@ -147,10 +150,10 @@
     <string name="password_hint">At least %1$d characters</string>
     <string name="error_empty">cannot be empty</string>
     <string name="error_invalid_mail">Email is not valid</string>
-    <string name="label_name">Name*</string>
-    <string name="label_username">Username*</string>
-    <string name="label_bio">Bio</string>
-    <string name="label_birthday">Your birthday*</string>
+    <string name="label_name">NAME*</string>
+    <string name="label_username">USERNAME*</string>
+    <string name="label_bio">BIO</string>
+    <string name="label_birthday">YOUR BIRTHDAY*</string>
     <string name="hint_birthday">It won\'t be shown publicly</string>
     <string name="btn_say_it">Say it!</string>
     <string name="dialog_button_unfollow">Unfollow</string>
@@ -163,6 +166,9 @@
     <string name="notification_error_uploading">Your video failed to upload</string>
     <string name="label_uploaded">Uploaded</string>
     <string name="notification_video_uploaded">Your video was uploaded</string>
+    <string name="label_contact_us_email">dev@globalbit.co.il</string>
+    <string name="hint_hashtag">#hashtag</string>
+    <string name="label_add_hashtags">Add #hashtags (up to 3 hashtags)</string>
 
     <plurals name="replies">
         <item quantity="zero">No replies</item>

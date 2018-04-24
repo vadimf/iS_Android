@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.globalbit.androidutils.ActionUtils;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.CustomApplication;
@@ -35,6 +36,7 @@ import com.globalbit.tellyou.service.fcm.FCMHandler;
 import com.globalbit.tellyou.ui.fragments.PostsFragment;
 import com.globalbit.tellyou.ui.fragments.ProfileFragment;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
+import com.globalbit.tellyou.utils.GeneralUtils;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 
 import java.util.ArrayList;
@@ -65,6 +67,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
         mBinding.txtViewAbout.setOnClickListener(this);
         mBinding.txtViewPrivacy.setOnClickListener(this);
         mBinding.txtViewTermsOfUse.setOnClickListener(this);
+        mBinding.txtViewContactUs.setOnClickListener(this);
         mBinding.txtViewLogout.setOnClickListener(this);
         mBinding.imgViewGlobalbit.setOnClickListener(this);
         BottomNavigationMenuView bottomNavigationView=(BottomNavigationMenuView)mBinding.navigation.getChildAt(0);
@@ -86,7 +89,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                 switch(item.getItemId()) {
                     case R.id.action_home:
                         mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                        fragment=PostsFragment.newInstance(Constants.TYPE_FEED_HOME, null);
+                        fragment=PostsFragment.newInstance(Constants.TYPE_FEED_HOME, null, null);
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "HomeTag").commit();
                         mLastNavigationItem=item;
                         return true;
@@ -107,7 +110,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
             }
         });
         mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        PostsFragment fragment=PostsFragment.newInstance(Constants.TYPE_FEED_HOME, null);
+        PostsFragment fragment=PostsFragment.newInstance(Constants.TYPE_FEED_HOME, null, null);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "HomeTag").commit();
 
         int pushType=getIntent().getIntExtra(Constants.DATA_PUSH,-1);
@@ -137,10 +140,10 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                     startActivityForResult(intent, Constants.REQUEST_VIDEO_PLAYER);
                 }
                 else {
-                Intent intent=new Intent(this, ReplyActivity.class);
-                intent.putExtra(Constants.DATA_POST_ID, postId);
-                intent.putExtra(Constants.DATA_COMMENT_ID, commentId);
-                startActivityForResult(intent, Constants.REQUEST_COMMENTS);
+                    Intent intent=new Intent(this, ReplyActivity.class);
+                    intent.putExtra(Constants.DATA_POST_ID, postId);
+                    intent.putExtra(Constants.DATA_COMMENT_ID, commentId);
+                    startActivityForResult(intent, Constants.REQUEST_COMMENTS);
                 }
             }
         }
@@ -291,6 +294,9 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                     }
                 });
                 mBinding.drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+            case R.id.txtViewContactUs:
+                ActionUtils.openEmail(this,getString(R.string.label_contact_us_email));
                 break;
             case R.id.imgViewGlobalbit:
                 Intent browserIntent=new Intent(Intent.ACTION_VIEW,

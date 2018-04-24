@@ -34,6 +34,15 @@ public class ReportActivity extends BaseActivity implements View.OnClickListener
         mBinding.lnrLayoutReportReasonInappropriate.setOnClickListener(this);
         mBinding.lnrLayoutReportReasonNotLike.setOnClickListener(this);
         mPostId=getIntent().getStringExtra(Constants.DATA_POST_ID);
+        int type=getIntent().getIntExtra(Constants.DATA_REPORT_TYPE, -1);
+        if(type==Constants.REQUEST_REPORT_POST) {
+            mBinding.txtViewTitle.setText(R.string.title_report_video);
+            mBinding.txtViewReport.setText(R.string.label_reporting_reason);
+        }
+        else if(type==Constants.REQUEST_REPORT_REPLY) {
+            mBinding.txtViewTitle.setText(R.string.title_report_reply);
+            mBinding.txtViewReport.setText(R.string.label_reporting_reason_reply);
+        }
     }
 
     @Override

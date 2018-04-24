@@ -28,7 +28,7 @@
             android:visibility="gone">
             <ProgressBar
                 android:layout_width="match_parent"
-                android:layout_height="5dp"
+                android:layout_height="3dp"
                 android:id="@+id/progressBarPortrait"
                 style="@style/Widget.ProgressBar.Vertical"
                 android:progressDrawable="@drawable/progressbar"
@@ -41,5 +41,11 @@
                 android:text="@string/label_start_time"
                 style="@style/TimerTextStyle"/>
     </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:id="@+id/viewLoading"
+            android:background="@color/black"/>
     </FrameLayout>
 </layout>

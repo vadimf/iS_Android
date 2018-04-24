@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -36,6 +37,9 @@ public class BasePostComment implements Parcelable {
 
     @SerializedName("text")
     private String mText;
+
+    @SerializedName("tags")
+    private ArrayList<String> mTags;
 
     @SerializedName("viewed")
     private boolean mIsViewed;
@@ -155,5 +159,13 @@ public class BasePostComment implements Parcelable {
         dest.writeInt(mComments);
         dest.writeString(mText);
         dest.writeByte((byte) (mIsViewed ? 1 : 0));
+    }
+
+    public ArrayList<String> getTags() {
+        return mTags;
+    }
+
+    public void setTags(ArrayList<String> tags) {
+        mTags=tags;
     }
 }
