@@ -87,6 +87,7 @@ dependencies {
     implementation 'im.ene.toro3:toro-ext-exoplayer:3.4.1'
     implementation 'com.google.android.exoplayer:exoplayer:2.7.0'
     implementation 'com.shawnlin:number-picker:2.4.6'
+    //implementation 'com.iceteck.silicompressorr:silicompressor:2.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

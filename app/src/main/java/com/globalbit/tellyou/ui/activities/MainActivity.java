@@ -36,6 +36,7 @@ import com.globalbit.tellyou.service.fcm.FCMHandler;
 import com.globalbit.tellyou.ui.fragments.PostsFragment;
 import com.globalbit.tellyou.ui.fragments.ProfileFragment;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
+import com.globalbit.tellyou.utils.FilePickUtils;
 import com.globalbit.tellyou.utils.GeneralUtils;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 
@@ -97,9 +98,10 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                         mLastNavigationItem=item;
                         return true;
                     case R.id.action_add:
-                        Intent intent=new Intent(MainActivity.this, VideoRecordingActivity.class);
+                        GeneralUtils.selectVideoFromGallery(MainActivity.this, Constants.REQUEST_VIDEO_SELECT);
+                        /*Intent intent=new Intent(MainActivity.this, VideoRecordingActivity.class);
                         intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
-                        startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);
+                        startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);*/
                         return false;
                     case R.id.action_profile:
                         mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -211,6 +213,20 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
             Fragment fragment=getSupportFragmentManager().findFragmentByTag("HomeTag");
             if(fragment!=null) {
                 fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
+        else if(requestCode==Constants.REQUEST_VIDEO_SELECT && resultCode==RESULT_OK) {
+            if(data.getData()!=null) {
+                Uri uri=data.getData();
+                Log.i("TEST", "onActivityResult: "+uri.getPath());
+                String path=FilePickUtils.Companion.getSmartFilePath(this, uri);
+                Log.i("TEST", "onActivityResult: "+path);
+                if(path!=null) {
+                    Intent intent=new Intent(this, VideoTrimmerActivity.class);
+                    intent.putExtra(Constants.DATA_URI, Uri.parse(path));
+                    startActivityForResult(intent, Constants.REQUEST_VIDEO_TRIMMER);
+                }
+
             }
         }
     }

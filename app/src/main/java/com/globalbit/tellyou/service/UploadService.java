@@ -73,6 +73,7 @@ public class UploadService extends Service {
             Notification notification;
             switch(videoRecordingType) {
                 case Constants.TYPE_POST_VIDEO_RECORDING:
+                case Constants.TYPE_POST_VIDEO_TRIMMING:
                     NetworkManager.getInstance().createPost(new IBaseNetworkResponseListener<PostResponse>() {
                                 @Override
                                 public void onSuccess(PostResponse response) {

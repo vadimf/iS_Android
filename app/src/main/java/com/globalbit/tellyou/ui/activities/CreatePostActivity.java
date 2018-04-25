@@ -59,6 +59,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
         mBinding.inputTitle.inputValue.setFilters(new InputFilter[] { new InputFilter.LengthFilter(Constants.TITLE_SIZE_MAX) } );
         switch(mVideoRecordingType) {
             case Constants.TYPE_POST_VIDEO_RECORDING:
+            case Constants.TYPE_POST_VIDEO_TRIMMING:
                 mBinding.inputTitle.lnrLayoutEdit.setVisibility(View.VISIBLE);
                 mBinding.lnrLayoutHashTags.setVisibility(View.VISIBLE);
                 break;
@@ -114,7 +115,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btnTellIt:
-                if(mVideoRecordingType==Constants.TYPE_POST_VIDEO_RECORDING&&StringUtils.isEmpty(mBinding.inputTitle.inputValue.getText().toString())) {
+                if((mVideoRecordingType==Constants.TYPE_POST_VIDEO_RECORDING||mVideoRecordingType==Constants.TYPE_POST_VIDEO_TRIMMING)&&StringUtils.isEmpty(mBinding.inputTitle.inputValue.getText().toString())) {
                     mBinding.inputTitle.txtViewError.setText(R.string.error_new_video_title_empty);
                     //showMessage(getString(R.string.error),getString(R.string.error_new_video_title_empty));
                 }
@@ -192,8 +193,12 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                                 Log.i(TAG, "Couldn't delete the file: "+mVideoPath);
                             }
                         }
-                        Intent intent=new Intent(CreatePostActivity.this, VideoRecordingActivity.class);
-                        startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);
+                        if(mVideoRecordingType!=Constants.TYPE_POST_VIDEO_TRIMMING) {
+                            Intent intent=new Intent(CreatePostActivity.this, VideoRecordingActivity.class);
+                            intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, mVideoRecordingType);
+                            intent.putExtra(Constants.DATA_POST_ID, mPostId);
+                            startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);
+                        }
                         finish();
                     }
                 })

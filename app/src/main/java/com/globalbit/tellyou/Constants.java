@@ -40,6 +40,8 @@ public class Constants {
     public static final int REQUEST_REPORT=122;
     public static final int REQUEST_REPORT_POST=123;
     public static final int REQUEST_REPORT_REPLY=124;
+    public static final int REQUEST_VIDEO_SELECT=125;
+    public static final int REQUEST_VIDEO_TRIMMER=126;
 
 
     //Data
@@ -69,6 +71,7 @@ public class Constants {
     public static final String DATA_GIF_FILE="DataGifFile";
     public static final String DATA_TEXT="Text";
     public static final String DATA_HASHTAGS="HashTags";
+    public static final String DATA_URI="Uri";
     public static final String DATA_DURATION="Duration";
     public static final String DATA_VIDEO_RECORDING_TYPE="DataVideoRecordingType";
     public static final String DATA_REPORT_TYPE="DataReportType";
@@ -97,5 +100,6 @@ public class Constants {
 
     public static final int TYPE_POST_VIDEO_RECORDING=0;
     public static final int TYPE_REPLY_VIDEO_RECORDING=1;
+    public static final int TYPE_POST_VIDEO_TRIMMING=2;
 
 }

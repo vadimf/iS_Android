@@ -1,6 +1,9 @@
 package com.globalbit.tellyou.utils;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 
 import com.globalbit.tellyou.CustomApplication;
 
@@ -43,5 +46,23 @@ public class GeneralUtils {
 
         // Save a file: path for use with ACTION_VIEW intents
         return image;
+    }
+
+    public static void selectVideoFromGallery(AppCompatActivity activity, int REQUEST_VIDEO_SELECT)
+    {
+        Intent intent;
+        if(android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
+        {
+            intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+        }
+        else
+        {
+            intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.INTERNAL_CONTENT_URI);
+        }
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.putExtra("return-data", true);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        activity.startActivityForResult(intent,REQUEST_VIDEO_SELECT);
     }
 }

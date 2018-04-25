@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
@@ -43,10 +44,10 @@
         <activity android:name=".ui.activities.FollowActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.VideoRecordingActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.CreatePostActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activities.PlayerActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.ReportActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.ReplyActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.VideoPlayerActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activities.VideoTrimmerActivity" android:screenOrientation="portrait"/>
         <service android:name=".service.UploadService"/>
         <service
             android:name=".service.fcm.MyFirebaseMessagingService">
