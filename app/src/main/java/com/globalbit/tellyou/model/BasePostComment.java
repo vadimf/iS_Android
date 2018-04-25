@@ -39,7 +39,7 @@ public class BasePostComment implements Parcelable {
     private String mText;
 
     @SerializedName("tags")
-    private ArrayList<String> mTags;
+    private ArrayList<String> mTags=new ArrayList<>();
 
     @SerializedName("viewed")
     private boolean mIsViewed;
@@ -127,6 +127,7 @@ public class BasePostComment implements Parcelable {
         mUniqueViews=in.readInt();
         mComments=in.readInt();
         mText=in.readString();
+        in.readList(mTags, String.class.getClassLoader());
         mIsViewed=in.readByte() != 0;
 
     }
@@ -158,6 +159,7 @@ public class BasePostComment implements Parcelable {
         dest.writeInt(mUniqueViews);
         dest.writeInt(mComments);
         dest.writeString(mText);
+        dest.writeList(mTags);
         dest.writeByte((byte) (mIsViewed ? 1 : 0));
     }
 

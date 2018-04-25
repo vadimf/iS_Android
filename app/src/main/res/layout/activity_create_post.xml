@@ -46,72 +46,104 @@
                          android:layout_marginStart="20dp"
                          android:layout_marginEnd="20dp"
                          android:id="@+id/inputTitle"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/sign_margin_top"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_gravity="start"
-                    android:text="@string/label_add_hashtags"
-                    style="@style/LabelTextMediumStyle"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="10dp"
                     android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
-                    <EditText
+                    android:paddingEnd="20dp"
+                    android:id="@+id/lnrLayoutHashTags"
+                    android:layout_marginTop="@dimen/sign_margin_top">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:text="@string/label_add_hashtags"
+                        style="@style/LabelTextMediumStyle"/>
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/inputHashtag1"
-                        style="@style/InputTextStyle"
-                        android:hint="@string/hint_hashtag"/>
-                    <View
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_hash_tag"
+                                style="@style/InputTextStyle"/>
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@android:color/transparent"
+                                android:id="@+id/inputHashtag1"
+                                style="@style/InputTextStyle"
+                                android:hint="@string/hint_hashtag"/>
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/separator"/>
+                    </LinearLayout>
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/separator"/>
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="5dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_hash_tag"
+                                style="@style/InputTextStyle"/>
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@android:color/transparent"
+                                android:id="@+id/inputHashtag2"
+                                style="@style/InputTextStyle"
+                                android:hint="@string/hint_hashtag"/>
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/separator"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="5dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_hash_tag"
+                                style="@style/InputTextStyle"/>
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@android:color/transparent"
+                                android:id="@+id/inputHashtag3"
+                                style="@style/InputTextStyle"
+                                android:hint="@string/hint_hashtag"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/separator"/>
+                    </LinearLayout>
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="5dp"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/inputHashtag2"
-                        style="@style/InputTextStyle"
-                        android:hint="@string/hint_hashtag"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/separator"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="5dp"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/inputHashtag3"
-                        style="@style/InputTextStyle"
-                        android:hint="@string/hint_hashtag"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/separator"/>
-                </LinearLayout>
+
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"

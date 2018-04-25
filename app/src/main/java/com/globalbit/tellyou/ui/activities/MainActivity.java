@@ -79,7 +79,10 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
             layoutParams.width=(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, displayMetrics);
             iconView.setLayoutParams(layoutParams);
         }
-        mLastNavigationItem=mBinding.navigation.getMenu().getItem(0);
+        int type=getIntent().getIntExtra(Constants.DATA_HOME_TYPE, 0);
+        if(type==0) {
+            mLastNavigationItem=mBinding.navigation.getMenu().getItem(0);
+        }
         mBinding.navigation.getMenu().getItem(1).setCheckable(false);
         mBinding.navigation.setItemIconTintList(null);
         mBinding.navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -110,9 +113,14 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
             }
         });
         mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        PostsFragment fragment=PostsFragment.newInstance(Constants.TYPE_FEED_HOME, null, null);
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "HomeTag").commit();
 
+        if(type==0) {
+            PostsFragment fragment=PostsFragment.newInstance(Constants.TYPE_FEED_HOME, null, null);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "HomeTag").commit();
+        }
+        else if(type==2) {
+            onUserProfile(SharedPrefsUtils.getUserDetails().getUsername());
+        }
         int pushType=getIntent().getIntExtra(Constants.DATA_PUSH,-1);
         if(pushType==FCMHandler.PUSH_NOTIFICATION_FOLLOW) {
             User user=getIntent().getParcelableExtra(Constants.DATA_USER);

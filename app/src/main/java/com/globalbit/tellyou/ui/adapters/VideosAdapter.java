@@ -260,7 +260,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
             if(!CollectionUtils.isEmpty(item.getTags())) {
                 title=item.getText()+"\n\n";
                 for(String s : item.getTags()) {
-                    title+=s+" ";
+                    title+="#"+s+" ";
                 }
                 title=title.trim();
             }

@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import im.ene.toro.exoplayer.Playable;
 import im.ene.toro.exoplayer.ToroExo;
@@ -58,9 +60,11 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
         switch(mVideoRecordingType) {
             case Constants.TYPE_POST_VIDEO_RECORDING:
                 mBinding.inputTitle.lnrLayoutEdit.setVisibility(View.VISIBLE);
+                mBinding.lnrLayoutHashTags.setVisibility(View.VISIBLE);
                 break;
             case Constants.TYPE_REPLY_VIDEO_RECORDING:
                 mBinding.inputTitle.lnrLayoutEdit.setVisibility(View.GONE);
+                mBinding.lnrLayoutHashTags.setVisibility(View.GONE);
                 break;
         }
         mBinding.btnTellIt.setOnClickListener(this);
@@ -74,6 +78,20 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
             playerHelper.setPlayerView(mBinding.videoViewPlayer);
             mBinding.videoViewPlayer.setOnClickListener(this);
         }
+        InputFilter filter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!Character.isLetterOrDigit(source.charAt(i))&&source.charAt(i)!='_'&&source.charAt(i)!='-') {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+        mBinding.inputHashtag1.setFilters(new InputFilter[] { filter });
+        mBinding.inputHashtag2.setFilters(new InputFilter[] { filter });
+        mBinding.inputHashtag3.setFilters(new InputFilter[] { filter });
         mBinding.inputTitle.inputValue.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

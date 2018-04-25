@@ -73,6 +73,7 @@ public class Constants {
     public static final String DATA_VIDEO_RECORDING_TYPE="DataVideoRecordingType";
     public static final String DATA_REPORT_TYPE="DataReportType";
     public static final String DATA_USERS_FOLLOW_STATUS="DataUsersFollowStatus";
+    public static final String DATA_HOME_TYPE="HomeType";
 
 
 

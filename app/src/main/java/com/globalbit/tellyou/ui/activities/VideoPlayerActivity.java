@@ -197,10 +197,19 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onProfile(Post post) {
-        Intent intent=new Intent(this, ProfileActivity.class);
-        intent.putExtra(Constants.DATA_PROFILE, Constants.REQUEST_USER_PROFILE);
-        intent.putExtra(Constants.DATA_USER, post.getUser());
-        startActivityForResult(intent,Constants.REQUEST_USER_PROFILE);
+        if(post.getUser().getUsername().equals(SharedPrefsUtils.getUserDetails().getUsername())) {
+            Intent intent=new Intent(this, MainActivity.class);
+            intent.putExtra(Constants.DATA_HOME_TYPE, 2);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
+        else {
+            Intent intent=new Intent(this, ProfileActivity.class);
+            intent.putExtra(Constants.DATA_PROFILE, Constants.REQUEST_USER_PROFILE);
+            intent.putExtra(Constants.DATA_USER, post.getUser());
+            startActivityForResult(intent, Constants.REQUEST_USER_PROFILE);
+        }
     }
 
     @Override
