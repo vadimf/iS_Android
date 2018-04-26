@@ -12,10 +12,10 @@ import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.CustomApplication;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityVideoTrimmerBinding;
-import com.globalbit.tellyou.ui.videocompressor.SiliCompressor;
 import com.globalbit.tellyou.ui.videotrimmer.interfaces.OnK4LVideoListener;
 import com.globalbit.tellyou.ui.videotrimmer.interfaces.OnTrimVideoListener;
 import com.globalbit.tellyou.utils.GeneralUtils;
+import com.iceteck.silicompressorr.SiliCompressor;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -38,23 +38,20 @@ public class VideoTrimmerActivity extends BaseActivity implements OnTrimVideoLis
     }
 
     @Override
-    public void getResult(Uri uri) {
+    public void getResult(final Uri uri) {
         Log.i(TAG, "getResult: "+uri.getPath());
-        try {
-            String filePath = SiliCompressor.with(this).compressVideo(uri.getPath(), Environment.getExternalStorageDirectory().getPath(), 0, 0, 0);
-            Log.i(TAG, "getResult: "+filePath);
-            Intent intent=new Intent(this, CreatePostActivity.class);
-            intent.putExtra(Constants.DATA_VIDEO_FILE, filePath);
-            intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_TRIMMING);
-            startActivity(intent);
-            finish();
-        } catch(URISyntaxException e) {
-            e.printStackTrace();
-        }
+        hideProgressDialog();
+        Intent intent=new Intent(VideoTrimmerActivity.this, CreatePostActivity.class);
+        intent.putExtra(Constants.DATA_VIDEO_FILE, uri.getPath());
+        intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_TRIMMING);
+        startActivity(intent);
+        finish();
+
     }
 
     @Override
     public void onTrimStarted() {
+        showProgressDialog(getString(R.string.dialog_title_preparing_video), getString(R.string.dialog_loading_content));
         Log.i(TAG, "onTrimStarted: ");
     }
 
@@ -71,6 +68,12 @@ public class VideoTrimmerActivity extends BaseActivity implements OnTrimVideoLis
 
     @Override
     public void onVideoPrepared() {
+        hideLoadingDialog();
         Log.i(TAG, "onVideoPrepared: ");
+    }
+
+    @Override
+    public void onTrimmingUpdate(int progress) {
+        updateProgressDialog(progress);
     }
 }

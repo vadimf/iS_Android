@@ -29,6 +29,8 @@ public interface OnTrimVideoListener {
 
     void onTrimStarted();
 
+    void onTrimmingUpdate(int progress);
+
     void getResult(final Uri uri);
 
     void cancelAction();

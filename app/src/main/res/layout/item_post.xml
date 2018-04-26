@@ -58,7 +58,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_edit"/>
+                        android:src="@drawable/ic_delete"/>
                 </FrameLayout>
             </LinearLayout>
             <android.support.v4.widget.Space
@@ -87,6 +87,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/txtViewViews"
+                        tools:text="345"
+                        android:layout_marginStart="5dp"
+                        style="@style/LabelTextWhiteSemiBoldStyle"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:id="@+id/imgViewComments"
+                        android:src="@drawable/ic_comments_small"
+                        android:layout_gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtViewComments"
                         tools:text="345"
                         android:layout_marginStart="5dp"
                         style="@style/LabelTextWhiteSemiBoldStyle"/>

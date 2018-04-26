@@ -120,14 +120,14 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                     //showMessage(getString(R.string.error),getString(R.string.error_new_video_title_empty));
                 }
                 else {
-                    File file=new File(mVideoPath);
-                    Bitmap thumb = ThumbnailUtils.createVideoThumbnail(mVideoPath,
+                    //File file=new File(mVideoPath);
+                    /*Bitmap thumb = ThumbnailUtils.createVideoThumbnail(mVideoPath,
                             MediaStore.Images.Thumbnails.MINI_KIND);
                     File gifFile=null;
                     try {
                         gifFile=GeneralUtils.createImageFile("jpg");
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        thumb.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
+                        thumb.compress(Bitmap.CompressFormat.JPEG, 100 *//*ignored for PNG*//*, bos);
                         byte[] bitmapdata = bos.toByteArray();
                         FileOutputStream fos = new FileOutputStream(gifFile);
                         fos.write(bitmapdata);
@@ -135,11 +135,11 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                         fos.close();
                     } catch(IOException e) {
                         e.printStackTrace();
-                    }
+                    }*/
 
                     Intent intent=new Intent(this, UploadService.class);
-                    intent.putExtra(Constants.DATA_VIDEO_FILE, file);
-                    intent.putExtra(Constants.DATA_GIF_FILE, gifFile);
+                    intent.putExtra(Constants.DATA_VIDEO_FILE, mVideoPath);
+                    //intent.putExtra(Constants.DATA_GIF_FILE, gifFile);
                     intent.putExtra(Constants.DATA_TEXT, mBinding.inputTitle.inputValue.getText().toString());
                     ArrayList<String> tags=new ArrayList<>();
                     if(!StringUtils.isEmpty(mBinding.inputHashtag1.getText().toString())) {

@@ -202,8 +202,8 @@ public interface IRetrofitApi {
 
     //Search
 
-    @POST("search/posts")
-    Call<PostsResponse> searchPosts(@Body SearchRequest request);
+    @GET("search/posts")
+    Call<PostsResponse> searchPosts(@Query("query") String query, @Query("page") int page);
 
     @GET("search/users")
     Call<UsersResponse> searchUsers(@Query("query") String query, @Query("page") int page);

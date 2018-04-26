@@ -135,6 +135,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             }
             switch(mFeedType) {
                 case Constants.TYPE_FEED_HOME:
+                case Constants.TYPE_FEED_SEARCH:
                     holder.mBinding.txtViewUsername.setText(String.format(Locale.getDefault(),"@%s",item.getUser().getUsername()));
                     if(item.getUser().getProfile()!=null&&item.getUser().getProfile().getPicture()!=null&&!StringUtils.isEmpty(item.getUser().getProfile().getPicture().getThumbnail())) {
                         Picasso.with(mContext).load(item.getUser().getProfile().getPicture().getThumbnail()).into(holder.mBinding.imgViewUser);
@@ -156,12 +157,21 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             }
             holder.mBinding.txtViewDescription.setText(item.getText());
             holder.mBinding.txtViewViews.setText(String.format(Locale.getDefault(),"%d", item.getViews()));
+            if(item.getComments()>0) {
+                holder.mBinding.imgViewComments.setVisibility(View.VISIBLE);
+                holder.mBinding.txtViewComments.setVisibility(View.VISIBLE);
+                holder.mBinding.txtViewComments.setText(String.format(Locale.getDefault(),"%d", item.getComments()));
+            }
+            else {
+                holder.mBinding.imgViewComments.setVisibility(View.GONE);
+                holder.mBinding.txtViewComments.setVisibility(View.GONE);
+            }
             holder.setClickListener(new ViewHolder.ClickListener() {
                 @Override
                 public void onClick(View v, final int position) {
                     switch(v.getId()) {
                         case R.id.frmLayoutAction:
-                            final MaterialDialog dialog=new MaterialDialog.Builder(mContext)
+                            /*final MaterialDialog dialog=new MaterialDialog.Builder(mContext)
                                     .customView(R.layout.dialog_my_videos_actions, false)
                                     .show();
                             View viewDeleteQuestion=dialog.findViewById(R.id.lnrLayoutDeleteVideo);
@@ -169,45 +179,46 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                                 @Override
                                 public void onClick(View view) {
                                     dialog.dismiss();
-                                    MaterialDialog dialog1=new MaterialDialog.Builder(mContext)
-                                            .content(R.string.dialog_delete_video)
-                                            .positiveText(R.string.btn_delete)
-                                            .negativeText(R.string.btn_cancel)
-                                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                                @Override
-                                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                    dialog.dismiss();
-                                                    final MaterialDialog loadingDialog=new MaterialDialog.Builder(mContext)
-                                                            .title(R.string.dialog_loading_title)
-                                                            .content(R.string.dialog_loading_content)
-                                                            .progress(true, 0)
-                                                            .show();
-                                                    NetworkManager.getInstance().deletePost(new IBaseNetworkResponseListener<BaseResponse>() {
-                                                        @Override
-                                                        public void onSuccess(BaseResponse response) {
-                                                            loadingDialog.dismiss();
-                                                            mItems.remove(position);
-                                                            notifyItemRemoved(position);
-                                                            if(mItems.size()==0) {
-                                                                mListener.onRefreshPosts();
-                                                            }
-                                                        }
 
-                                                        @Override
-                                                        public void onError(int errorCode, String errorMessage) {
-                                                            loadingDialog.dismiss();
-                                                            new MaterialDialog.Builder(mContext)
-                                                                    .title(R.string.error)
-                                                                    .content(errorMessage)
-                                                                    .positiveText(R.string.btn_ok)
-                                                                    .show();
-                                                        }
-                                                    }, item.getId());
-                                                }
-                                            })
-                                            .show();
                                 }
-                            });
+                            });*/
+                            new MaterialDialog.Builder(mContext)
+                                    .content(R.string.dialog_delete_video)
+                                    .positiveText(R.string.btn_delete)
+                                    .negativeText(R.string.btn_cancel)
+                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                        @Override
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                            dialog.dismiss();
+                                            final MaterialDialog loadingDialog=new MaterialDialog.Builder(mContext)
+                                                    .title(R.string.dialog_loading_title)
+                                                    .content(R.string.dialog_loading_content)
+                                                    .progress(true, 0)
+                                                    .show();
+                                            NetworkManager.getInstance().deletePost(new IBaseNetworkResponseListener<BaseResponse>() {
+                                                @Override
+                                                public void onSuccess(BaseResponse response) {
+                                                    loadingDialog.dismiss();
+                                                    mItems.remove(position);
+                                                    notifyItemRemoved(position);
+                                                    if(mItems.size()==0) {
+                                                        mListener.onRefreshPosts();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onError(int errorCode, String errorMessage) {
+                                                    loadingDialog.dismiss();
+                                                    new MaterialDialog.Builder(mContext)
+                                                            .title(R.string.error)
+                                                            .content(errorMessage)
+                                                            .positiveText(R.string.btn_ok)
+                                                            .show();
+                                                }
+                                            }, item.getId());
+                                        }
+                                    })
+                                    .show();
                             break;
                         case R.id.imgViewUser:
                             showProfile(item);

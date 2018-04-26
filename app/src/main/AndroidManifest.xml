@@ -48,6 +48,7 @@
         <activity android:name=".ui.activities.ReplyActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.VideoPlayerActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.activities.VideoTrimmerActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activities.SearchActivity" android:screenOrientation="portrait"/>
         <service android:name=".service.UploadService"/>
         <service
             android:name=".service.fcm.MyFirebaseMessagingService">

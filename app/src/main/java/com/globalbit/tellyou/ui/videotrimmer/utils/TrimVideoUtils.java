@@ -29,7 +29,7 @@ import android.util.Log;
 
 import com.coremedia.iso.boxes.Container;
 import com.globalbit.tellyou.ui.videotrimmer.interfaces.OnTrimVideoListener;
-import com.googlecode.mp4parser.FileDataSourceViaHeapImpl;
+//import com.googlecode.mp4parser.FileDataSourceViaHeapImpl;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
@@ -68,7 +68,7 @@ public class TrimVideoUtils {
     private static void genVideoUsingMp4Parser(@NonNull File src, @NonNull File dst, long startMs, long endMs, @NonNull OnTrimVideoListener callback) throws IOException {
         // NOTE: Switched to using FileDataSourceViaHeapImpl since it does not use memory mapping (VM).
         // Otherwise we get OOM with large movie files.
-        Movie movie = MovieCreator.build(new FileDataSourceViaHeapImpl(src.getAbsolutePath()));
+        Movie movie = MovieCreator.build(src.getAbsolutePath());
 
         List<Track> tracks = movie.getTracks();
         movie.setTracks(new LinkedList<Track>());
@@ -96,7 +96,7 @@ public class TrimVideoUtils {
                 timeCorrected = true;
             }
         }
-
+        Log.i(TAG, "genVideoUsingMp4Parser: "+1);
         for (Track track : tracks) {
             long currentSample = 0;
             double currentTime = 0;
@@ -122,7 +122,7 @@ public class TrimVideoUtils {
             }
             movie.addTrack(new AppendTrack(new CroppedTrack(track, startSample1, endSample1)));
         }
-
+        Log.i(TAG, "genVideoUsingMp4Parser: "+2);
         dst.getParentFile().mkdirs();
 
         if (!dst.exists()) {
@@ -130,11 +130,11 @@ public class TrimVideoUtils {
         }
 
         Container out = new DefaultMp4Builder().build(movie);
-
+        Log.i(TAG, "genVideoUsingMp4Parser: "+3);
         FileOutputStream fos = new FileOutputStream(dst);
         FileChannel fc = fos.getChannel();
         out.writeContainer(fc);
-
+        Log.i(TAG, "genVideoUsingMp4Parser: "+4);
         fc.close();
         fos.close();
         if (callback != null)

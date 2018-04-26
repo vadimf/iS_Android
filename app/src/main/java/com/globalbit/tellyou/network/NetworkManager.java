@@ -383,8 +383,8 @@ public class NetworkManager {
         call.enqueue(callback);
     }
 
-    public void searchPosts(IBaseNetworkResponseListener<PostsResponse> listener, SearchRequest request) {
-        Call<PostsResponse> call=mIRetrofitApiInterface.searchPosts(request);
+    public void searchPosts(IBaseNetworkResponseListener<PostsResponse> listener, String query, int page) {
+        Call<PostsResponse> call=mIRetrofitApiInterface.searchPosts(query, page);
         PostsNetworkCallback callback=new PostsNetworkCallback(listener);
         call.enqueue(callback);
     }

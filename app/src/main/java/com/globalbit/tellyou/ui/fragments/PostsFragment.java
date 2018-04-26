@@ -27,8 +27,10 @@ import com.globalbit.tellyou.model.Post;
 import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
+import com.globalbit.tellyou.network.requests.SearchRequest;
 import com.globalbit.tellyou.network.responses.PostsResponse;
 import com.globalbit.tellyou.ui.activities.DiscoverActivity;
+import com.globalbit.tellyou.ui.activities.SearchActivity;
 import com.globalbit.tellyou.ui.activities.VideoPlayerActivity;
 import com.globalbit.tellyou.ui.activities.VideoRecordingActivity;
 import com.globalbit.tellyou.ui.adapters.PostsAdapter;
@@ -63,6 +65,8 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
 
     private PostsAdapter mAdapter;
     private IProfileListener mProfileListener;
+
+    private String mQuery=null;
 
 
 
@@ -111,8 +115,12 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
         if(mFeedType==Constants.TYPE_FEED_HOME) {
             mBinding.lnrLayoutHeader.setVisibility(View.VISIBLE);
             mBinding.imgViewDiscover.setOnClickListener(this);
+            mBinding.imgViewSearch.setOnClickListener(this);
         }
-        else {
+        else if(mFeedType==Constants.TYPE_FEED_USER) {
+            mBinding.lnrLayoutHeader.setVisibility(View.GONE);
+        }
+        else if(mFeedType==Constants.TYPE_FEED_SEARCH) {
             mBinding.lnrLayoutHeader.setVisibility(View.GONE);
         }
         mBinding.recyclerViewPosts.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -212,6 +220,9 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             case Constants.TYPE_FEED_BOOKMARKS:
                 NetworkManager.getInstance().getBookmarkedPosts(this, mPage);
                 break;
+            case Constants.TYPE_FEED_SEARCH:
+                NetworkManager.getInstance().getPopularPosts(this, mPage);
+                break;
         }
     }
 
@@ -258,6 +269,9 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             catch(Exception ex){}
             //TODO something when returning from video player
         }
+        else if(requestCode==Constants.REQUEST_SEARCH) {
+            onRefreshPosts();
+        }
     }
 
     @Override
@@ -268,9 +282,25 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             mAdapter.addItems(response.getPosts());
         }
         mPagination=response.getPagination();
-        if(!mIsPopularVideos) {
+        if(!mIsPopularVideos||mFeedType==Constants.TYPE_FEED_SEARCH) {
             isEmpty();
         }
+    }
+
+    public void searchPosts(String query) {
+        mQuery=query;
+        if(mAdapter!=null) {
+            mAdapter.clear();
+        }
+        if(StringUtils.isEmpty(mQuery)) {
+            mPage=1;
+            loadItems();
+        }
+        else {
+            mPage=1;
+            NetworkManager.getInstance().searchPosts(this, mQuery, mPage);
+        }
+
     }
 
     @Override
@@ -307,14 +337,30 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
                         mBinding.txtViewEmpty.setText(String.format(Locale.getDefault(),"%s %s", mUser.getUsername(),getString(R.string.label_user_posts_empty)));
                     }
                     break;
+                case Constants.TYPE_FEED_SEARCH:
+                    mBinding.txtViewEmpty.setText(R.string.label_video_search_empty);
+                    mBinding.txtViewPopularVideos.setVisibility(View.GONE);
+                    mPage=1;
+                    break;
             }
 
         }
         else {
-            mBinding.swipeLayout.setVisibility(View.VISIBLE);
-            mBinding.txtViewEmpty.setVisibility(View.GONE);
-            mBinding.btnDiscover.setVisibility(View.GONE);
-            mBinding.txtViewPopularVideos.setVisibility(View.GONE);
+            if(mFeedType==Constants.TYPE_FEED_SEARCH) {
+                mBinding.txtViewEmpty.setVisibility(View.GONE);
+                if(StringUtils.isEmpty(mQuery)) {
+                    mBinding.txtViewPopularVideos.setVisibility(View.VISIBLE);
+                }
+                else {
+                    mBinding.txtViewPopularVideos.setVisibility(View.GONE);
+                }
+            }
+            else {
+                mBinding.swipeLayout.setVisibility(View.VISIBLE);
+                mBinding.txtViewEmpty.setVisibility(View.GONE);
+                mBinding.btnDiscover.setVisibility(View.GONE);
+                mBinding.txtViewPopularVideos.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -356,6 +402,10 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             case R.id.imgViewDiscover:
                 intent=new Intent(getActivity(), DiscoverActivity.class);
                 startActivityForResult(intent,Constants.REQUEST_DISCOVER);
+                break;
+            case R.id.imgViewSearch:
+                intent=new Intent(getActivity(), SearchActivity.class);
+                startActivityForResult(intent,Constants.REQUEST_SEARCH);
                 break;
             case R.id.btnDiscover:
                 if(mFeedType==Constants.TYPE_FEED_HOME) {

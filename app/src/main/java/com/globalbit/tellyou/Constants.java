@@ -42,6 +42,7 @@ public class Constants {
     public static final int REQUEST_REPORT_REPLY=124;
     public static final int REQUEST_VIDEO_SELECT=125;
     public static final int REQUEST_VIDEO_TRIMMER=126;
+    public static final int REQUEST_SEARCH=127;
 
 
     //Data
@@ -94,6 +95,7 @@ public class Constants {
     public static final int TYPE_FEED_HOME=0;
     public static final int TYPE_FEED_USER=1;
     public static final int TYPE_FEED_BOOKMARKS=2;
+    public static final int TYPE_FEED_SEARCH=3;
 
     public static final int TYPE_FRIENDS_FACEBOOK=1;
     public static final int TYPE_FRIENDS_CONTACTS=2;

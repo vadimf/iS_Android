@@ -26,17 +26,18 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imgViewDiscover"
+                android:id="@+id/imgViewSearch"
+                android:visibility="visible"
                 android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_add_users"
+                android:src="@drawable/ic_search"
                 android:layout_gravity="center"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imgViewSearch"
-                android:visibility="gone"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_search"
+                android:layout_marginEnd="25dp"
+                android:id="@+id/imgViewDiscover"
+                android:layout_toStartOf="@id/imgViewSearch"
+                android:src="@drawable/ic_add_users"
                 android:layout_gravity="center"/>
         </RelativeLayout>
         <TextView

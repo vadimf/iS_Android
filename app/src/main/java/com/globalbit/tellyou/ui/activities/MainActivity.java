@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.internal.BottomNavigationMenuView;
@@ -39,7 +40,9 @@ import com.globalbit.tellyou.ui.interfaces.IMainListener;
 import com.globalbit.tellyou.utils.FilePickUtils;
 import com.globalbit.tellyou.utils.GeneralUtils;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.iceteck.silicompressorr.SiliCompressor;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -217,7 +220,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
         }
         else if(requestCode==Constants.REQUEST_VIDEO_SELECT && resultCode==RESULT_OK) {
             if(data.getData()!=null) {
-                Uri uri=data.getData();
+                final Uri uri=data.getData();
                 Log.i("TEST", "onActivityResult: "+uri.getPath());
                 String path=FilePickUtils.Companion.getSmartFilePath(this, uri);
                 Log.i("TEST", "onActivityResult: "+path);
@@ -226,6 +229,16 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                     intent.putExtra(Constants.DATA_URI, Uri.parse(path));
                     startActivityForResult(intent, Constants.REQUEST_VIDEO_TRIMMER);
                 }
+                /*new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            SiliCompressor.with(MainActivity.this).compressVideo(uri, Environment.getExternalStorageDirectory().getPath());
+                        } catch(URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();*/
 
             }
         }

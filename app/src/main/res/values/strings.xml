@@ -72,6 +72,7 @@
     <string name="hint_full_name">Your full name</string>
     <string name="hint_bio">Tell about yourself</string>
     <string name="tab_videos">My Videos</string>
+    <string name="tab_video">Videos</string>
     <string name="label_my_posts_empty">You haven\'t posted anything yet</string>
     <string name="label_user_posts_empty">hasn\'t posted anything yet</string>
     <string name="label_feed_posts_empty">You are not following anyone yet</string>
@@ -173,6 +174,12 @@
     <string name="short_seconds">sec</string>
     <string name="megabyte">MB</string>
     <string name="kilobyte">KB</string>
+    <string name="dialog_title_preparing_video">Preparing video</string>
+    <string name="hint_search_posts">Search videos by title or #hashtag</string>
+    <string name="tab_people">People</string>
+    <string name="label_video_search_empty">No videos match your search</string>
+    <string name="label_people_search_empty">No people match your search</string>
+    <string name="hint_search_users">Search people by name or username</string>
 
     <plurals name="replies">
         <item quantity="zero">No replies</item>

@@ -50,7 +50,13 @@ public class GeneralUtils {
 
     public static void selectVideoFromGallery(AppCompatActivity activity, int REQUEST_VIDEO_SELECT)
     {
-        Intent intent;
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        if (photoPickerIntent.resolveActivity(activity.getPackageManager()) != null) {
+            photoPickerIntent.setType("video/*");
+            activity.startActivityForResult(photoPickerIntent, REQUEST_VIDEO_SELECT);
+        }
+
+        /*Intent intent;
         if(android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
         {
             intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
@@ -63,6 +69,6 @@ public class GeneralUtils {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.putExtra("return-data", true);
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        activity.startActivityForResult(intent,REQUEST_VIDEO_SELECT);
+        activity.startActivityForResult(intent,REQUEST_VIDEO_SELECT);*/
     }
 }

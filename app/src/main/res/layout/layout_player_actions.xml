@@ -6,19 +6,19 @@
         android:layout_height="wrap_content"
         android:id="@+id/lnrLayoutPlayerActions"
         android:orientation="vertical"
-        android:paddingStart="30dp"
-        android:paddingEnd="30dp"
         android:background="@color/background_opacity">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
             <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/frmLayoutMenu"
-                android:padding="10dp">
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/frmLayoutMenu">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -28,42 +28,44 @@
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:layout_height="match_parent"
                 android:id="@+id/frmLayoutInfo">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
+                    android:layout_gravity="center"
                     android:src="@drawable/ic_info"/>
             </FrameLayout>
-            <FrameLayout
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:layout_height="match_parent"
                 android:id="@+id/frmLayoutComments">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:id="@+id/imgViewComments"
+                    android:src="@drawable/ic_comments"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
+                    android:layout_centerVertical="true"
                     android:id="@+id/txtViewComments"
-                    android:drawableStart="@drawable/ic_comments"
-                    tools:text="5"
-                    android:gravity="center"
-                    style="@style/TextStyle"
-                    android:drawablePadding="5dp"/>
-            </FrameLayout>
+                    tools:text="15"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@id/imgViewComments"
+                    style="@style/TextStyle"/>
+            </RelativeLayout>
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:layout_height="match_parent"
                 android:id="@+id/frmLayoutShare">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
+                    android:layout_gravity="center"
                     android:src="@drawable/ic_export"/>
             </FrameLayout>
         </LinearLayout>

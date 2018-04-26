@@ -26,6 +26,7 @@ public class BaseActivity extends AppCompatActivity {
     private static final String TAG=BaseActivity.class.getSimpleName();
     protected int PERMISSION_REQUEST;
     private MaterialDialog mLoadingDialog=null;
+    private MaterialDialog mProgressDialog=null;
 
     protected void showMessage(String title, String message) {
         new MaterialDialog.Builder(this)
@@ -62,6 +63,26 @@ public class BaseActivity extends AppCompatActivity {
                 .content(R.string.dialog_loading_content)
                 .progress(true, 0)
                 .show();
+    }
+
+    protected void showProgressDialog(String title, String message) {
+        mProgressDialog=new MaterialDialog.Builder(this)
+                .title(title)
+                .content(message)
+                .progress(false, 100)
+                .show();
+    }
+
+    protected void hideProgressDialog() {
+        if(mProgressDialog!=null) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    protected void updateProgressDialog(int value) {
+        if(mProgressDialog!=null) {
+            mProgressDialog.setProgress(value);
+        }
     }
 
     protected void hideLoadingDialog() {
