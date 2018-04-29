@@ -104,7 +104,7 @@ public class UploadService extends Service {
                 case Constants.TYPE_POST_VIDEO_RECORDING:
                     NetworkManager.getInstance().createPost(new IBaseNetworkResponseListener<PostResponse>() {
                                 @Override
-                                public void onSuccess(PostResponse response) {
+                                public void onSuccess(PostResponse response, Object object) {
                                     if(file.exists()) {
                                         if(file.delete()) {
                                             Log.i(TAG, "File deleted successfully");
@@ -137,6 +137,7 @@ public class UploadService extends Service {
                                             .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
 
                                     notificationManager.notify(1, notification);
+                                    stopForeground(false);
                                 }
                             }, MultipartBody.Part.createFormData("video", file.getName(), requestFile),
                             MultipartBody.Part.createFormData("thumbnail", gif.getName(), requestGif),
@@ -184,7 +185,7 @@ public class UploadService extends Service {
                                 );
                                 NetworkManager.getInstance().createPost(new IBaseNetworkResponseListener<PostResponse>() {
                                                                             @Override
-                                                                            public void onSuccess(PostResponse response) {
+                                                                            public void onSuccess(PostResponse response, Object object) {
                                                                                 if(newFile.exists()) {
                                                                                     if(newFile.delete()) {
                                                                                         Log.i(TAG, "File deleted successfully");
@@ -225,6 +226,7 @@ public class UploadService extends Service {
                                                                                         .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
 
                                                                                 notificationManager.notify(1, notification);
+                                                                                stopForeground(false);
                                                                             }
                                                                         }, MultipartBody.Part.createFormData("video", newFile.getName(), requestFileNew),
                                         MultipartBody.Part.createFormData("thumbnail", gifFileNew.getName(), requestGifNew),
@@ -249,7 +251,7 @@ public class UploadService extends Service {
                 case Constants.TYPE_REPLY_VIDEO_RECORDING:
                     NetworkManager.getInstance().createComment(new IBaseNetworkResponseListener<CommentResponse>() {
                             @Override
-                            public void onSuccess(final CommentResponse response) {
+                            public void onSuccess(final CommentResponse response, Object object) {
                                 if(file.exists()) {
                                     if(file.delete()) {
                                         Log.i(TAG, "File deleted successfully");
@@ -260,7 +262,7 @@ public class UploadService extends Service {
                                 }
                                 NetworkManager.getInstance().getPostById(new IBaseNetworkResponseListener<PostResponse>() {
                                     @Override
-                                    public void onSuccess(PostResponse postResponse) {
+                                    public void onSuccess(PostResponse postResponse, Object object) {
                                         PendingIntent pendingIntent;
                                         if(response.getComment()!=null) {
                                             Intent intent;
@@ -316,6 +318,7 @@ public class UploadService extends Service {
                                         .getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
 
                                 notificationManager.notify(1, notification);
+                                stopForeground(false);
                             }
                         },postId , MultipartBody.Part.createFormData("video", file.getName(), requestFile),
                         MultipartBody.Part.createFormData("thumbnail", gif.getName(), requestGif),

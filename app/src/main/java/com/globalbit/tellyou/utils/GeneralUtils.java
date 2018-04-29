@@ -51,6 +51,7 @@ public class GeneralUtils {
     public static void selectVideoFromGallery(AppCompatActivity activity, int REQUEST_VIDEO_SELECT)
     {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         if (photoPickerIntent.resolveActivity(activity.getPackageManager()) != null) {
             photoPickerIntent.setType("video/*");
             activity.startActivityForResult(photoPickerIntent, REQUEST_VIDEO_SELECT);

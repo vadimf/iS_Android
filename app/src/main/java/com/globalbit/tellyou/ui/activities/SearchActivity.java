@@ -20,13 +20,25 @@ import com.globalbit.tellyou.ui.adapters.SearchPagerAdapter;
 import com.globalbit.tellyou.ui.fragments.BaseFragment;
 import com.globalbit.tellyou.ui.fragments.ContactsFragment;
 import com.globalbit.tellyou.ui.fragments.PostsFragment;
+import com.globalbit.tellyou.ui.fragments.SuggestionsFragment;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 
 public class SearchActivity extends BaseActivity implements View.OnClickListener, IMainListener, TabLayout.OnTabSelectedListener {
     private ActivitySearchBinding mBinding;
     private SearchPagerAdapter mSearchPagerAdapter;
     private int mPosition=0;
+    private final CompositeDisposable mDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,7 +51,60 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         mBinding.viewpager.setOffscreenPageLimit(1);
         mBinding.tabSearch.addOnTabSelectedListener(this);
         mBinding.tabSearch.setupWithViewPager(mBinding.viewpager);
-        mBinding.inputSearch.addTextChangedListener(new TextWatcher() {
+        RxTextView.textChanges(mBinding.inputSearch)
+                .doOnNext(new Consumer<CharSequence>() {
+                    @Override
+                    public void accept(CharSequence charSequence) throws Exception {
+                        if(charSequence.length()>0) {
+                            mBinding.imgViewClear.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            mBinding.imgViewClear.setVisibility(View.GONE);
+                        }
+                    }
+                })
+                /*.filter(new Predicate<CharSequence>() {
+                    @Override
+                    public boolean test(CharSequence charSequence) throws Exception {
+                        if(charSequence.length()>=2) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                })*/
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<CharSequence>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        mDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(CharSequence charSequence) {
+                        BaseFragment fragment=(BaseFragment) mSearchPagerAdapter.getRegisteredFragment(mPosition);
+                        if(fragment instanceof PostsFragment) {
+                            ((PostsFragment) fragment).searchPosts(charSequence.toString());
+                        }
+                        else if(fragment instanceof SuggestionsFragment) {
+                            ((SuggestionsFragment) fragment).searchPosts(charSequence.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+        /*mBinding.inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -60,7 +125,13 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             public void afterTextChanged(Editable editable) {
 
             }
-        });
+        });*/
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDisposable.clear();
     }
 
     @Override
@@ -90,14 +161,14 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     .show();
             NetworkManager.getInstance().getUserDetails(new IBaseNetworkResponseListener<UserResponse>() {
                 @Override
-                public void onSuccess(UserResponse response) {
+                public void onSuccess(UserResponse response, Object object) {
                     if(loadingDialog!=null) {
                         loadingDialog.dismiss();
                     }
                     Intent intent=new Intent(SearchActivity.this, ProfileActivity.class);
                     intent.putExtra(Constants.DATA_PROFILE, Constants.REQUEST_USER_PROFILE);
                     intent.putExtra(Constants.DATA_USER, response.getUser());
-                    startActivity(intent);
+                    startActivityForResult(intent, Constants.REQUEST_USER_PROFILE);
                 }
 
                 @Override
@@ -114,6 +185,22 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==Constants.REQUEST_USER_PROFILE) {
+            mBinding.inputSearch.setText(mBinding.inputSearch.getText().toString());
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mBinding.inputSearch.getText().length()>0) {
+            mBinding.inputSearch.setText(mBinding.inputSearch.getText().toString());
         }
     }
 

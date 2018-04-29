@@ -5,6 +5,6 @@ package com.globalbit.tellyou.network.interfaces;
  */
 
 public interface IBaseNetworkResponseListener<T> {
-    void onSuccess(T response);
+    void onSuccess(T response, Object object);
     void onError(int errorCode, String errorMessage);
 }

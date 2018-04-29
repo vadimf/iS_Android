@@ -40,7 +40,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService imple
     }
 
     @Override
-    public void onSuccess(BaseResponse response) {
+    public void onSuccess(BaseResponse response, Object object) {
 
     }
 }

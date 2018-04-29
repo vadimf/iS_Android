@@ -128,7 +128,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
                             if(item.isFollowing()) {
                                 NetworkManager.getInstance().unfollow(new IBaseNetworkResponseListener<BaseResponse>() {
                                     @Override
-                                    public void onSuccess(BaseResponse response) {
+                                    public void onSuccess(BaseResponse response, Object object) {
 
                                     }
 
@@ -146,7 +146,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
                             else {
                                 NetworkManager.getInstance().follow(new IBaseNetworkResponseListener<BaseResponse>() {
                                     @Override
-                                    public void onSuccess(BaseResponse response) {
+                                    public void onSuccess(BaseResponse response, Object object) {
 
                                     }
 

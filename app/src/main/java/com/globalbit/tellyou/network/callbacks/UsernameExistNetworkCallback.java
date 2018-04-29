@@ -29,7 +29,7 @@ public class UsernameExistNetworkCallback extends NetworkCallback implements Cal
             if(response.body()!=null) {
                 response.body().setUsername(mUsername);
                 if(response.body().getErrorCode()==0) {
-                    mListener.onSuccess(response.body());
+                    mListener.onSuccess(response.body(), null);
                 }
                 else {
                     mListener.onError(response.body().getErrorCode(), ErrorUtils.getErrorMessage(response.body().getErrorCode(), Enums.RequestType.General));

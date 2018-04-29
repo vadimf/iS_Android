@@ -17,9 +17,11 @@ import retrofit2.Response;
 
 public class PostsNetworkCallback extends NetworkCallback implements Callback<PostsResponse> {
     IBaseNetworkResponseListener<PostsResponse> mListener;
+    String mQuery=null;
 
-    public PostsNetworkCallback(IBaseNetworkResponseListener<PostsResponse> listener) {
+    public PostsNetworkCallback(IBaseNetworkResponseListener<PostsResponse> listener, String query) {
         mListener=listener;
+        mQuery=query;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class PostsNetworkCallback extends NetworkCallback implements Callback<Po
         if(response.isSuccessful()) {
             if(response.body()!=null) {
                 if(response.body().getErrorCode()==0) {
-                    mListener.onSuccess(response.body());
+                    mListener.onSuccess(response.body(), mQuery);
                 }
                 else {
                     mListener.onError(response.body().getErrorCode(), ErrorUtils.getErrorMessage(response.body().getErrorCode(), Enums.RequestType.General));

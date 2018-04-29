@@ -29,7 +29,7 @@ public class SystemPreferencesNetworkCallback extends NetworkCallback implements
             if(response.body()!=null) {
                 if(response.body().getErrorCode()==0) {
                     CustomApplication.setSystemPreference(response.body().getSystemPreferences());
-                    mListener.onSuccess(response.body());
+                    mListener.onSuccess(response.body(), null);
                 }
                 else {
                     mListener.onError(response.body().getErrorCode(), ErrorUtils.getErrorMessage(response.body().getErrorCode(), Enums.RequestType.General));

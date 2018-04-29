@@ -32,7 +32,7 @@ public class FollowNetworkCallback extends NetworkCallback implements Callback<B
                 if(response.body().getErrorCode()==0) {
                     NetworkManager.getInstance().getMyDetails(new IBaseNetworkResponseListener<UserResponse>() {
                         @Override
-                        public void onSuccess(UserResponse response) {
+                        public void onSuccess(UserResponse response, Object object) {
                             SharedPrefsUtils.setUserDetails(response.getUser());
                         }
 
@@ -41,7 +41,7 @@ public class FollowNetworkCallback extends NetworkCallback implements Callback<B
 
                         }
                     });
-                    mListener.onSuccess(response.body());
+                    mListener.onSuccess(response.body(), null);
                 }
                 else {
                     mListener.onError(response.body().getErrorCode(), ErrorUtils.getErrorMessage(response.body().getErrorCode(), mRequestType));

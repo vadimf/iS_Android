@@ -184,7 +184,7 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
     }
 
     @Override
-    public void onSuccess(CommentsResponse response) {
+    public void onSuccess(CommentsResponse response, Object object) {
         mBinding.swipeLayout.setRefreshing(false);
         mBinding.swipeLayout.setEnabled(false);
         mAdapter.addItems(response.getComments());

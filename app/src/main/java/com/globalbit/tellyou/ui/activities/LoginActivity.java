@@ -100,7 +100,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 request.setToken(refreshedToken);
                 NetworkManager.getInstance().sendToken(new IBaseNetworkResponseListener<BaseResponse>() {
                     @Override
-                    public void onSuccess(BaseResponse response) {
+                    public void onSuccess(BaseResponse response, Object object) {
 
                     }
 

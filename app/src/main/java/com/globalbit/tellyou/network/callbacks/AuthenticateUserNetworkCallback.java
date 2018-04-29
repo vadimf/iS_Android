@@ -30,7 +30,7 @@ public class AuthenticateUserNetworkCallback extends NetworkCallback implements 
             if(response.body()!=null) {
                 if(response.body().getErrorCode()==0) {
                     SharedPrefsUtils.setAuthorization(response.body().getAuth());
-                    mListener.onSuccess(response.body());
+                    mListener.onSuccess(response.body(),null);
                 }
                 else {
                     mListener.onError(response.body().getErrorCode(), ErrorUtils.getErrorMessage(response.body().getErrorCode(), mRequestType));

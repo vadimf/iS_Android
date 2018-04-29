@@ -199,6 +199,8 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
     }
 
     private void loadItems() {
+        mBinding.swipeLayout.setEnabled(true);
+        mBinding.swipeLayout.setRefreshing(true);
         switch(mFeedType) {
             case Constants.TYPE_FEED_HOME:
                 if(mIsPopularVideos) {
@@ -275,15 +277,20 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
     }
 
     @Override
-    public void onSuccess(PostsResponse response) {
-        mBinding.swipeLayout.setRefreshing(false);
-        mLoading=true;
-        if(!CollectionUtils.isEmpty(response.getPosts())) {
-            mAdapter.addItems(response.getPosts());
-        }
-        mPagination=response.getPagination();
-        if(!mIsPopularVideos||mFeedType==Constants.TYPE_FEED_SEARCH) {
-            isEmpty();
+    public void onSuccess(PostsResponse response, Object object) {
+        if(mFeedType==Constants.TYPE_FEED_SEARCH&&(StringUtils.isEmpty(mQuery)||mQuery.equals(object))||mFeedType!=Constants.TYPE_FEED_SEARCH) {
+            mBinding.swipeLayout.setRefreshing(false);
+            if(mFeedType==Constants.TYPE_FEED_SEARCH) {
+                mBinding.swipeLayout.setEnabled(false);
+            }
+            mLoading=true;
+            if(!CollectionUtils.isEmpty(response.getPosts())) {
+                mAdapter.addItems(response.getPosts());
+            }
+            mPagination=response.getPagination();
+            if(!mIsPopularVideos||mFeedType==Constants.TYPE_FEED_SEARCH) {
+                isEmpty();
+            }
         }
     }
 
@@ -349,6 +356,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             if(mFeedType==Constants.TYPE_FEED_SEARCH) {
                 mBinding.txtViewEmpty.setVisibility(View.GONE);
                 if(StringUtils.isEmpty(mQuery)) {
+                    mBinding.swipeLayout.setVisibility(View.VISIBLE);
                     mBinding.txtViewPopularVideos.setVisibility(View.VISIBLE);
                 }
                 else {

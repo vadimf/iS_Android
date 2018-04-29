@@ -1,15 +1,18 @@
 package com.globalbit.tellyou.ui.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
@@ -42,6 +45,7 @@ import com.globalbit.tellyou.utils.GeneralUtils;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.iceteck.silicompressorr.SiliCompressor;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -101,7 +105,27 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                         mLastNavigationItem=item;
                         return true;
                     case R.id.action_add:
-                        GeneralUtils.selectVideoFromGallery(MainActivity.this, Constants.REQUEST_VIDEO_SELECT);
+
+                        final MaterialDialog dialog=new MaterialDialog.Builder(MainActivity.this)
+                                .customView(R.layout.dialog_image_selection, false)
+                                .show();
+                        dialog.findViewById(R.id.lnrLayoutCamera).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                checkForPermissions(1, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO});
+
+                            }
+                        });
+                        dialog.findViewById(R.id.lnrLayoutGallery).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                checkForPermissions(2, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
+                            }
+                        });
+
+                        //GeneralUtils.selectVideoFromGallery(MainActivity.this, Constants.REQUEST_VIDEO_SELECT);
                         /*Intent intent=new Intent(MainActivity.this, VideoRecordingActivity.class);
                         intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
                         startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);*/
@@ -180,6 +204,18 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                 startActivityForResult(intent, Constants.REQUEST_POST);
             }
         }*/
+    }
+
+    @Override
+    protected void permissionAccepted() {
+        if(PERMISSION_REQUEST==1) {
+            Intent intent=new Intent(MainActivity.this, VideoRecordingActivity.class);
+            intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
+            startActivityForResult(intent, Constants.REQUEST_VIDEO_RECORDING);
+        }
+        else if(PERMISSION_REQUEST==2) {
+            GeneralUtils.selectVideoFromGallery(MainActivity.this, Constants.REQUEST_VIDEO_SELECT);
+        }
     }
 
     @Override
@@ -267,7 +303,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                     .show();
             NetworkManager.getInstance().getUserDetails(new IBaseNetworkResponseListener<UserResponse>() {
                 @Override
-                public void onSuccess(UserResponse response) {
+                public void onSuccess(UserResponse response, Object object) {
                     if(loadingDialog!=null) {
                         loadingDialog.dismiss();
                     }
@@ -316,7 +352,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                 showLoadingDialog();
                 NetworkManager.getInstance().signOut(new IBaseNetworkResponseListener<BaseResponse>() {
                     @Override
-                    public void onSuccess(BaseResponse response) {
+                    public void onSuccess(BaseResponse response, Object object) {
                         hideLoadingDialog();
                         User.logout();
                         Intent intent=new Intent(MainActivity.this, ConnectionActivity.class);

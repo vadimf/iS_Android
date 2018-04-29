@@ -100,6 +100,9 @@ public class Constants {
     public static final int TYPE_FRIENDS_FACEBOOK=1;
     public static final int TYPE_FRIENDS_CONTACTS=2;
 
+    public static final int TYPE_USERS_SUGGESTIONS=1;
+    public static final int TYPE_USERS_SEARCH=2;
+
     public static final int TYPE_POST_VIDEO_RECORDING=0;
     public static final int TYPE_REPLY_VIDEO_RECORDING=1;
     public static final int TYPE_POST_VIDEO_TRIMMING=2;

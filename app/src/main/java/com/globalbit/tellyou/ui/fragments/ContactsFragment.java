@@ -201,7 +201,7 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
         else if(mState==Constants.TYPE_FRIENDS_CONTACTS) {
             NetworkManager.getInstance().getContacts(new IBaseNetworkResponseListener<UsersResponse>() {
                 @Override
-                public void onSuccess(UsersResponse response) {
+                public void onSuccess(UsersResponse response, Object object) {
                     mBinding.swipeLayout.setRefreshing(false);
                     mBinding.swipeLayout.setEnabled(false);
                     mLoading=true;
@@ -228,7 +228,7 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
     }
 
     @Override
-    public void onSuccess(FacebookFriendsResponse response) {
+    public void onSuccess(FacebookFriendsResponse response, Object object) {
         mBinding.swipeLayout.setRefreshing(false);
         mBinding.swipeLayout.setEnabled(false);
         mLoading=true;

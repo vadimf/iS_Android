@@ -41,7 +41,7 @@ public class DiscoverPagerAdapter extends FragmentPagerAdapter {
                 fragment=ContactsFragment.newInstance(Constants.TYPE_FRIENDS_CONTACTS);
                 break;*/
             case 1:
-                fragment=SuggestionsFragment.newInstance();
+                fragment=SuggestionsFragment.newInstance(Constants.TYPE_USERS_SUGGESTIONS);
                 break;
         }
 

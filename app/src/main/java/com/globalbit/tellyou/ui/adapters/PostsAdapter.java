@@ -197,7 +197,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                                                     .show();
                                             NetworkManager.getInstance().deletePost(new IBaseNetworkResponseListener<BaseResponse>() {
                                                 @Override
-                                                public void onSuccess(BaseResponse response) {
+                                                public void onSuccess(BaseResponse response, Object object) {
                                                     loadingDialog.dismiss();
                                                     mItems.remove(position);
                                                     notifyItemRemoved(position);

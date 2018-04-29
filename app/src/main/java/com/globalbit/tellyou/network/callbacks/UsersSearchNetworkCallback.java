@@ -32,7 +32,7 @@ public class UsersSearchNetworkCallback extends NetworkCallback implements Callb
                     if(usersResponse!=null) {
                         usersResponse.setQuery(mQuery);
                     }
-                    mListener.onSuccess(response.body());
+                    mListener.onSuccess(response.body(), mQuery);
                 }
                 else {
                     mListener.onError(response.body().getErrorCode(), ErrorUtils.getErrorMessage(response.body().getErrorCode(), Enums.RequestType.General));

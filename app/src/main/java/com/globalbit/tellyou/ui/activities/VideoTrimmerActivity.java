@@ -40,7 +40,7 @@ public class VideoTrimmerActivity extends BaseActivity implements OnTrimVideoLis
     @Override
     public void getResult(final Uri uri) {
         Log.i(TAG, "getResult: "+uri.getPath());
-        hideProgressDialog();
+        hideLoadingDialog();
         Intent intent=new Intent(VideoTrimmerActivity.this, CreatePostActivity.class);
         intent.putExtra(Constants.DATA_VIDEO_FILE, uri.getPath());
         intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_TRIMMING);
@@ -51,7 +51,8 @@ public class VideoTrimmerActivity extends BaseActivity implements OnTrimVideoLis
 
     @Override
     public void onTrimStarted() {
-        showProgressDialog(getString(R.string.dialog_title_preparing_video), getString(R.string.dialog_loading_content));
+        showLoadingDialog();
+        //showProgressDialog(getString(R.string.dialog_title_preparing_video), getString(R.string.dialog_loading_content));
         Log.i(TAG, "onTrimStarted: ");
     }
 

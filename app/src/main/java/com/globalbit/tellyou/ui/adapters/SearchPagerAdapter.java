@@ -35,7 +35,7 @@ public class SearchPagerAdapter extends FragmentPagerAdapter {
                 fragment=PostsFragment.newInstance(Constants.TYPE_FEED_SEARCH, null, null);
                 break;
             case 1:
-                fragment=SuggestionsFragment.newInstance();
+                fragment=SuggestionsFragment.newInstance(Constants.TYPE_USERS_SEARCH);
                 break;
         }
 

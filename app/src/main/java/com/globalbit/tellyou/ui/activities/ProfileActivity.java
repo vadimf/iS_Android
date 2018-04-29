@@ -67,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity implements IMainListener{
                     .show();
             NetworkManager.getInstance().getUserDetails(new IBaseNetworkResponseListener<UserResponse>() {
                 @Override
-                public void onSuccess(UserResponse response) {
+                public void onSuccess(UserResponse response, Object object) {
                     if(loadingDialog!=null) {
                         loadingDialog.dismiss();
                     }

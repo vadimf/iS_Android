@@ -2,6 +2,7 @@ package com.globalbit.tellyou.ui.fragments;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.globalbit.androidutils.StringUtils;
+import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.FragmentSuggestionsBinding;
 import com.globalbit.tellyou.model.Pagination;
@@ -32,10 +35,23 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
     private boolean mLoading = true;
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private boolean mIsFirstTime=true;
+    private String mQuery=null;
+    private int mUsersType=Constants.TYPE_USERS_SUGGESTIONS;
 
-    public static SuggestionsFragment newInstance() {
+    public static SuggestionsFragment newInstance(int usersType) {
         SuggestionsFragment fragment=new SuggestionsFragment();
+        Bundle args=new Bundle();
+        args.putInt(Constants.DATA_USERS, usersType);
+        fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments()!=null) {
+            mUsersType=getArguments().getInt(Constants.DATA_USERS);
+        }
     }
 
     @Nullable
@@ -110,14 +126,15 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
             }
         });
 
-        mBinding.swipeLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mPage=1;
-                loadItems();
-            }
-        });
-
+        if(mUsersType!=Constants.TYPE_USERS_SEARCH) {
+            mBinding.swipeLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPage=1;
+                    loadItems();
+                }
+            });
+        }
         return mBinding.getRoot();
     }
 
@@ -128,20 +145,28 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
     }
 
     private void loadItems() {
-        NetworkManager.getInstance().getSuggestions(this, mPage);
+        if(mUsersType==Constants.TYPE_USERS_SEARCH) {
+            NetworkManager.getInstance().searchUsers(this, mQuery ,mPage);
+        }
+        else {
+            NetworkManager.getInstance().getSuggestions(this, mPage);
+        }
         mBinding.swipeLayout.setEnabled(true);
+        mBinding.swipeLayout.setRefreshing(true);
     }
 
     @Override
-    public void onSuccess(UsersResponse response) {
-        mIsFirstTime=false;
-        mBinding.swipeLayout.setRefreshing(false);
-        mBinding.swipeLayout.setEnabled(false);
-        mLoading=true;
-        mAdapter.showStatus(true);
-        mAdapter.addItems(response.getUsers());
-        showEmpty();
-        mPagination=response.getPagination();
+    public void onSuccess(UsersResponse response, Object object) {
+        if(mUsersType==Constants.TYPE_FEED_SEARCH&&(StringUtils.isEmpty(mQuery)||mQuery.equals(object))||mUsersType!=Constants.TYPE_FEED_SEARCH) {
+            mIsFirstTime=false;
+            mBinding.swipeLayout.setRefreshing(false);
+            mBinding.swipeLayout.setEnabled(false);
+            mLoading=true;
+            mAdapter.showStatus(true);
+            mAdapter.addItems(response.getUsers());
+            showEmpty();
+            mPagination=response.getPagination();
+        }
     }
 
     private void showEmpty() {
@@ -150,7 +175,12 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
             mBinding.swipeLayout.setVisibility(View.VISIBLE);
         }
         else {
-            mBinding.txtViewEmpty.setVisibility(View.VISIBLE);
+            if(mUsersType==Constants.TYPE_USERS_SEARCH&&StringUtils.isEmpty(mQuery)) {
+                mBinding.txtViewEmpty.setVisibility(View.GONE);
+            }
+            else {
+                mBinding.txtViewEmpty.setVisibility(View.VISIBLE);
+            }
             mBinding.swipeLayout.setVisibility(View.GONE);
         }
     }
@@ -161,5 +191,17 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
         mBinding.swipeLayout.setEnabled(false);
         mLoading=true;
         showErrorMessage(errorCode, getString(R.string.error), errorMessage);
+    }
+
+    public void searchPosts(String query) {
+        mQuery=query;
+        if(mAdapter!=null) {
+            mAdapter.clear();
+        }
+        if(!StringUtils.isEmpty(mQuery)) {
+            mPage=1;
+            loadItems();
+        }
+
     }
 }

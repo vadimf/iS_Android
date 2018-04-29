@@ -81,7 +81,7 @@ public class ForgotPasswordFragment extends BaseFragment implements View.OnClick
     }
 
     @Override
-    public void onSuccess(BaseResponse response) {
+    public void onSuccess(BaseResponse response, Object object) {
         hideLoadingDialog();
         mBinding.inputEmail.inputValue.setText("");
         //showMessage(getString(R.string.dialog_title_forgot_password),getString(R.string.dialog_content_forgot_password));

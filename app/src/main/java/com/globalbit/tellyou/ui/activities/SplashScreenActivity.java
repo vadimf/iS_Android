@@ -50,7 +50,7 @@ public class SplashScreenActivity extends BaseActivity implements IBaseNetworkRe
     }
 
     @Override
-    public void onSuccess(SystemPreferencesResponseKT response) {
+    public void onSuccess(SystemPreferencesResponseKT response, Object object) {
         FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent()).addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
             @Override
             public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
@@ -65,7 +65,7 @@ public class SplashScreenActivity extends BaseActivity implements IBaseNetworkRe
                             if(!StringUtils.isEmpty(array[1])) {
                                 NetworkManager.getInstance().getPostById(new IBaseNetworkResponseListener<PostResponse>() {
                                     @Override
-                                    public void onSuccess(PostResponse response) {
+                                    public void onSuccess(PostResponse response, Object object) {
                                         CustomApplication.setPost(response.getPost());
                                         next();
                                     }
@@ -118,7 +118,7 @@ public class SplashScreenActivity extends BaseActivity implements IBaseNetworkRe
         if(!StringUtils.isEmpty(SharedPrefsUtils.getAuthorization())) {
             NetworkManager.getInstance().getMyDetails(new IBaseNetworkResponseListener<UserResponse>() {
                 @Override
-                public void onSuccess(UserResponse response) {
+                public void onSuccess(UserResponse response, Object object) {
                     SharedPrefsUtils.setUserDetails(response.getUser());
                     if(StringUtils.isEmpty(response.getUser().getUsername())) {
                         Intent intent=new Intent(SplashScreenActivity.this, ProfileActivity.class);
@@ -135,7 +135,7 @@ public class SplashScreenActivity extends BaseActivity implements IBaseNetworkRe
                                 request.setToken(refreshedToken);
                                 NetworkManager.getInstance().sendToken(new IBaseNetworkResponseListener<BaseResponse>() {
                                     @Override
-                                    public void onSuccess(BaseResponse response) {
+                                    public void onSuccess(BaseResponse response, Object object) {
 
                                     }
 

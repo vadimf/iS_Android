@@ -374,7 +374,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                 NetworkManager.getInstance().unfollow(new IBaseNetworkResponseListener<BaseResponse>() {
                                                     @Override
-                                                    public void onSuccess(BaseResponse response) {
+                                                    public void onSuccess(BaseResponse response, Object object) {
                                                         holder.mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.background_button);
                                                         holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.white));
                                                         holder.mBinding.layoutVideoInformation.btnAction.setText(mContext.getString(R.string.btn_follow));
@@ -395,7 +395,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                             else {
                                 NetworkManager.getInstance().follow(new IBaseNetworkResponseListener<BaseResponse>() {
                                     @Override
-                                    public void onSuccess(BaseResponse response) {
+                                    public void onSuccess(BaseResponse response, Object object) {
                                         holder.mBinding.layoutVideoInformation.btnAction.setBackgroundResource(R.drawable.button_share);
                                         holder.mBinding.layoutVideoInformation.btnAction.setTextColor(mContext.getResources().getColor(R.color.red_border));
                                         holder.mBinding.layoutVideoInformation.btnAction.setText(mContext.getString(R.string.btn_following));
@@ -496,7 +496,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 mHelper = new ExoPlayerViewHelper( this, mMediaUri);
                 NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
                     @Override
-                    public void onSuccess(BaseResponse response) {
+                    public void onSuccess(BaseResponse response, Object object) {
 
                     }
 

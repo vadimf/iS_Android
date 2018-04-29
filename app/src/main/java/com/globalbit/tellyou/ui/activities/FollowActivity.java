@@ -129,7 +129,7 @@ public class FollowActivity extends BaseActivity implements IBaseNetworkResponse
     }
 
     @Override
-    public void onSuccess(UsersResponse response) {
+    public void onSuccess(UsersResponse response, Object object) {
         mBinding.swipeLayout.setRefreshing(false);
         mLoading=true;
         if(response.getPagination().getPage()==1) {

@@ -147,7 +147,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
-    public void onSuccess(PostsResponse response) {
+    public void onSuccess(PostsResponse response, Object object) {
         mBinding.swipeLayout.setRefreshing(false);
         mBinding.swipeLayout.setEnabled(false);
         mAdapter.addItems(response.getPosts());

@@ -198,7 +198,7 @@ public class NetworkManager {
 
     public void getMyPosts(IBaseNetworkResponseListener<PostsResponse> listener, int page) {
         Call<PostsResponse> call=mIRetrofitApiInterface.getMyPosts(page);
-        PostsNetworkCallback callback=new PostsNetworkCallback(listener);
+        PostsNetworkCallback callback=new PostsNetworkCallback(listener, null);
         call.enqueue(callback);
     }
 
@@ -222,7 +222,7 @@ public class NetworkManager {
 
     public void getUserPosts(IBaseNetworkResponseListener<PostsResponse> listener, String username, int page) {
         Call<PostsResponse> call=mIRetrofitApiInterface.getUserPosts(username, page);
-        PostsNetworkCallback callback=new PostsNetworkCallback(listener);
+        PostsNetworkCallback callback=new PostsNetworkCallback(listener, null);
         call.enqueue(callback);
     }
 
@@ -258,13 +258,13 @@ public class NetworkManager {
 
     public void getFeedPosts(IBaseNetworkResponseListener<PostsResponse> listener, int page) {
         Call<PostsResponse> call=mIRetrofitApiInterface.getFeedPosts(page);
-        PostsNetworkCallback callback=new PostsNetworkCallback(listener);
+        PostsNetworkCallback callback=new PostsNetworkCallback(listener, null);
         call.enqueue(callback);
     }
 
     public void getPopularPosts(IBaseNetworkResponseListener<PostsResponse> listener, int page) {
         Call<PostsResponse> call=mIRetrofitApiInterface.getPopularPosts(page);
-        PostsNetworkCallback callback=new PostsNetworkCallback(listener);
+        PostsNetworkCallback callback=new PostsNetworkCallback(listener, null);
         call.enqueue(callback);
     }
 
@@ -307,7 +307,7 @@ public class NetworkManager {
 
     public void getBookmarkedPosts(IBaseNetworkResponseListener<PostsResponse> listener, int page) {
         Call<PostsResponse> call=mIRetrofitApiInterface.getBookmarkedPosts(page);
-        PostsNetworkCallback callback=new PostsNetworkCallback(listener);
+        PostsNetworkCallback callback=new PostsNetworkCallback(listener, null);
         call.enqueue(callback);
     }
 
@@ -385,7 +385,7 @@ public class NetworkManager {
 
     public void searchPosts(IBaseNetworkResponseListener<PostsResponse> listener, String query, int page) {
         Call<PostsResponse> call=mIRetrofitApiInterface.searchPosts(query, page);
-        PostsNetworkCallback callback=new PostsNetworkCallback(listener);
+        PostsNetworkCallback callback=new PostsNetworkCallback(listener, query);
         call.enqueue(callback);
     }
 

@@ -177,7 +177,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                                             showLoadingDialog();
                                             NetworkManager.getInstance().unfollow(new IBaseNetworkResponseListener<BaseResponse>() {
                                                 @Override
-                                                public void onSuccess(BaseResponse response) {
+                                                public void onSuccess(BaseResponse response, Object object) {
                                                     hideLoadingDialog();
                                                     mUser.setFollowing(false);
                                                     mBinding.btnAction.setBackgroundResource(R.drawable.background_button);
@@ -204,7 +204,7 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                             showLoadingDialog();
                             NetworkManager.getInstance().follow(new IBaseNetworkResponseListener<BaseResponse>() {
                                 @Override
-                                public void onSuccess(BaseResponse response) {
+                                public void onSuccess(BaseResponse response, Object object) {
                                     hideLoadingDialog();
                                     mUser.setFollowing(true);
                                     mBinding.btnAction.setBackgroundResource(R.drawable.button_share);

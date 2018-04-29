@@ -53,7 +53,7 @@ public class FCMHandler {
             case PUSH_NOTIFICATION_FOLLOW: //Open profile
                 NetworkManager.getInstance().getMyDetails(new IBaseNetworkResponseListener<UserResponse>() {
                     @Override
-                    public void onSuccess(UserResponse response) {
+                    public void onSuccess(UserResponse response, Object object) {
                         SharedPrefsUtils.setUserDetails(response.getUser());
                     }
 
@@ -65,7 +65,7 @@ public class FCMHandler {
                 if(!StringUtils.isEmpty(notificationData.getUsername())) {
                     NetworkManager.getInstance().getUserDetails(new IBaseNetworkResponseListener<UserResponse>() {
                         @Override
-                        public void onSuccess(UserResponse response) {
+                        public void onSuccess(UserResponse response, Object object) {
                             NotificationCompat.Builder builder=createNotification(context,notificationData, CHANNEL_ID, GROUP_FOLLOW);
                             builder=createPendingProfileIntent(context, builder, notificationData.getNotificationType(), response.getUser(),SharedPrefsUtils.isInBackground());
                             NotificationManager mNotificationManager =
@@ -84,7 +84,7 @@ public class FCMHandler {
                 if(!StringUtils.isEmpty(notificationData.getPostId())) {
                     NetworkManager.getInstance().getPostById(new IBaseNetworkResponseListener<PostResponse>() {
                         @Override
-                        public void onSuccess(PostResponse response) {
+                        public void onSuccess(PostResponse response, Object object) {
                             NotificationCompat.Builder builder=createNotification(context, notificationData, CHANNEL_ID, GROUP_COMMENT);
                             builder=createPendingCommentsIntent(context, builder, notificationData.getNotificationType(), notificationData.getPostId(), SharedPrefsUtils.isInBackground(), notificationData.getCommentId(), response.getPost());
                             notificationManager.notify(notificationData.getNotificationType(), builder.build());

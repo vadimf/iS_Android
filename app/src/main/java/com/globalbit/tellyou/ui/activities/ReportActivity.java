@@ -99,7 +99,7 @@ public class ReportActivity extends BaseActivity implements View.OnClickListener
     }
 
     @Override
-    public void onSuccess(BaseResponse response) {
+    public void onSuccess(BaseResponse response, Object object) {
         hideLoadingDialog();
         setResult(Activity.RESULT_OK);
         finish();

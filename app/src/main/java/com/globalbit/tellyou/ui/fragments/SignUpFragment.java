@@ -247,7 +247,7 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
     }
 
     @Override
-    public void onSuccess(AuthenticateUserResponse response) {
+    public void onSuccess(AuthenticateUserResponse response, Object object) {
         hideLoadingDialog();
         mListener.onSignSuccess(response.getUser());
     }

@@ -29,7 +29,7 @@ public class UserNetworkCallback extends NetworkCallback implements Callback<Use
         if(response.isSuccessful()) {
             if(response.body()!=null) {
                 if(response.body().getErrorCode()==0) {
-                    mListener.onSuccess(response.body());
+                    mListener.onSuccess(response.body(), null);
                 }
                 else {
                     mListener.onError(response.body().getErrorCode(), ErrorUtils.getErrorMessage(response.body().getErrorCode(), mRequestType));

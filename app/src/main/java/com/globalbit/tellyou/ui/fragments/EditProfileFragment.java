@@ -123,7 +123,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                             if(mUser!=null/*&&!StringUtils.isEmpty(mUser.getUsername())*/&&!mUser.getUsername().equals(mBinding.inputUsername.inputValue.getText().toString())) {
                                 NetworkManager.getInstance().usernameExist(new IBaseNetworkResponseListener<UsernameExistResponse>() {
                                     @Override
-                                    public void onSuccess(UsernameExistResponse response) {
+                                    public void onSuccess(UsernameExistResponse response, Object object) {
                                         if(mBinding.inputUsername.inputValue.getText().toString().equals(response.getUsername())) {
                                             if(response.isExists()) {
                                                 
@@ -457,7 +457,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Override
-    public void onSuccess(UserResponse response) {
+    public void onSuccess(UserResponse response, Object object) {
         hideLoadingDialog();
         SharedPrefsUtils.setUserDetails(response.getUser());
         if(StringUtils.isEmpty(mUser.getUsername())) {
