@@ -68,6 +68,24 @@ public class RangeSeekBarView extends View {
         init();
     }
 
+    public float getLeftThumbX() {
+        if(mThumbs!=null&&mThumbs.size()==2) {
+            return  mThumbs.get(0).getPos()+mThumbs.get(0).getWidthBitmap();
+        }
+        else {
+            return -1;
+        }
+    }
+
+    public float getRightThumbX() {
+        if(mThumbs!=null&&mThumbs.size()==2) {
+            return  mThumbs.get(1).getPos();
+        }
+        else {
+            return -1;
+        }
+    }
+
     private void init() {
         mThumbs = Thumb.initThumbs(getResources());
         mThumbWidth = Thumb.getWidthBitmap(mThumbs);
@@ -106,7 +124,7 @@ public class RangeSeekBarView extends View {
         int minW = getPaddingLeft() + getPaddingRight() + getSuggestedMinimumWidth();
         mViewWidth = resolveSizeAndState(minW, widthMeasureSpec, 1);
 
-        int minH = getPaddingBottom() + getPaddingTop() + (int) mThumbHeight + mHeightTimeLine;
+        int minH = getPaddingBottom() + getPaddingTop() +mHeightTimeLine;
         int viewHeight = resolveSizeAndState(minH, heightMeasureSpec, 1);
 
         setMeasuredDimension(mViewWidth, viewHeight);
@@ -335,9 +353,9 @@ public class RangeSeekBarView extends View {
         if (!mThumbs.isEmpty()) {
             for (Thumb th : mThumbs) {
                 if (th.getIndex() == 0) {
-                    canvas.drawBitmap(th.getBitmap(), th.getPos() + getPaddingLeft(), getPaddingTop() + mHeightTimeLine, null);
+                    canvas.drawBitmap(th.getBitmap(), th.getPos() + getPaddingLeft(), getPaddingTop(), null);
                 } else {
-                    canvas.drawBitmap(th.getBitmap(), th.getPos() - getPaddingRight(), getPaddingTop() + mHeightTimeLine, null);
+                    canvas.drawBitmap(th.getBitmap(), th.getPos() - getPaddingRight(), getPaddingTop() , null);
                 }
             }
         }

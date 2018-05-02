@@ -96,10 +96,10 @@ public class Thumb {
             Thumb th = new Thumb();
             th.setIndex(i);
             if (i == 0) {
-                int resImageLeft = R.drawable.apptheme_text_select_handle_left;
+                int resImageLeft = R.drawable.mark1;
                 th.setBitmap(BitmapFactory.decodeResource(resources, resImageLeft));
             } else {
-                int resImageRight = R.drawable.apptheme_text_select_handle_right;
+                int resImageRight = R.drawable.mark2;
                 th.setBitmap(BitmapFactory.decodeResource(resources, resImageRight));
             }
 

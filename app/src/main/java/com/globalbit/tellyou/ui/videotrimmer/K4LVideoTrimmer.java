@@ -31,6 +31,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -55,6 +56,7 @@ import com.globalbit.tellyou.ui.videotrimmer.utils.TrimVideoUtils;
 import com.globalbit.tellyou.ui.videotrimmer.utils.UiThreadExecutor;
 import com.globalbit.tellyou.ui.videotrimmer.view.ProgressBarView;
 import com.globalbit.tellyou.ui.videotrimmer.view.RangeSeekBarView;
+import com.globalbit.tellyou.ui.videotrimmer.view.SeekBarHint;
 import com.globalbit.tellyou.ui.videotrimmer.view.Thumb;
 import com.globalbit.tellyou.ui.videotrimmer.view.TimeLineView;
 
@@ -62,6 +64,8 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static com.globalbit.tellyou.ui.videotrimmer.utils.TrimVideoUtils.stringForTime;
 
@@ -72,18 +76,16 @@ public class K4LVideoTrimmer extends FrameLayout {
     private static final int MIN_TIME_FRAME = 1000;
     private static final int SHOW_PROGRESS = 2;
 
-    private SeekBar mHolderTopView;
+    private SeekBarHint mHolderTopView;
+    private SeekBar mVideoSeekBar;
     private RangeSeekBarView mRangeSeekBarView;
-    private RelativeLayout mLinearVideo;
+    private CardView mLinearVideo;
     private View mTimeInfoContainer;
     private VideoView mVideoView;
     private ImageView mPlayView;
-    private TextView mTextSize;
-    private TextView mTextTimeFrame;
-    private TextView mTextTime;
     private TimeLineView mTimeLineView;
 
-    private ProgressBarView mVideoProgressIndicator;
+    //private ProgressBarView mVideoProgressIndicator;
     private Uri mSrc;
     private String mFinalPath;
 
@@ -114,16 +116,14 @@ public class K4LVideoTrimmer extends FrameLayout {
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.view_time_line, this, true);
 
-        mHolderTopView = ((SeekBar) findViewById(R.id.handlerTop));
-        mVideoProgressIndicator = ((ProgressBarView) findViewById(R.id.timeVideoView));
+        mHolderTopView = ((SeekBarHint) findViewById(R.id.handlerTop));
+        mVideoSeekBar=((SeekBar)findViewById(R.id.videoSeekBar));
+        mHolderTopView.getThumb().setAlpha(0);
+        //mVideoProgressIndicator = ((ProgressBarView) findViewById(R.id.timeVideoView));
         mRangeSeekBarView = ((RangeSeekBarView) findViewById(R.id.timeLineBar));
-        mLinearVideo = ((RelativeLayout) findViewById(R.id.layout_surface_view));
+        mLinearVideo = ((CardView) findViewById(R.id.layout_surface_view));
         mVideoView = ((VideoView) findViewById(R.id.video_loader));
         mPlayView = ((ImageView) findViewById(R.id.icon_video_play));
-        mTimeInfoContainer = findViewById(R.id.timeText);
-        mTextSize = ((TextView) findViewById(R.id.textSize));
-        mTextTimeFrame = ((TextView) findViewById(R.id.textTimeSelection));
-        mTextTime = ((TextView) findViewById(R.id.textTime));
         mTimeLineView = ((TimeLineView) findViewById(R.id.timeLineView));
 
         setUpListeners();
@@ -138,7 +138,7 @@ public class K4LVideoTrimmer extends FrameLayout {
                 updateVideoProgress(time);
             }
         });
-        mListeners.add(mVideoProgressIndicator);
+        //mListeners.add(mVideoProgressIndicator);
 
         findViewById(R.id.btCancel)
                 .setOnClickListener(
@@ -209,9 +209,14 @@ public class K4LVideoTrimmer extends FrameLayout {
                 onStopSeekThumbs();
             }
         });
-        mRangeSeekBarView.addOnRangeSeekBarListener(mVideoProgressIndicator);
-
-        mHolderTopView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        //mRangeSeekBarView.addOnRangeSeekBarListener(mVideoProgressIndicator);
+        mHolderTopView.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+        mVideoSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 onPlayerIndicatorSeekChanged(progress, fromUser);
@@ -255,9 +260,9 @@ public class K4LVideoTrimmer extends FrameLayout {
         lp.setMargins(marge, 0, marge, 0);
         mTimeLineView.setLayoutParams(lp);
 
-        lp = (RelativeLayout.LayoutParams) mVideoProgressIndicator.getLayoutParams();
+        /*lp = (RelativeLayout.LayoutParams) mVideoProgressIndicator.getLayoutParams();
         lp.setMargins(marge, 0, marge, 0);
-        mVideoProgressIndicator.setLayoutParams(lp);
+        mVideoProgressIndicator.setLayoutParams(lp);*/
     }
 
     private void onSaveClicked() {
@@ -389,6 +394,8 @@ public class K4LVideoTrimmer extends FrameLayout {
             lp.height = screenHeight;
         }
         mVideoView.setLayoutParams(lp);
+        mLinearVideo.getLayoutParams().height=lp.height;
+        mLinearVideo.getLayoutParams().width=lp.width;
 
         mPlayView.setVisibility(View.VISIBLE);
 
@@ -426,12 +433,12 @@ public class K4LVideoTrimmer extends FrameLayout {
 
     private void setTimeFrames() {
         String seconds = getContext().getString(R.string.short_seconds);
-        mTextTimeFrame.setText(String.format("%s %s - %s %s", stringForTime(mStartPosition), seconds, stringForTime(mEndPosition), seconds));
+        //mTextTimeFrame.setText(String.format("%s %s - %s %s", stringForTime(mStartPosition), seconds, stringForTime(mEndPosition), seconds));
     }
 
     private void setTimeVideo(int position) {
         String seconds = getContext().getString(R.string.short_seconds);
-        mTextTime.setText(String.format("%s %s", stringForTime(position), seconds));
+        //mTextTime.setText(String.format("%s %s", stringForTime(position), seconds));
     }
 
     private void onSeekThumbs(int index, float value) {
@@ -471,7 +478,7 @@ public class K4LVideoTrimmer extends FrameLayout {
                 item.updateProgress(position, mDuration, ((position * 100) / mDuration));
             }
         } else {
-            mListeners.get(1).updateProgress(position, mDuration, ((position * 100) / mDuration));
+            mListeners.get(0).updateProgress(position, mDuration, ((position * 100) / mDuration));
         }
     }
 
@@ -496,9 +503,25 @@ public class K4LVideoTrimmer extends FrameLayout {
     }
 
     private void setProgressBarPosition(int position) {
+        if(mDuration>0 && mEndPosition>mStartPosition) {
+            long pos = (1000L * mEndPosition / mDuration-1000L * mStartPosition / mDuration)/2+1000L * position / mDuration;
+            int duration=mEndPosition-mStartPosition;
+            if(duration>118000) {
+                duration=120000;
+            }
+            String time=String.format(Locale.getDefault(),"%d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(duration),
+                    TimeUnit.MILLISECONDS.toSeconds(duration) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+            float left=mRangeSeekBarView.getLeftThumbX();
+            float right=mRangeSeekBarView.getRightThumbX();
+            mHolderTopView.setLocation((int)(left+(right-left)/2));
+            mHolderTopView.setText(time);
+            mHolderTopView.setProgress((int)pos);
+        }
         if (mDuration > 0) {
             long pos = 1000L * position / mDuration;
-            mHolderTopView.setProgress((int) pos);
+            mVideoSeekBar.setProgress((int) pos);
         }
     }
 
@@ -578,12 +601,12 @@ public class K4LVideoTrimmer extends FrameLayout {
             mOriginSizeFile = file.length();
             long fileSizeInKB = mOriginSizeFile / 1024;
 
-            if (fileSizeInKB > 1000) {
+            /*if (fileSizeInKB > 1000) {
                 long fileSizeInMB = fileSizeInKB / 1024;
                 mTextSize.setText(String.format("%s %s", fileSizeInMB, getContext().getString(R.string.megabyte)));
             } else {
                 mTextSize.setText(String.format("%s %s", fileSizeInKB, getContext().getString(R.string.kilobyte)));
-            }
+            }*/
         }
 
         mVideoView.setVideoURI(mSrc);

@@ -129,7 +129,7 @@ public class UploadService extends Service {
                                             new NotificationCompat.Builder(UploadService.this, "UploadChannel")
                                                     .setContentTitle("Error")
                                                     .setContentText("Your video failed to upload")
-                                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                                    .setSmallIcon(R.drawable.ic_status)
                                                     .setContentIntent(null)
                                                     .setAutoCancel(true)
                                                     .build();
@@ -147,7 +147,7 @@ public class UploadService extends Service {
                             new NotificationCompat.Builder(this, "UploadChannel")
                                     .setContentTitle(getString(R.string.label_uploading))
                                     .setContentText(getString(R.string.notification_uploading))
-                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setSmallIcon(R.drawable.ic_status)
                                     .setContentIntent(null)
                                     .build();
 
@@ -218,7 +218,7 @@ public class UploadService extends Service {
                                                                                         new NotificationCompat.Builder(UploadService.this, "UploadChannel")
                                                                                                 .setContentTitle("Error")
                                                                                                 .setContentText("Your video failed to upload")
-                                                                                                .setSmallIcon(R.mipmap.ic_launcher)
+                                                                                                .setSmallIcon(R.drawable.ic_status)
                                                                                                 .setContentIntent(null)
                                                                                                 .setAutoCancel(true)
                                                                                                 .build();
@@ -242,7 +242,7 @@ public class UploadService extends Service {
                             new NotificationCompat.Builder(this, "UploadChannel")
                                     .setContentTitle(getString(R.string.label_uploading))
                                     .setContentText(getString(R.string.notification_uploading))
-                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setSmallIcon(R.drawable.ic_status)
                                     .setContentIntent(null)
                                     .build();
 
@@ -310,7 +310,7 @@ public class UploadService extends Service {
                                         new NotificationCompat.Builder(UploadService.this, "UploadChannel")
                                                 .setContentTitle(getString(R.string.error))
                                                 .setContentText(getString(R.string.notification_error_uploading))
-                                                .setSmallIcon(R.mipmap.ic_launcher)
+                                                .setSmallIcon(R.drawable.ic_status)
                                                 .setContentIntent(null)
                                                 .setAutoCancel(true)
                                                 .build();
@@ -327,7 +327,7 @@ public class UploadService extends Service {
                             new NotificationCompat.Builder(this, "UploadChannel")
                                     .setContentTitle(getString(R.string.label_uploading))
                                     .setContentText(getString(R.string.notification_uploading))
-                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setSmallIcon(R.drawable.ic_status)
                                     .setContentIntent(null)
                                     .build();
 
@@ -345,7 +345,7 @@ public class UploadService extends Service {
                 new NotificationCompat.Builder(UploadService.this, "UploadChannel")
                         .setContentTitle(getString(R.string.label_uploaded))
                         .setContentText(getString(R.string.notification_video_uploaded))
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_status)
                         .setContentIntent(pendingIntent)
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)

@@ -152,7 +152,7 @@ public class FCMHandler {
     private static NotificationCompat.Builder createNotification(Context context, Notification notification, String channelID, String group) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context, channelID)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_status)
                         .setContentTitle(notification.getNotificationTitle())
                         .setContentText(notification.getNotificationMessage())
                         .setAutoCancel(true)
