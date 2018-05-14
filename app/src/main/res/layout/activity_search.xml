@@ -30,6 +30,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="10dp"
                 android:id="@+id/inputSearch"
+                android:inputType="text"
+                android:imeOptions="actionDone"
                 android:hint="@string/hint_search_posts"
                 style="@style/SearchInputTextStyle"
                 android:background="@android:color/transparent"/>

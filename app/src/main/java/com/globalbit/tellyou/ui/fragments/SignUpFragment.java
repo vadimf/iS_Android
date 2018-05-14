@@ -42,6 +42,7 @@ import com.globalbit.tellyou.utils.InformationClickableSpan;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.globalbit.tellyou.utils.ValidationUtils;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 
@@ -66,7 +67,6 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCallbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().logOut();
         mTypeface = ResourcesCompat.getFont(getActivity(), R.font.assistant_regular);
 
     }
@@ -75,9 +75,8 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_signup, container, false);
-        mBinding.btnFacebook.setReadPermissions("email","user_friends");
-        mBinding.btnFacebook.setFragment(this);
-        mBinding.btnFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+        mBinding.btnFacebook.setOnClickListener(this);
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.i(TAG, "onSuccess: ");
@@ -231,6 +230,9 @@ public class SignUpFragment extends BaseFragment implements View.OnClickListener
                     mBinding.inputPassword.imgViewEye.setImageResource(R.drawable.ic_eye_open_active);
                 }
                 mBinding.inputPassword.inputValue.setSelection(mBinding.inputPassword.inputValue.getText().length());
+                break;
+            case R.id.btnFacebook:
+                LoginManager.getInstance().logInWithReadPermissions(this,  Arrays.asList("email", "user_friends"));
                 break;
         }
     }

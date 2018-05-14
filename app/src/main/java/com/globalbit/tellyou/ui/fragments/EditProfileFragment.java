@@ -496,31 +496,38 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
         pickerMonths.setMinValue(1);
         pickerMonths.setMaxValue(months.length);
         pickerMonths.setDisplayedValues(months);
+        final int day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
+        final int month=mCurrentDate.get(Calendar.MONTH);
+        final int year=mCurrentDate.get(Calendar.YEAR);
         pickerMonths.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                if(newVal==1||newVal==3||newVal==5||newVal==7||newVal==8||newVal==10||newVal==12) {
-                    pickerDays.setMaxValue(31);
-                }
-                else if(newVal==2) {
-                    int year=pickerYears.getValue();
-                    if(year%4==0) {
-                        pickerDays.setMaxValue(29);
-                        if(pickerDays.getValue()>29) {
-                            pickerDays.setValue(29);
-                        }
-                    }
-                    else {
-                        pickerDays.setMaxValue(28);
-                        if(pickerDays.getValue()>28) {
-                            pickerDays.setValue(28);
-                        }
-                    }
+                int yearCurrent=pickerYears.getValue();
+                if(yearCurrent==(year-13)&&(month+1)==newVal) {
+                    pickerMonths.setMaxValue(month+1);
+                    pickerDays.setMaxValue(day);
                 }
                 else {
-                    pickerDays.setMaxValue(30);
-                    if(pickerDays.getValue()>30) {
-                        pickerDays.setValue(30);
+                    if(newVal==1||newVal==3||newVal==5||newVal==7||newVal==8||newVal==10||newVal==12) {
+                        pickerDays.setMaxValue(31);
+                    } else if(newVal==2) {
+                        int year=pickerYears.getValue();
+                        if(year%4==0) {
+                            pickerDays.setMaxValue(29);
+                            if(pickerDays.getValue()>29) {
+                                pickerDays.setValue(29);
+                            }
+                        } else {
+                            pickerDays.setMaxValue(28);
+                            if(pickerDays.getValue()>28) {
+                                pickerDays.setValue(28);
+                            }
+                        }
+                    } else {
+                        pickerDays.setMaxValue(30);
+                        if(pickerDays.getValue()>30) {
+                            pickerDays.setValue(30);
+                        }
                     }
                 }
             }
@@ -528,28 +535,40 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
         pickerYears.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                if(pickerMonths.getValue()==2) {
-                    if(newVal%4==0) {
-                        pickerDays.setMaxValue(29);
-                        if(pickerDays.getValue()>29) {
-                            pickerDays.setValue(29);
+                if(newVal==(year-13)) {
+                    pickerMonths.setMaxValue(month+1);
+                    pickerDays.setMaxValue(day);
+                }
+                else {
+                    if(pickerMonths.getValue()==2) {
+                        if(newVal%4==0) {
+                            pickerDays.setMaxValue(29);
+                            if(pickerDays.getValue()>29) {
+                                pickerDays.setValue(29);
+                            }
+                        } else {
+                            pickerDays.setMaxValue(28);
+                            if(pickerDays.getValue()>28) {
+                                pickerDays.setValue(28);
+                            }
                         }
                     }
+                    else if(pickerMonths.getValue()==1||pickerMonths.getValue()==3||pickerMonths.getValue()==5||pickerMonths.getValue()==7||pickerMonths.getValue()==8||pickerMonths.getValue()==10||pickerMonths.getValue()==12) {
+                        pickerDays.setMaxValue(31);
+                    }
                     else {
-                        pickerDays.setMaxValue(28);
-                        if(pickerDays.getValue()>28) {
-                            pickerDays.setValue(28);
-                        }
+                        pickerDays.setMaxValue(30);
                     }
                 }
             }
         });
-        int day=mCurrentDate.get(Calendar.DAY_OF_MONTH);
-        int month=mCurrentDate.get(Calendar.MONTH);
-        int year=mCurrentDate.get(Calendar.YEAR);
+
         Log.i(TAG, "onClick: "+day+","+month+","+year);
         pickerDays.setValue(day);
-        pickerYears.setValue(year);
+        pickerYears.setMaxValue(year-13);
+        pickerMonths.setMaxValue(month+1);
+        pickerDays.setMaxValue(day);
+        pickerYears.setValue(year-13);
         pickerMonths.setValue(month+1);
     }
 

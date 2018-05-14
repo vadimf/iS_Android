@@ -63,7 +63,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:np_dividerColor="@color/separator"
-                app:np_max="2018"
                 app:np_min="1900"
                 app:np_selectedTextColor="@color/grey_light"
                 app:np_textColor="@color/separator"

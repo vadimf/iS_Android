@@ -43,6 +43,8 @@ import com.globalbit.tellyou.utils.InformationClickableSpan;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.globalbit.tellyou.utils.ValidationUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -66,7 +68,7 @@ public class SignInFragment extends BaseFragment implements View.OnClickListener
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCallbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().logOut();
+        //LoginManager.getInstance().logOut();
         mTypeface = ResourcesCompat.getFont(getActivity(), R.font.assistant_regular);
     }
 
@@ -74,9 +76,8 @@ public class SignInFragment extends BaseFragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding=DataBindingUtil.inflate(inflater, R.layout.fragment_signin, container, false);
-        mBinding.btnFacebook.setReadPermissions("email","user_friends");
-        mBinding.btnFacebook.setFragment(this);
-        mBinding.btnFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+        mBinding.btnFacebook.setOnClickListener(this);
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.i(TAG, "onSuccess: ");
@@ -236,6 +237,9 @@ public class SignInFragment extends BaseFragment implements View.OnClickListener
                 }
                 mBinding.inputPassword.inputValue.setSelection(mBinding.inputPassword.inputValue.getText().length());
                 break;
+            case R.id.btnFacebook:
+                LoginManager.getInstance().logInWithReadPermissions(this,  Arrays.asList("email", "user_friends"));
+                break;
         }
     }
 
@@ -259,6 +263,7 @@ public class SignInFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onError(int errorCode, String errorMessage) {
+        //LoginManager.getInstance().logOut();
         hideLoadingDialog();
         showMessage(getString(R.string.error), errorMessage);
     }

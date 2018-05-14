@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Tellyou</string>
+    <string name="app_name" translatable="false">TellYou</string>
     <string name="facebook_app_id" translatable="false">220163765224412</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb220163765224412</string>
 
@@ -50,7 +50,7 @@
     <string name="label_contact_us">Contact us</string>
     <string name="label_terms_of_service">Terms of service</string>
     <string name="label_privacy_policy">Privacy policy</string>
-    <string name="label_about">About Tellyou</string>
+    <string name="label_about">About TellYou</string>
     <string name="globalbit_website">http://globalbit.co.il/</string>
     <string name="v">v</string>
     <string name="btn_continue">Continue</string>
@@ -97,11 +97,11 @@
     <string name="hint_password">PASSWORD</string>
     <string name="btn_sign_up">Sign up</string>
     <string name="tab_facebook">Connect</string>
-    <string name="label_header_facebook_connect">Connect your Facebook account to find friends who already use Tellyou</string>
-    <string name="label_header_facebook_connected">Some of your Facebook friends use Tellyou! Follow them</string>
-    <string name="label_header_facebook_connected_empty">It seems like your Facebook friends don\'t use Tellyou yet</string>
-    <string name="label_header_contacts_connected">Some of your contacts use Tellyou! Follow them</string>
-    <string name="label_header_contacts_connected_empty">It seems like your contacts don\'t use Tellyou yet</string>
+    <string name="label_header_facebook_connect">Connect your Facebook account to find friends who already use TellYou</string>
+    <string name="label_header_facebook_connected">Some of your Facebook friends use TellYou! Follow them</string>
+    <string name="label_header_facebook_connected_empty">It seems like your Facebook friends don\'t use TellYou yet</string>
+    <string name="label_header_contacts_connected">Some of your contacts use TellYou! Follow them</string>
+    <string name="label_header_contacts_connected_empty">It seems like your contacts don\'t use TellYou yet</string>
     <string name="label_no_matches">No matches found</string>
     <string name="label_no_replies">Has something to say?\n\nPlease be polite, brief and pleasant.\nYou have only 30 seconds!</string>
     <string name="btn_create_account">Create new account</string>
@@ -111,7 +111,7 @@
     <string name="label_by_facebook">or by Facebook</string>
     <string name="label_forgot_password_instruction">Enter your Email below and we will send you the instructions on how to reset your password</string>
     <string name="label_add_photo">Add photo</string>
-    <string name="label_popular_on_cake">Popular on Tellyou</string>
+    <string name="label_popular_on_cake">Popular on TellYou</string>
     <string name="btn_ask_first_question">Post your first video</string>
     <string name="label_developed_by">Developed by</string>
     <string name="dialog_title_internet_connection">Network connection</string>
@@ -167,7 +167,7 @@
     <string name="notification_error_uploading">Your video failed to upload</string>
     <string name="label_uploaded">Uploaded</string>
     <string name="notification_video_uploaded">Your video was uploaded</string>
-    <string name="label_contact_us_email">dev@globalbit.co.il</string>
+    <string name="label_contact_us_email">info@tellyouapp.com</string>
     <string name="hint_hashtag">hashtag</string>
     <string name="label_add_hashtags">Add #hashtags (up to 3 hashtags)</string>
     <string name="label_hash_tag">#</string>

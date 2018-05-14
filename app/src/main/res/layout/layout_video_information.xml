@@ -6,6 +6,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/lnrLayoutVideoInformation"
         android:orientation="vertical"
+        android:clickable="true"
         android:background="@color/background_opacity">
         <RelativeLayout
             android:layout_width="match_parent"
