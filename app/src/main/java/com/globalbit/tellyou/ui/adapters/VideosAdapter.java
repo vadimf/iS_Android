@@ -81,7 +81,7 @@ import im.ene.toro.widget.Container;
  */
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements CacheManager{
     private static final String TAG=VideosAdapter.class.getSimpleName();
-    private static final long PROGRESS_UPDATE_INTERNAL = 1000;
+    private static long PROGRESS_UPDATE_INTERNAL = 1000;
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 1000;
     private static final long HIDE_DETAILS_THRESHOLD=6000;
     private ArrayList<Post> mItems;
@@ -185,6 +185,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         if(mItems!=null) {
             final Post item=mItems.get(position);
+            PROGRESS_UPDATE_INTERNAL=(item.getVideo().getDuration()*1000)/100;
             Uri uri=Uri.parse(item.getVideo().getUrl());
             if(!StringUtils.isEmpty(item.getVideo().getThumbnail())) {
                 holder.mBinding.imgViewPreview.setVisibility(View.VISIBLE);

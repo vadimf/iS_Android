@@ -31,6 +31,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import im.ene.toro.exoplayer.Playable;
 import im.ene.toro.exoplayer.ToroExo;
@@ -47,6 +49,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
     private String mPostId;
     private Playable playerHelper;
     private boolean mIsFirstTime=true;
+    private Timer mTimeoutTimer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -156,17 +159,39 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                     intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, mVideoRecordingType);
                     intent.putExtra(Constants.DATA_POST_ID, mPostId);
                     startService(intent);
-                    new MaterialDialog.Builder(this)
+                    final MaterialDialog dialog=new MaterialDialog.Builder(this)
                             .content(R.string.dialog_video_uploading)
                             .cancelable(false)
                             .positiveText(R.string.btn_ok)
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    if(mTimeoutTimer != null){
+                                        mTimeoutTimer.cancel();
+                                        mTimeoutTimer = null;
+                                    }
                                     finish();
                                 }
                             })
                             .show();
+                    TimerTask timerTask=new TimerTask() {
+                        @Override
+                        public void run() {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(dialog!=null) {
+                                        dialog.dismiss();
+                                        finish();
+                                    }
+                                }
+                            });
+                        }
+                    };
+                    if (mTimeoutTimer == null) {
+                        mTimeoutTimer = new Timer();
+                    }
+                    mTimeoutTimer.schedule(timerTask, 2000);
                 }
                 break;
             case R.id.btnBack:
@@ -212,6 +237,10 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
         playerHelper.setPlayerView(null);
         playerHelper.release();
         playerHelper = null;
+        if(mTimeoutTimer != null){
+            mTimeoutTimer.cancel();
+            mTimeoutTimer = null;
+        }
     }
 
     @Override protected void onStop() {
