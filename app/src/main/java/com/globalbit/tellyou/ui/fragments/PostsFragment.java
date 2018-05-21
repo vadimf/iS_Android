@@ -60,6 +60,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
     private static final String TAG=PostsFragment.class.getSimpleName();
     private FragmentPostsBinding mBinding;
     private int mPage=1;
+    //private int mPagePopular=1;
     private Pagination mPagination;
     private IMainListener mListener;
 
@@ -139,6 +140,12 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
                     }
                     if ( (visibleItemCount+pastVisiblesItems) >= totalItemCount) {
                         mLoading = false;
+                        /*if(mFeedType==Constants.TYPE_FEED_HOME && mIsPopularVideos) {
+                            mPagePopular++;
+                        }
+                        else {
+                            mPage++;
+                        }*/
                         mPage++;
                         mBinding.swipeLayout.post(new Runnable() {
                             @Override
@@ -375,6 +382,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
     public void onRefreshPosts() {
         mBinding.swipeLayout.setRefreshing(true);
         mPage=1;
+        //mPagePopular=1;
         mAdapter.clear();
         loadItems();
     }

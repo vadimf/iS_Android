@@ -569,11 +569,15 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
         //mBinding.viewTimePortrait.setText(DateUtils.formatElapsedTime(mElapsedTime/1000));
         mBinding.lnrLayoutVideoRecordingActions.viewTimePortrait.setText(DateUtils.formatElapsedTime(mElapsedTime/1000));
         mBinding.progressBarPortrait.setProgress(mElapsedTime);
-        if(mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.getVisibility()==View.VISIBLE) {
-            mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.INVISIBLE);
+        if(mRecordingState==Enums.RecordingState.Recording) {
+            if(mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.getVisibility()==View.VISIBLE) {
+                mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.INVISIBLE);
+            } else {
+                mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.VISIBLE);
+            }
         }
         else {
-            mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.VISIBLE);
+            mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.GONE);
         }
         if(mElapsedTime>=(MAX_VIDEO_LENGTH-ELAPSED_WARNING)) {
             mBinding.progressBarPortrait.setProgressDrawable(getResources().getDrawable(R.drawable.progressbar_end));

@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivitySearchBinding;
@@ -126,6 +127,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
             }
         });*/
+        String searchQuery=getIntent().getStringExtra(Constants.DATA_SEARCH);
+        if(!StringUtils.isEmpty(searchQuery)) {
+            mBinding.inputSearch.setText(searchQuery);
+        }
     }
 
     @Override

@@ -9,8 +9,16 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.format.DateUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.CharacterStyle;
+import android.text.style.ClickableSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -27,6 +36,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.globalbit.androidutils.CollectionUtils;
 import com.globalbit.androidutils.ConversionUtils;
 import com.globalbit.androidutils.StringUtils;
+import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.CustomApplication;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ItemVideoBinding;
@@ -35,6 +45,7 @@ import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
+import com.globalbit.tellyou.ui.activities.SearchActivity;
 import com.globalbit.tellyou.ui.events.NextVideoEvent;
 import com.globalbit.tellyou.ui.interfaces.IGestureEventsListener;
 import com.globalbit.tellyou.ui.interfaces.IVideoListener;
@@ -79,9 +90,10 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
     private User mUser;
     private int mImgWidth, mImgHeight;
     private CustomLinearLayoutManager mLinearLayoutManager;
+    private ClickableSpan mClickableSpan;
 
 
-    public VideosAdapter(Context context, IVideoListener listener, CustomLinearLayoutManager linearLayoutManager) {
+    public VideosAdapter(final Context context, IVideoListener listener, CustomLinearLayoutManager linearLayoutManager) {
         mContext=context;
         mListener=listener;
         mLinearLayoutManager=linearLayoutManager;
@@ -90,6 +102,29 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         DisplayMetrics metrics = resources.getDisplayMetrics();
         mImgWidth=metrics.widthPixels;
         mImgHeight=metrics.heightPixels;
+        mClickableSpan=new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                if(view instanceof TextView) {
+                    Spanned s = (Spanned) ((TextView) view).getText();
+                    int start = s.getSpanStart(this);
+                    int end = s.getSpanEnd(this);
+                    CharSequence tag=s.subSequence(start+1, end);
+                    Log.d(TAG, "onClick " + tag);
+                    Intent intent=new Intent(context, SearchActivity.class);
+                    intent.putExtra(Constants.DATA_SEARCH, tag.toString());
+                    context.startActivity(intent);
+                }
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                int linkColor = ContextCompat.getColor(mContext, R.color.white);
+                ds.setColor(linkColor);
+                ds.setUnderlineText(false);
+            }
+        };
     }
 
     public void setItems(ArrayList<Post> items) {
@@ -256,18 +291,42 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
             if(item.getCreatedAt()!=null) {
                 holder.mBinding.layoutVideoInformation.txtViewDate.setText(DateUtils.getRelativeTimeSpanString(item.getCreatedAt().getTime()));
             }
-            String title;
+            SpannableStringBuilder spannableStringBuilder=new SpannableStringBuilder();
+            spannableStringBuilder.append(item.getText());
             if(!CollectionUtils.isEmpty(item.getTags())) {
-                title=item.getText()+"\n\n";
+                spannableStringBuilder.append("\n\n");
                 for(String s : item.getTags()) {
-                    title+="#"+s+" ";
+                    SpannableString spannableString=new SpannableString("#"+s+" ");
+                    ClickableSpan clickableSpan=new ClickableSpan() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.i(TAG, "onClick: ");
+                            if(view instanceof TextView) {
+                                Spanned s = (Spanned) ((TextView) view).getText();
+                                int start = s.getSpanStart(this);
+                                int end = s.getSpanEnd(this);
+                                CharSequence tag=s.subSequence(start+1, end);
+                                Log.d(TAG, "onClick " + tag);
+                                Intent intent=new Intent(mContext, SearchActivity.class);
+                                intent.putExtra(Constants.DATA_SEARCH, tag.toString());
+                                mContext.startActivity(intent);
+                            }
+                        }
+
+                        @Override
+                        public void updateDrawState(TextPaint ds) {
+                            super.updateDrawState(ds);
+                            int linkColor = ContextCompat.getColor(mContext, R.color.white);
+                            ds.setColor(linkColor);
+                            ds.setUnderlineText(false);
+                        }
+                    };
+                    spannableString.setSpan(clickableSpan,0,spannableString.length()-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannableStringBuilder.append(spannableString);
                 }
-                title=title.trim();
             }
-            else {
-                title=item.getText();
-            }
-            holder.mBinding.layoutVideoInformation.txtViewTitle.setText(title);
+            holder.mBinding.layoutVideoInformation.txtViewTitle.setText(spannableStringBuilder);
+            holder.mBinding.layoutVideoInformation.txtViewTitle.setMovementMethod(LinkMovementMethod.getInstance());
             if(mUser.getUsername().equals(item.getUser().getUsername())) {
                 holder.mBinding.layoutVideoInformation.btnAction.setVisibility(View.GONE);
             }
