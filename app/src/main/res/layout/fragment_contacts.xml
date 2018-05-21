@@ -29,15 +29,13 @@
                 android:id="@+id/recyclerViewUsers"
                 tools:listitem ="@layout/item_user"/>
         </android.support.v4.widget.SwipeRefreshLayout>
-        <com.facebook.login.widget.LoginButton
-            android:layout_width="280dp"
-            android:layout_height="wrap_content"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:layout_gravity="center_horizontal"
+        <Button
             android:id="@+id/btnFacebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="50dp"
             android:visibility="gone"
-            facebook:com_facebook_login_text="Connect with facebook"/>
+            android:background="@drawable/btn_facebook_connect"/>
     </LinearLayout>
 </layout>

@@ -18,6 +18,7 @@ import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.FragmentProfileBinding;
+import com.globalbit.tellyou.model.Phone;
 import com.globalbit.tellyou.model.Post;
 import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
@@ -316,5 +317,15 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
                 }
             }
         }
+    }
+
+    @Override
+    public void showPhoneVerification() {
+
+    }
+
+    @Override
+    public void showCodeConfirmation(Phone phone) {
+
     }
 }

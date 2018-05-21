@@ -354,8 +354,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                                                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
                                                 share.setType("text/plain");
                                                 String title;
-                                                title=String.format(Locale.getDefault(), mContext.getString(R.string.label_share_title),SharedPrefsUtils.getUserDetails().getUsername(), item.getText());
-                                                share.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(),"@%s\n\n%s", title, shareLink));
+                                                //title=String.format(Locale.getDefault(), mContext.getString(R.string.label_share_title),SharedPrefsUtils.getUserDetails().getUsername(), item.getText());
+                                                share.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(),"%s", shareLink));
                                                 if (share.resolveActivity(mContext.getPackageManager()) != null) {
                                                     mContext.startActivity(Intent.createChooser(share, mContext.getString(R.string.label_share_via)));
                                                 }

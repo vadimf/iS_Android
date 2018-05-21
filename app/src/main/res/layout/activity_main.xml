@@ -30,6 +30,9 @@
                 android:paddingStart="50dp"
                 android:paddingEnd="50dp"/>
         </LinearLayout>
+        <include layout="@layout/layout_video_selection"
+            android:id="@+id/layoutVideoSelection"
+            android:visibility="gone"/>
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -43,7 +46,7 @@
                 android:id="@+id/toolbarMenu"
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:gravity="center_vertical|end">

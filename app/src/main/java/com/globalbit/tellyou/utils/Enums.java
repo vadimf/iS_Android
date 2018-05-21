@@ -32,6 +32,8 @@ public class Enums {
 
     public enum RegisterState {
         UsernameSate,
+        PhoneVerificationState,
+        CodeConfirmationState,
         ProfileState
     }
 

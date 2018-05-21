@@ -42,6 +42,7 @@ import com.globalbit.tellyou.network.responses.UsernameExistResponse;
 import com.globalbit.tellyou.ui.activities.CropActivity;
 import com.globalbit.tellyou.ui.activities.DiscoverActivity;
 import com.globalbit.tellyou.ui.dialogs.BirthdayPickerDialogFragment;
+import com.globalbit.tellyou.ui.interfaces.IProfileListener;
 import com.globalbit.tellyou.utils.GeneralUtils;
 import com.globalbit.tellyou.utils.ObservableHelper;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
@@ -78,6 +79,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
     private final CompositeDisposable mDisposable = new CompositeDisposable();
     private String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     private Calendar mCurrentDate=Calendar.getInstance();
+    private IProfileListener mListener;
 
     public static EditProfileFragment newInstance() {
         EditProfileFragment fragment=new EditProfileFragment();
@@ -457,14 +459,25 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof IProfileListener) {
+            mListener=(IProfileListener) context;
+        } else {
+            throw new ClassCastException(context.toString()+" must implement IProfileListener.");
+        }
+    }
+
+    @Override
     public void onSuccess(UserResponse response, Object object) {
         hideLoadingDialog();
         SharedPrefsUtils.setUserDetails(response.getUser());
         if(StringUtils.isEmpty(mUser.getUsername())) {
-            Intent intent=new Intent(getActivity(), DiscoverActivity.class);
+            /*Intent intent=new Intent(getActivity(), DiscoverActivity.class);
             intent.putExtra(Constants.DATA_FIRST_TIME, true);
             startActivity(intent);
-            getActivity().finish();
+            getActivity().finish();*/
+            mListener.showPhoneVerification();
         }
         else {
             getActivity().setResult(Activity.RESULT_OK);

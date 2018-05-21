@@ -231,6 +231,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                         mIsRecording=true;
                         scheduleSeekbarUpdate();
                         mBinding.lnrLayoutPortrait.setVisibility(View.VISIBLE);
+                        mBinding.lnrLayoutVideoRecordingActions.lnrLayoutRecordingTime.setVisibility(View.VISIBLE);
                     }
                     catch (IllegalStateException e) {
                         Log.i("Test", "IllegalStateException preparing MediaRecorder: " + e.getMessage());
@@ -261,7 +262,9 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                                 deleteTempFiles(mFilesPath);
                                 mFilesPath.clear();
                                 mBinding.lnrLayoutPortrait.setVisibility(View.GONE);
-                                mBinding.viewTimePortrait.setText(DateUtils.formatElapsedTime(mElapsedTime/1000));
+                                mBinding.lnrLayoutVideoRecordingActions.lnrLayoutRecordingTime.setVisibility(View.INVISIBLE);
+                                //mBinding.viewTimePortrait.setText(DateUtils.formatElapsedTime(mElapsedTime/1000));
+                                mBinding.lnrLayoutVideoRecordingActions.viewTimePortrait.setText(DateUtils.formatElapsedTime(mElapsedTime/1000));
                                 mBinding.progressBarPortrait.setProgress(mElapsedTime);
 
                             }
@@ -438,6 +441,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                 mBinding.lnrLayoutVideoRecordingActions.imgViewReShoot.setVisibility(View.INVISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutFinish.setVisibility(View.GONE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutSwitchCamera.setVisibility(View.VISIBLE);
+                mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.GONE);
                 break;
             case Recording:
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutExit.setVisibility(View.GONE);
@@ -446,6 +450,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                 mBinding.lnrLayoutVideoRecordingActions.imgViewReShoot.setVisibility(View.INVISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutFinish.setVisibility(View.GONE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutSwitchCamera.setVisibility(View.GONE);
+                mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.VISIBLE);
                 break;
             case Stopped:
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutExit.setVisibility(View.VISIBLE);
@@ -454,6 +459,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                 mBinding.lnrLayoutVideoRecordingActions.imgViewReShoot.setVisibility(View.VISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutFinish.setVisibility(View.VISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutSwitchCamera.setVisibility(View.GONE);
+                mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.GONE);
                 break;
             case Finished:
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutExit.setVisibility(View.VISIBLE);
@@ -461,6 +467,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                 mBinding.lnrLayoutVideoRecordingActions.imgViewReShoot.setVisibility(View.VISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutFinish.setVisibility(View.VISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutSwitchCamera.setVisibility(View.GONE);
+                mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.GONE);
                 break;
             case NoPermissions:
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutExit.setVisibility(View.VISIBLE);
@@ -468,6 +475,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                 mBinding.lnrLayoutVideoRecordingActions.imgViewReShoot.setVisibility(View.INVISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutFinish.setVisibility(View.INVISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutSwitchCamera.setVisibility(View.GONE);
+                mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.GONE);
                 break;
         }
     }
@@ -558,8 +566,15 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
 
     private void updateProgress() {
         Log.i(TAG, "updateProgress: "+mElapsedTime);
-        mBinding.viewTimePortrait.setText(DateUtils.formatElapsedTime(mElapsedTime/1000));
+        //mBinding.viewTimePortrait.setText(DateUtils.formatElapsedTime(mElapsedTime/1000));
+        mBinding.lnrLayoutVideoRecordingActions.viewTimePortrait.setText(DateUtils.formatElapsedTime(mElapsedTime/1000));
         mBinding.progressBarPortrait.setProgress(mElapsedTime);
+        if(mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.getVisibility()==View.VISIBLE) {
+            mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.INVISIBLE);
+        }
+        else {
+            mBinding.lnrLayoutVideoRecordingActions.imgViewCircle.setVisibility(View.VISIBLE);
+        }
         if(mElapsedTime>=(MAX_VIDEO_LENGTH-ELAPSED_WARNING)) {
             mBinding.progressBarPortrait.setProgressDrawable(getResources().getDrawable(R.drawable.progressbar_end));
         }

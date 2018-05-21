@@ -61,24 +61,31 @@ public class SplashScreenActivity extends BaseActivity implements IBaseNetworkRe
                     if(!TextUtils.isEmpty(deepLink)) {
                         String[] array=deepLink.split("/share/");
                         if(array.length==2) {
-                            Log.i(TAG, "Post id "+array[1]);
-                            if(!StringUtils.isEmpty(array[1])) {
-                                NetworkManager.getInstance().getPostById(new IBaseNetworkResponseListener<PostResponse>() {
-                                    @Override
-                                    public void onSuccess(PostResponse response, Object object) {
-                                        CustomApplication.setPost(response.getPost());
-                                        next();
-                                    }
+                            String[] array2=array[1].split("/");
+                            if(array2.length==2) {
+                                Log.i(TAG, "Post id "+array2[1]);
+                                if(!StringUtils.isEmpty(array2[1])) {
+                                    NetworkManager.getInstance().getPostById(new IBaseNetworkResponseListener<PostResponse>() {
+                                        @Override
+                                        public void onSuccess(PostResponse response, Object object) {
+                                            CustomApplication.setPost(response.getPost());
+                                            next();
+                                        }
 
-                                    @Override
-                                    public void onError(int errorCode, String errorMessage) {
-                                        next();
-                                    }
-                                }, array[1]);
+                                        @Override
+                                        public void onError(int errorCode, String errorMessage) {
+                                            next();
+                                        }
+                                    }, array2[1]);
+                                }
+                                else {
+                                    next();
+                                }
                             }
                             else {
                                 next();
                             }
+
                             /*String[] array2=array[1].split("/");
                             if(array2.length==2) {
                                 Log.i(TAG, "Post id "+array2[1]);

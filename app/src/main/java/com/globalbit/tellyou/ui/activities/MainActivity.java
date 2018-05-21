@@ -20,6 +20,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -78,6 +79,20 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
         mBinding.txtViewContactUs.setOnClickListener(this);
         mBinding.txtViewLogout.setOnClickListener(this);
         mBinding.imgViewGlobalbit.setOnClickListener(this);
+        mBinding.layoutVideoSelection.lnrLayoutCamera.setOnClickListener(this);
+        mBinding.layoutVideoSelection.lnrLayoutLibrary.setOnClickListener(this);
+        mBinding.layoutVideoSelection.rltvLayoutVideoSelection.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch(motionEvent.getAction()) {
+                    case MotionEvent.ACTION_UP:
+                        mBinding.layoutVideoSelection.rltvLayoutVideoSelection.setVisibility(View.GONE);
+                        break;
+                }
+                return false;
+            }
+        });
+        //mBinding.layoutVideoSelection.rltvLayoutVideoSelection.setOnClickListener(this);
         BottomNavigationMenuView bottomNavigationView=(BottomNavigationMenuView)mBinding.navigation.getChildAt(0);
         for (int i = 0; i < bottomNavigationView.getChildCount(); i++) {
             final View iconView=bottomNavigationView.getChildAt(i).findViewById(android.support.design.R.id.icon);
@@ -105,8 +120,8 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                         mLastNavigationItem=item;
                         return true;
                     case R.id.action_add:
-
-                        final MaterialDialog dialog=new MaterialDialog.Builder(MainActivity.this)
+                        mBinding.layoutVideoSelection.rltvLayoutVideoSelection.setVisibility(View.VISIBLE);
+                        /*final MaterialDialog dialog=new MaterialDialog.Builder(MainActivity.this)
                                 .customView(R.layout.dialog_image_selection, false)
                                 .show();
                         dialog.findViewById(R.id.lnrLayoutCamera).setOnClickListener(new View.OnClickListener() {
@@ -123,7 +138,7 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                                 dialog.dismiss();
                                 checkForPermissions(2, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
                             }
-                        });
+                        });*/
 
                         //GeneralUtils.selectVideoFromGallery(MainActivity.this, Constants.REQUEST_VIDEO_SELECT);
                         /*Intent intent=new Intent(MainActivity.this, VideoRecordingActivity.class);
@@ -377,16 +392,28 @@ public class MainActivity extends BaseActivity implements IMainListener, View.On
                 startActivity(browserIntent);
                 mBinding.drawerLayout.closeDrawer(GravityCompat.START);
                 break;
+            case R.id.lnrLayoutCamera:
+                checkForPermissions(1, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO});
+                mBinding.layoutVideoSelection.rltvLayoutVideoSelection.setVisibility(View.GONE);
+                break;
+            case R.id.lnrLayoutLibrary:
+                checkForPermissions(2, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
+                mBinding.layoutVideoSelection.rltvLayoutVideoSelection.setVisibility(View.GONE);
+                break;
         }
     }
 
     @Override
     public void onBackPressed() {
-        if(mLastNavigationItem!=null&&mLastNavigationItem.getItemId()==R.id.action_profile) {
-            mBinding.navigation.setSelectedItemId(R.id.action_home);
+        if(mBinding.layoutVideoSelection.rltvLayoutVideoSelection.getVisibility()==View.VISIBLE) {
+            mBinding.layoutVideoSelection.rltvLayoutVideoSelection.setVisibility(View.GONE);
         }
         else {
-            super.onBackPressed();
+            if(mLastNavigationItem!=null&&mLastNavigationItem.getItemId()==R.id.action_profile) {
+                mBinding.navigation.setSelectedItemId(R.id.action_home);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 

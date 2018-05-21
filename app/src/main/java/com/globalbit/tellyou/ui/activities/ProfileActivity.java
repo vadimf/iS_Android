@@ -11,21 +11,28 @@ import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityProfileBinding;
+import com.globalbit.tellyou.model.Phone;
 import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.UserResponse;
+import com.globalbit.tellyou.ui.fragments.CodeConfirmationFragment;
 import com.globalbit.tellyou.ui.fragments.EditProfileFragment;
+import com.globalbit.tellyou.ui.fragments.PhoneVerificationFragment;
 import com.globalbit.tellyou.ui.fragments.ProfileFragment;
 import com.globalbit.tellyou.ui.interfaces.IMainListener;
+import com.globalbit.tellyou.ui.interfaces.IPhoneListener;
+import com.globalbit.tellyou.ui.interfaces.IProfileListener;
 import com.globalbit.tellyou.utils.Enums;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+
+import java.util.HashMap;
 
 /**
  * Created by alex on 08/11/2017.
  */
 
-public class ProfileActivity extends AppCompatActivity implements IMainListener{
+public class ProfileActivity extends AppCompatActivity implements IMainListener, IProfileListener{
     private static final String TAG=ProfileActivity.class.getSimpleName();
     private static Enums.RegisterState mState;
     private User mUser;
@@ -99,10 +106,36 @@ public class ProfileActivity extends AppCompatActivity implements IMainListener{
                 }
                 finish();
                 break;
+            case PhoneVerificationState:
+                Intent intent=new Intent(ProfileActivity.this, ConnectionActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case CodeConfirmationState:
+                showPhoneVerification();
+                break;
         }
 
     }
 
+    @Override
+    public void showPhoneVerification() {
+        mState=Enums.RegisterState.PhoneVerificationState;
+        PhoneVerificationFragment fragment =PhoneVerificationFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "PhoneVerificationTag").commit();
+    }
 
+    @Override
+    public void showCodeConfirmation(Phone phone) {
+        if(phone!=null) {
+            mState=Enums.RegisterState.CodeConfirmationState;
+            CodeConfirmationFragment fragment=CodeConfirmationFragment.newInstance(phone);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment, "CodeConfirmationTag").commit();
+        }
+    }
 
+    @Override
+    public void onUsersFollowingStatus(HashMap<String, Boolean> usersFollowingState) {
+
+    }
 }

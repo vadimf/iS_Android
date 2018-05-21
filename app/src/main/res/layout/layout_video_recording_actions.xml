@@ -14,7 +14,28 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="2"/>
+                android:layout_weight="1"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="invisible"
+                android:id="@+id/lnrLayoutRecordingTime"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ellipse"
+                    android:id="@+id/imgViewCircle"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:id="@+id/viewTimePortrait"
+                    android:text="@string/label_start_time"
+                    style="@style/TimerTextStyle"/>
+            </LinearLayout>
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

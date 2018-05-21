@@ -17,6 +17,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
@@ -33,6 +34,7 @@ import com.globalbit.tellyou.utils.ObservableHelper;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.globalbit.tellyou.utils.SimpleDividerItemDecoration;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -122,9 +124,8 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
             }
         });
         if(mState==Constants.TYPE_FRIENDS_FACEBOOK) {
-            mBinding.btnFacebook.setReadPermissions("email", "user_friends");
-            mBinding.btnFacebook.setFragment(this);
-            mBinding.btnFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            mBinding.btnFacebook.setOnClickListener(this);
+            LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
                     Log.i(TAG, "onSuccess: ");
@@ -256,8 +257,9 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btnFacebook:
-
+                LoginManager.getInstance().logInWithReadPermissions(this,  Arrays.asList("email", "user_friends"));
                 break;
+
         }
     }
 

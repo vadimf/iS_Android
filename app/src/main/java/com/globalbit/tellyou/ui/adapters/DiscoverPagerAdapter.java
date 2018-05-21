@@ -19,9 +19,9 @@ import com.globalbit.tellyou.ui.fragments.SuggestionsFragment;
  */
 
 public class DiscoverPagerAdapter extends FragmentPagerAdapter {
-    final int PAGE_COUNT = 2;
+    final int PAGE_COUNT = 3;
     private Context mContext;
-    private String tabTitles[] = new String[] {CustomApplication.getAppContext().getString(R.string.tab_facebook),  CustomApplication.getAppContext().getString(R.string.tab_suggestions)};
+    private String tabTitles[] = new String[] {CustomApplication.getAppContext().getString(R.string.tab_facebook), CustomApplication.getAppContext().getString(R.string.tab_contacts), CustomApplication.getAppContext().getString(R.string.tab_suggestions)};
     SparseArray<Fragment> mRegisteredFragments;
 
     public DiscoverPagerAdapter(FragmentManager fm, Context context) {
@@ -37,10 +37,10 @@ public class DiscoverPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 fragment=ContactsFragment.newInstance(Constants.TYPE_FRIENDS_FACEBOOK);
                 break;
-/*            case 1:
-                fragment=ContactsFragment.newInstance(Constants.TYPE_FRIENDS_CONTACTS);
-                break;*/
             case 1:
+                fragment=ContactsFragment.newInstance(Constants.TYPE_FRIENDS_CONTACTS);
+                break;
+            case 2:
                 fragment=SuggestionsFragment.newInstance(Constants.TYPE_USERS_SUGGESTIONS);
                 break;
         }
