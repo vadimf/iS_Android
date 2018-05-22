@@ -56,7 +56,8 @@ public class Enums {
         Connection,
         General,
         UnFollow,
-        Follow
+        Follow,
+        UserPosts
     }
 
     public enum RecordingState {

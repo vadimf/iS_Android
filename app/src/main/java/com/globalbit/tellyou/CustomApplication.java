@@ -6,6 +6,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.support.multidex.MultiDexApplication;
 import com.crashlytics.android.Crashlytics;
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.globalbit.tellyou.model.Post;
 import com.globalbit.tellyou.model.system.SystemPreferencesKT;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
@@ -34,6 +37,25 @@ public class CustomApplication extends MultiDexApplication {
         Configuration configuration = new Configuration(Resources.getSystem().getConfiguration());
         configuration.setLocale(Locale.ENGLISH);
         mApplicationContext.getResources().updateConfiguration(configuration, null);
+        FFmpeg ffmpeg = FFmpeg.getInstance(this);
+        try {
+            ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
+
+                @Override
+                public void onStart() {}
+
+                @Override
+                public void onFailure() {}
+
+                @Override
+                public void onSuccess() {}
+
+                @Override
+                public void onFinish() {}
+            });
+        } catch (FFmpegNotSupportedException e) {
+            // Handle if FFmpeg is not supported by device
+        }
     }
 
     public static Context getAppContext() {

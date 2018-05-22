@@ -5,13 +5,13 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/black">
 
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/videoViewPlayer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:resize_mode="fixed_height"
             app:surface_type="texture_view"
             app:use_controller="false"/>
 
@@ -19,7 +19,6 @@
             android:id="@+id/imgViewPreview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
             android:visibility="gone"/>
 
         <com.globalbit.tellyou.ui.views.GestureControllerView

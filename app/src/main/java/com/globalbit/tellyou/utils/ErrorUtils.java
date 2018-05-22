@@ -52,6 +52,8 @@ public class ErrorUtils {
                         return CustomApplication.getAppContext().getString(R.string.error_code_200_forgot_password);
                     case Follow:
                         return CustomApplication.getAppContext().getString(R.string.error_code_200_get_user_details);
+                    case UserPosts:
+                        return CustomApplication.getAppContext().getString(R.string.error_code_200_get_user_details);
                 }
                 return CustomApplication.getAppContext().getString(R.string.error_code_200_description);
             case 202:

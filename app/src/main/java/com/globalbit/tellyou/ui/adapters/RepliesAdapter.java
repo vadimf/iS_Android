@@ -40,7 +40,6 @@ import im.ene.toro.ToroUtil;
 import im.ene.toro.exoplayer.Config;
 import im.ene.toro.exoplayer.ExoPlayerViewHelper;
 import im.ene.toro.exoplayer.MediaSourceBuilder;
-import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
 import im.ene.toro.helper.ToroPlayerHelper;
 import im.ene.toro.media.PlaybackInfo;
 import im.ene.toro.widget.Container;

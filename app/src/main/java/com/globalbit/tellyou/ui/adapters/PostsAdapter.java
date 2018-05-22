@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
+import im.ene.toro.exoplayer.Playable;
+
 /**
  * Created by alex on 14/06/2016.
  */
@@ -127,12 +129,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         if(mItems!=null) {
             final Post item=mItems.get(position);
-            if(item.getVideo()!=null&&!StringUtils.isEmpty(item.getVideo().getThumbnail())) {
+            if(item.getVideo()!=null&&!StringUtils.isEmpty(item.getVideo().getGif())) {
+                Glide.with(mContext).load(item.getVideo().getGif()).into(holder.mBinding.imgViewPost);
+            }
+            else if(item.getVideo()!=null&&!StringUtils.isEmpty(item.getVideo().getThumbnail())) {
                 Glide.with(mContext).load(item.getVideo().getThumbnail()).into(holder.mBinding.imgViewPost);
             }
-            else {
+            /*else {
                 holder.mBinding.imgViewUser.setImageResource(R.drawable.img_xs_no_photo_user);
-            }
+            }*/
             switch(mFeedType) {
                 case Constants.TYPE_FEED_HOME:
                 case Constants.TYPE_FEED_SEARCH:

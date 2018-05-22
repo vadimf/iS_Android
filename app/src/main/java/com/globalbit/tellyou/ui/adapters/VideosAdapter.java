@@ -51,6 +51,8 @@ import com.globalbit.tellyou.ui.interfaces.IGestureEventsListener;
 import com.globalbit.tellyou.ui.interfaces.IVideoListener;
 import com.globalbit.tellyou.utils.CustomLinearLayoutManager;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.video.VideoListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.dynamiclinks.DynamicLink;
@@ -71,7 +73,6 @@ import im.ene.toro.CacheManager;
 import im.ene.toro.ToroPlayer;
 import im.ene.toro.ToroUtil;
 import im.ene.toro.exoplayer.ExoPlayerViewHelper;
-import im.ene.toro.exoplayer.SimpleExoPlayerViewHelper;
 import im.ene.toro.helper.ToroPlayerHelper;
 import im.ene.toro.media.PlaybackInfo;
 import im.ene.toro.widget.Container;
@@ -497,7 +498,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         return key instanceof Post ? mItems.indexOf(key) : null;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ToroPlayer {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ToroPlayer, VideoListener {
         private ItemVideoBinding mBinding;
         private ClickListener mClickListener;
         private ToroPlayerHelper mHelper;
@@ -536,6 +537,16 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
             });
         }
 
+        @Override
+        public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+            Log.i(TAG, "onVideoSizeChanged: "+width+","+height);
+        }
+
+        @Override
+        public void onRenderedFirstFrame() {
+
+        }
+
         @NonNull
         @Override
         public View getPlayerView() {
@@ -546,6 +557,11 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         @Override
         public PlaybackInfo getCurrentPlaybackInfo() {
             return mHelper != null ? mHelper.getLatestPlaybackInfo() : new PlaybackInfo();
+        }
+
+        @Override
+        public void onSettled(Container container) {
+
         }
 
         @Override
@@ -651,10 +667,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
             return getAdapterPosition();
         }
 
-        @Override
-        public void onSettled(Container container) {
 
-        }
 
 
         public interface ClickListener {

@@ -14,6 +14,12 @@ public class Video implements Parcelable{
     @SerializedName("url")
     private String mUrl;
 
+    @SerializedName("sample")
+    private String mSample;
+
+    @SerializedName("gif")
+    private String mGif;
+
     @SerializedName("thumbnail")
     private String mThumbnail;
 
@@ -74,5 +80,21 @@ public class Video implements Parcelable{
         dest.writeString(mUrl);
         dest.writeString(mThumbnail);
         dest.writeInt(mDuration);
+    }
+
+    public String getSample() {
+        return mSample;
+    }
+
+    public void setSample(String sample) {
+        mSample=sample;
+    }
+
+    public String getGif() {
+        return mGif;
+    }
+
+    public void setGif(String gif) {
+        mGif=gif;
     }
 }

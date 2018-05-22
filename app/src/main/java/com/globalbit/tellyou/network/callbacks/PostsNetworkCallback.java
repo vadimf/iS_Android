@@ -32,13 +32,13 @@ public class PostsNetworkCallback extends NetworkCallback implements Callback<Po
                     mListener.onSuccess(response.body(), mQuery);
                 }
                 else {
-                    mListener.onError(response.body().getErrorCode(), ErrorUtils.getErrorMessage(response.body().getErrorCode(), Enums.RequestType.General));
+                    mListener.onError(response.body().getErrorCode(), ErrorUtils.getErrorMessage(response.body().getErrorCode(), Enums.RequestType.UserPosts));
                 }
             }
         }
         else if(response.errorBody()!=null) {
             BaseResponse error=ErrorUtils.parseError(response);
-            mListener.onError(error.getErrorCode(), ErrorUtils.getErrorMessage(error.getErrorCode(), Enums.RequestType.General));
+            mListener.onError(error.getErrorCode(), ErrorUtils.getErrorMessage(error.getErrorCode(), Enums.RequestType.UserPosts));
         }
     }
 
