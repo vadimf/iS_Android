@@ -287,6 +287,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                                 intent.putExtra(Constants.DATA_VIDEO_FILE, videoPath);
                                 intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, mVideoRecordingType);
                                 intent.putExtra(Constants.DATA_POST_ID, mPostId);
+                                intent.putExtra(Constants.DATA_IS_FRONT_CAMERA, mIsFrontCamera);
                                 startActivity(intent);
                                 finish();
                             }

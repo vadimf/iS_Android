@@ -35,7 +35,6 @@ import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.globalbit.tellyou.utils.SimpleDividerItemDecoration;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -123,6 +122,17 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
                 }
             }
         });
+
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        init();
+    }
+
+    private void init() {
         if(mState==Constants.TYPE_FRIENDS_FACEBOOK) {
             mBinding.btnFacebook.setOnClickListener(this);
             LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -141,6 +151,9 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
                         @Override
                         public void run() {
                             mPageToken=null;
+                            if(mAdapter!=null) {
+                                mAdapter.clear();
+                            }
                             loadItems();
                         }
                     });
@@ -169,6 +182,9 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
                     @Override
                     public void run() {
                         mPageToken=null;
+                        if(mAdapter!=null) {
+                            mAdapter.clear();
+                        }
                         loadItems();
                     }
                 });
@@ -181,7 +197,6 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
             //mBinding.btnShare.setVisibility(View.GONE);
             checkForPermissions(Constants.REQUEST_CONTACTS, new String[]{Manifest.permission.READ_CONTACTS});
         }
-        return mBinding.getRoot();
     }
 
     @Override
@@ -226,6 +241,10 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
                 }
             }, mRequest, mPage);
         }
+    }
+
+    public void refresh() {
+        init();
     }
 
     @Override
@@ -286,6 +305,9 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
                             public void onNext(ContactsRequest request) {
                                 mRequest=request;
                                 mPage=1;
+                                if(mAdapter!=null) {
+                                    mAdapter.clear();
+                                }
                                 loadItems();
                             }
 

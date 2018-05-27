@@ -78,6 +78,7 @@ public class Constants {
     public static final String DATA_REPORT_TYPE="DataReportType";
     public static final String DATA_USERS_FOLLOW_STATUS="DataUsersFollowStatus";
     public static final String DATA_HOME_TYPE="HomeType";
+    public static final String DATA_IS_FRONT_CAMERA="IsFrontCamera"; //true-front, false-rear
 
 
 
@@ -106,5 +107,20 @@ public class Constants {
     public static final int TYPE_POST_VIDEO_RECORDING=0;
     public static final int TYPE_REPLY_VIDEO_RECORDING=1;
     public static final int TYPE_POST_VIDEO_TRIMMING=2;
+
+
+    //Analytics
+    public static final String UPLOADED_VIDEO_GALLERY="uploaded_video_gallery";
+    public static final String UPLOADED_VIDEO_FRONT="uploaded_video_front";
+    public static final String UPLOADED_VIDEO_REAR="uploaded_video_rear";
+    public static final String UPLOADED_REPLY="uploaded_reply";
+    public static final String UPLOADED_VIDEO_TITLE_LENGTH="uploaded_video_title_length";
+    public static final String UPLOADED_VIDEO_HASH_TAGS_COUNT="uploaded_video_hash_tags_count";
+    public static final String SEARCH="search";
+    public static final String VIDEO_SHARE="video_share";
+    public static final String REPLIES_CLICKED="replies_clicked";
+    public static final String REPLY_PLAYED="reply_played";
+    public static final String VIDEO_FORWARDED_REWINDED="video_forwarded";
+    public static final String VIDEO_INFORMATION_CLICKED="video_information_clicked";
 
 }

@@ -21,6 +21,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.globalbit.androidutils.CollectionUtils;
 import com.globalbit.androidutils.StringUtils;
+import com.globalbit.tellyou.Constants;
+import com.globalbit.tellyou.CustomApplication;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ItemReplyBinding;
 import com.globalbit.tellyou.model.Comment;
@@ -54,6 +56,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
     public int mImgWidth;
     private LinearLayout.LayoutParams mParams;
     private static final String TAG=RepliesAdapter.class.getSimpleName();
+    private User mUser;
 
 
     public RepliesAdapter(Context context, IReplyListener listener) {
@@ -63,6 +66,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
         DisplayMetrics metrics = resources.getDisplayMetrics();
         mImgWidth=(int)(metrics.widthPixels*0.7);
         mParams=new LinearLayout.LayoutParams(mImgWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+        mUser=SharedPrefsUtils.getUserDetails();
     }
 
     public void setItems(ArrayList<Comment> items) {
@@ -89,6 +93,30 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
     public void clearItems() {
         if(mItems!=null) {
             mItems.clear();
+        }
+    }
+
+    public boolean removeItem(Comment item) {
+        if(mItems!=null) {
+            int index=-1;
+            for(int i=0; i<mItems.size(); i++) {
+                Comment comment=mItems.get(i);
+                if(comment.getId().equals(item.getId())) {
+                    index=i;
+                    break;
+                }
+            }
+            if(index!=-1) {
+                mItems.remove(index);
+                notifyItemRemoved(index);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
         }
     }
 
@@ -121,7 +149,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
             Uri uri=Uri.parse(item.getVideo().getUrl());
             if(!StringUtils.isEmpty(item.getVideo().getThumbnail())) {
                 holder.mBinding.imgViewPreview.setVisibility(View.VISIBLE);
-                Picasso.with(mContext).load(item.getVideo().getThumbnail()).fit().into(holder.mBinding.imgViewPreview);
+                Picasso.with(mContext).load(item.getVideo().getThumbnail()).into(holder.mBinding.imgViewPreview);
             }
             else {
                 holder.mBinding.imgViewPreview.setVisibility(View.GONE);
@@ -137,6 +165,14 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
             }
             if(item.getCreatedAt()!=null) {
                 holder.mBinding.txtViewDate.setText(DateUtils.getRelativeTimeSpanString(item.getCreatedAt().getTime()));
+            }
+            if(item.getUser().getUsername().equals(mUser.getUsername())) {
+                holder.mBinding.imgViewDelete.setVisibility(View.VISIBLE);
+                holder.mBinding.imgViewReport.setVisibility(View.GONE);
+            }
+            else {
+                holder.mBinding.imgViewDelete.setVisibility(View.GONE);
+                holder.mBinding.imgViewReport.setVisibility(View.VISIBLE);
             }
             holder.setClickListener(new ViewHolder.ClickListener() {
                 @Override
@@ -191,7 +227,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
                 mBinding.imgViewPreview.setVisibility(View.VISIBLE);
                 helper = new ExoPlayerViewHelper(this, mediaUri);
             }
-
+            CustomApplication.getAnalytics().logEvent(Constants.REPLY_PLAYED, null);
             helper.initialize(container, playbackInfo);
             helper.addPlayerEventListener(new ToroPlayer.EventListener() {
                 @Override

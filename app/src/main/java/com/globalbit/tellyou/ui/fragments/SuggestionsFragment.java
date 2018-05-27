@@ -126,15 +126,6 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
             }
         });
 
-        if(mUsersType!=Constants.TYPE_USERS_SEARCH) {
-            mBinding.swipeLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mPage=1;
-                    loadItems();
-                }
-            });
-        }
         return mBinding.getRoot();
     }
 
@@ -142,6 +133,38 @@ public class SuggestionsFragment extends BaseFragment implements IBaseNetworkRes
     public void onPause() {
         super.onPause();
         mIsFirstTime=true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mUsersType!=Constants.TYPE_USERS_SEARCH) {
+            mBinding.swipeLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPage=1;
+                    if(mAdapter!=null) {
+                        mAdapter.clear();
+                    }
+                    loadItems();
+                }
+            });
+        }
+    }
+
+    public void refresh() {
+        if(mUsersType!=Constants.TYPE_USERS_SEARCH) {
+            mBinding.swipeLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPage=1;
+                    if(mAdapter!=null) {
+                        mAdapter.clear();
+                    }
+                    loadItems();
+                }
+            });
+        }
     }
 
     private void loadItems() {

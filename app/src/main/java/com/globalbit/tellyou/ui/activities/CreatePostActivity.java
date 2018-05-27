@@ -158,6 +158,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                     intent.putExtra(Constants.DATA_DURATION, mBinding.videoViewPlayer.getPlayer().getDuration()/1000);
                     intent.putExtra(Constants.DATA_VIDEO_RECORDING_TYPE, mVideoRecordingType);
                     intent.putExtra(Constants.DATA_POST_ID, mPostId);
+                    intent.putExtra(Constants.DATA_IS_FRONT_CAMERA, getIntent().getBooleanExtra(Constants.DATA_IS_FRONT_CAMERA, true));
                     startService(intent);
                     final MaterialDialog dialog=new MaterialDialog.Builder(this)
                             .content(R.string.dialog_video_uploading)

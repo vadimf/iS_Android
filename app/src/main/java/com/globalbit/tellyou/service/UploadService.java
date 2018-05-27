@@ -11,6 +11,7 @@ import android.media.MediaMetadataRetriever;
 import android.media.RingtoneManager;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore;
@@ -40,6 +41,7 @@ import com.globalbit.tellyou.ui.videotrimmer.utils.BackgroundExecutor;
 import com.globalbit.tellyou.ui.videotrimmer.utils.TrimVideoUtils;
 import com.globalbit.tellyou.utils.GeneralUtils;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.iceteck.silicompressorr.SiliCompressor;
 
 import org.greenrobot.eventbus.EventBus;
@@ -77,8 +79,9 @@ public class UploadService extends Service {
             final String text=intent.getStringExtra(Constants.DATA_TEXT);
             ArrayList<String> tags=intent.getStringArrayListExtra(Constants.DATA_HASHTAGS);
             final int duration=(int)intent.getLongExtra(Constants.DATA_DURATION, -1);
-            int videoRecordingType=intent.getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
+            final int videoRecordingType=intent.getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
             final String postId=intent.getStringExtra(Constants.DATA_POST_ID);
+            final boolean isFrontCamera=intent.getBooleanExtra(Constants.DATA_IS_FRONT_CAMERA, true);
             Bitmap thumb = ThumbnailUtils.createVideoThumbnail(filePath,
                     MediaStore.Images.Thumbnails.MINI_KIND);
             File gifFile=null;
@@ -112,7 +115,7 @@ public class UploadService extends Service {
             Notification notification;
             switch(videoRecordingType) {
                 case Constants.TYPE_POST_VIDEO_RECORDING:
-                    recordedVideo(file, requestFile, gif, requestGif, text, hashtags, duration);
+                    recordedVideo(isFrontCamera, videoRecordingType, file, requestFile, gif, requestGif, text, hashtags, duration);
                     notification =
                             new NotificationCompat.Builder(this, "UploadChannel")
                                     .setContentTitle(getString(R.string.label_uploading))
@@ -153,7 +156,7 @@ public class UploadService extends Service {
                                         MediaType.parse("image/jpg"),
                                         gifFileNewFinal
                                 );
-                                recordedVideo(newFile, requestFileNew, gifFileNewFinal, requestGifNew, text, hashtags, duration);
+                                recordedVideo(isFrontCamera, videoRecordingType, newFile, requestFileNew, gifFileNewFinal, requestGifNew, text, hashtags, duration);
                             } catch(URISyntaxException e) {
                                 e.printStackTrace();
                             }
@@ -208,6 +211,9 @@ public class UploadService extends Service {
                                             pendingIntent=PendingIntent.getActivity(UploadService.this, 0,
                                                     notificationIntent, 0);
                                         }
+                                        Bundle params = new Bundle();
+                                        params.putString(FirebaseAnalytics.Param.VALUE, String.valueOf(duration));
+                                        CustomApplication.getAnalytics().logEvent(Constants.UPLOADED_REPLY, params);
                                         EventBus.getDefault().post(new CommentEvent(postId));
                                         showReplyNotification(pendingIntent);
                                     }
@@ -272,7 +278,7 @@ public class UploadService extends Service {
         }
     }
 
-    private void recordedVideo(final File file, RequestBody requestFile, File gif, RequestBody requestGif, String text, ArrayList<RequestBody> hashtags, int duration) {
+    private void recordedVideo(final boolean isFrontCamera, final int videoRecordingType, final File file, RequestBody requestFile, File gif, RequestBody requestGif, final String text, final ArrayList<RequestBody> hashtags, final int duration) {
         NetworkManager.getInstance().createPost(new IBaseNetworkResponseListener<PostResponse>() {
                                                     @Override
                                                     public void onSuccess(PostResponse response, Object object) {
@@ -282,6 +288,25 @@ public class UploadService extends Service {
                                                             }
                                                             else {
                                                                 Log.i(TAG, "Couldn't delete the file");
+                                                            }
+                                                        }
+                                                        Bundle paramsHashTags = new Bundle();
+                                                        paramsHashTags.putString(FirebaseAnalytics.Param.VALUE, String.valueOf(hashtags.size()));
+                                                        CustomApplication.getAnalytics().logEvent(Constants.UPLOADED_VIDEO_HASH_TAGS_COUNT, paramsHashTags);
+                                                        Bundle paramsTitle = new Bundle();
+                                                        paramsTitle.putString(FirebaseAnalytics.Param.VALUE, String.valueOf(text.length()));
+                                                        CustomApplication.getAnalytics().logEvent(Constants.UPLOADED_VIDEO_TITLE_LENGTH, paramsTitle);
+                                                        Bundle paramsDuration = new Bundle();
+                                                        paramsDuration.putString(FirebaseAnalytics.Param.VALUE, String.valueOf(duration));
+                                                        if(videoRecordingType==Constants.TYPE_POST_VIDEO_TRIMMING) {
+                                                            CustomApplication.getAnalytics().logEvent(Constants.UPLOADED_VIDEO_GALLERY, paramsDuration);
+                                                        }
+                                                        else if(videoRecordingType==Constants.TYPE_POST_VIDEO_RECORDING) {
+                                                            if(isFrontCamera) {
+                                                                CustomApplication.getAnalytics().logEvent(Constants.UPLOADED_VIDEO_FRONT, paramsDuration);
+                                                            }
+                                                            else {
+                                                                CustomApplication.getAnalytics().logEvent(Constants.UPLOADED_VIDEO_REAR, paramsDuration);
                                                             }
                                                         }
                                                         Intent notificationIntent = new Intent(UploadService.this, SplashScreenActivity.class);

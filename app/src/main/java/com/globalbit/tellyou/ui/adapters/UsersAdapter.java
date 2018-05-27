@@ -104,6 +104,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
                 holder.mBinding.btnFollow.setVisibility(View.GONE);
             }
             else {
+                holder.mBinding.btnFollow.setVisibility(View.VISIBLE);
                 if(item.isFollowing()) {
                     holder.mBinding.btnFollow.setBackgroundResource(R.drawable.button_share);
                     holder.mBinding.btnFollow.setTextColor(mContext.getResources().getColor(R.color.red_border));

@@ -41,15 +41,16 @@ android {
 
 ext {
     supportLibVersion = '27.1.1'
-    playServicesVersion = '11.8.0'
+    playServicesVersion = '15.0.1'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation "com.google.firebase:firebase-messaging:$playServicesVersion"
-    implementation "com.google.firebase:firebase-invites:$playServicesVersion"
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
+    implementation 'com.google.firebase:firebase-invites:16.0.0'
+    implementation 'com.google.firebase:firebase-core:16.0.0'
     implementation "com.google.android.gms:play-services-auth:$playServicesVersion"
     implementation "com.android.support:design:$supportLibVersion"
     testImplementation 'junit:junit:4.12'

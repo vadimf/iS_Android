@@ -3,6 +3,7 @@ package com.globalbit.tellyou.ui.activities;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,8 +14,8 @@ import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.View;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.globalbit.androidutils.ConversionUtils;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
@@ -24,6 +25,7 @@ import com.globalbit.tellyou.model.Pagination;
 import com.globalbit.tellyou.model.User;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
+import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.network.responses.CommentsResponse;
 import com.globalbit.tellyou.ui.adapters.RepliesAdapter;
 import com.globalbit.tellyou.ui.events.NextVideoEvent;
@@ -219,26 +221,77 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onReport(final Comment comment) {
-        final MaterialDialog dialog=new MaterialDialog.Builder(this)
-                .customView(R.layout.dialog_reply_actions, false)
-                .show();
-        View viewReportReply=dialog.findViewById(R.id.lnrLayoutReportReply);
-        viewReportReply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                if(comment.getUser()!=null&&comment.getUser().getUsername().equals(mUser.getUsername())) {
-                    showMessage(getString(R.string.error), getString(R.string.error_reporting_your_reply));
-                }
-                else {
-                    Intent intent=new Intent(ReplyActivity.this, ReportActivity.class);
-                    intent.putExtra(Constants.DATA_POST_ID, comment.getId());
-                    intent.putExtra(Constants.DATA_REPORT_TYPE, Constants.REQUEST_REPORT_REPLY);
-                    startActivityForResult(intent, Constants.REQUEST_REPORT);
-                }
+        if(comment.getUser().getUsername().equals(mUser.getUsername())) {
+            new MaterialDialog.Builder(this)
+                    .content(R.string.dialog_delete_reply)
+                    .positiveText(R.string.btn_delete)
+                    .negativeText(R.string.btn_cancel)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dialog.dismiss();
+                            final MaterialDialog loadingDialog=new MaterialDialog.Builder(ReplyActivity.this)
+                                    .title(R.string.dialog_loading_title)
+                                    .content(R.string.dialog_loading_content)
+                                    .progress(true, 0)
+                                    .show();
+                            NetworkManager.getInstance().deletePost(new IBaseNetworkResponseListener<BaseResponse>() {
+                                @Override
+                                public void onSuccess(BaseResponse response, Object object) {
+                                    loadingDialog.dismiss();
+                                    if(mAdapter.removeItem(comment)) {
+                                        if(mCommentsCount>0) {
+                                            mCommentsCount--;
+                                        }
+                                        if(mAdapter.getItemCount()==0) {
+                                            mBinding.toolbar.txtViewTitle.setText(R.string.title_comments);
+                                            mBinding.swipeLayout.setVisibility(View.GONE);
+                                            mBinding.txtViewEmpty.setVisibility(View.VISIBLE);
+                                        }
+                                        else {
+                                            mBinding.toolbar.txtViewTitle.setText(getResources().getQuantityString(R.plurals.replies, mCommentsCount, mCommentsCount));
+                                            mBinding.swipeLayout.setVisibility(View.VISIBLE);
+                                            mBinding.txtViewEmpty.setVisibility(View.GONE);
+                                        }
+                                    }
 
-            }
-        });
+                                }
+
+                                @Override
+                                public void onError(int errorCode, String errorMessage) {
+                                    loadingDialog.dismiss();
+                                    new MaterialDialog.Builder(ReplyActivity.this)
+                                            .title(R.string.error)
+                                            .content(errorMessage)
+                                            .positiveText(R.string.btn_ok)
+                                            .show();
+                                }
+                            }, comment.getId());
+                        }
+                    })
+                    .show();
+        }
+        else {
+            final MaterialDialog dialog=new MaterialDialog.Builder(this)
+                    .customView(R.layout.dialog_reply_actions, false)
+                    .show();
+            View viewReportReply=dialog.findViewById(R.id.lnrLayoutReportReply);
+            viewReportReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    if(comment.getUser()!=null&&comment.getUser().getUsername().equals(mUser.getUsername())) {
+                        showMessage(getString(R.string.error), getString(R.string.error_reporting_your_reply));
+                    } else {
+                        Intent intent=new Intent(ReplyActivity.this, ReportActivity.class);
+                        intent.putExtra(Constants.DATA_POST_ID, comment.getId());
+                        intent.putExtra(Constants.DATA_REPORT_TYPE, Constants.REQUEST_REPORT_REPLY);
+                        startActivityForResult(intent, Constants.REQUEST_REPORT);
+                    }
+
+                }
+            });
+        }
     }
 
     @Override

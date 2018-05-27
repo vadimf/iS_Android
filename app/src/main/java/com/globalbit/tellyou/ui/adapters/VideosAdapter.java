@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -186,7 +187,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         if(mItems!=null) {
             final Post item=mItems.get(position);
-            PROGRESS_UPDATE_INTERNAL=(item.getVideo().getDuration()*1000)/100;
+            holder.progressUpdateInterval=(item.getVideo().getDuration()*1000)/100;
             Uri uri=Uri.parse(item.getVideo().getUrl());
             if(!StringUtils.isEmpty(item.getVideo().getThumbnail())) {
                 holder.mBinding.imgViewPreview.setVisibility(View.VISIBLE);
@@ -230,6 +231,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 public void onHorizontalScroll(MotionEvent event, float delta, int speed) {
                     if(holder.wantsToPlay()) {
                         mLinearLayoutManager.setScrollEnabled(false);
+                        CustomApplication.getAnalytics().logEvent(Constants.VIDEO_FORWARDED_REWINDED, null);
                         if(delta<0) {
                             int newPosition=(int)holder.mBinding.videoViewPlayer.getPlayer().getCurrentPosition()+speed;
                             if(newPosition>holder.mBinding.videoViewPlayer.getPlayer().getDuration()) {
@@ -381,10 +383,12 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                             }
                             else {
                                 holder.mBinding.layoutVideoInformation.lnrLayoutVideoInformation.setVisibility(View.VISIBLE);
+                                CustomApplication.getAnalytics().logEvent(Constants.VIDEO_INFORMATION_CLICKED, null);
                                 holder.mBinding.layoutVideoMenu.lnrLayoutVideoMenu.setVisibility(View.GONE);
                             }
                             break;
                         case R.id.frmLayoutComments:
+                            CustomApplication.getAnalytics().logEvent(Constants.REPLIES_CLICKED, null);
                             mListener.onComments(item);
                             break;
                         case R.id.frmLayoutShare:
@@ -418,6 +422,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                                                 //title=String.format(Locale.getDefault(), mContext.getString(R.string.label_share_title),SharedPrefsUtils.getUserDetails().getUsername(), item.getText());
                                                 share.putExtra(Intent.EXTRA_TEXT, String.format(Locale.getDefault(),"%s", shareLink));
                                                 if (share.resolveActivity(mContext.getPackageManager()) != null) {
+                                                    CustomApplication.getAnalytics().logEvent(Constants.VIDEO_SHARE, null);
                                                     mContext.startActivity(Intent.createChooser(share, mContext.getString(R.string.label_share_via)));
                                                 }
                                             }
@@ -517,6 +522,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         private final Handler mHandler = new Handler();
         private int mPosition;
         private Post mPost;
+        private long progressUpdateInterval;
 
         public ViewHolder(View v) {
             super(v);
@@ -556,6 +562,9 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         @NonNull
         @Override
         public PlaybackInfo getCurrentPlaybackInfo() {
+            if(mHelper!=null) {
+                Log.i(TAG, "getCurrentPlaybackInfo: "+mHelper.getLatestPlaybackInfo().getResumePosition());
+            }
             return mHelper != null ? mHelper.getLatestPlaybackInfo() : new PlaybackInfo();
         }
 
@@ -605,6 +614,11 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 @Override
                 public void onPlaying() {
                     mBinding.imgViewPreview.setVisibility(View.GONE);
+                    if(mHelper!=null) {
+                        Log.i(TAG, "onPlaying: "+mHelper.getLatestPlaybackInfo().getResumePosition());
+                    }
+                    mElapsedTime=(int) mHelper.getLatestPlaybackInfo().getResumePosition();
+                    mBinding.progressBarPortrait.setProgress(mElapsedTime);
                 }
 
                 @Override
@@ -632,8 +646,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 if(mHelper!=null) mHelper.play();
                 scheduleSeekbarUpdate();
                 mTimer.start();
-                mElapsedTime=(int) mHelper.getLatestPlaybackInfo().getResumePosition();
-                mBinding.progressBarPortrait.setProgress(mElapsedTime);
+                //mElapsedTime=(int) mHelper.getLatestPlaybackInfo().getResumePosition();
+                //mBinding.progressBarPortrait.setProgress(mElapsedTime);
             }
         }
 
@@ -694,7 +708,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         private void updateProgress() {
             //Log.i(TAG, "updateProgress: "+mElapsedTime);
             mBinding.progressBarPortrait.setProgress(mElapsedTime);
-            mElapsedTime+=PROGRESS_UPDATE_INTERNAL;
+            mElapsedTime+=progressUpdateInterval;
         }
 
         private void stopSeekbarUpdate() {
@@ -713,7 +727,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                                 mHandler.post(mUpdateProgressTask);
                             }
                         }, PROGRESS_UPDATE_INITIAL_INTERVAL,
-                        PROGRESS_UPDATE_INTERNAL, TimeUnit.MILLISECONDS);
+                        progressUpdateInterval, TimeUnit.MILLISECONDS);
             }
         }
 

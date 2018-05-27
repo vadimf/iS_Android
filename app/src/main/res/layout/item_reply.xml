@@ -26,8 +26,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/imgViewPreview"
-                android:scaleType="centerCrop"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:scaleType="centerCrop"/>
         </FrameLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -69,10 +69,18 @@
                 android:padding="10dp">
                 <ImageView
                     android:layout_width="wrap_content"
+                    android:id="@+id/imgViewReport"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_more_touch_bar"
                     android:tint="@color/white"/>
+                <ImageView
+                    android:id="@+id/imgViewDelete"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_delete"
+                    android:visibility="gone"/>
             </FrameLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>

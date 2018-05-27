@@ -66,6 +66,7 @@
     <string name="label_delete_video">Delete video</string>
     <string name="label_report_reply">Report this reply</string>
     <string name="dialog_delete_video">Delete this video?</string>
+    <string name="dialog_delete_reply">Delete this reply?</string>
     <string name="btn_delete">Delete</string>
     <string name="title_comments">No replies</string>
     <string name="hint_user_name">Choose a unique username</string>

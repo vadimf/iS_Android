@@ -12,6 +12,7 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
+import com.globalbit.tellyou.CustomApplication;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivitySearchBinding;
 import com.globalbit.tellyou.network.NetworkManager;
@@ -86,6 +87,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                     @Override
                     public void onNext(CharSequence charSequence) {
                         BaseFragment fragment=(BaseFragment) mSearchPagerAdapter.getRegisteredFragment(mPosition);
+                        CustomApplication.getAnalytics().logEvent(Constants.SEARCH, null);
                         if(fragment instanceof PostsFragment) {
                             ((PostsFragment) fragment).searchPosts(charSequence.toString());
                         }

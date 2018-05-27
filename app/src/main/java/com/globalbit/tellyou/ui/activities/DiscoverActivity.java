@@ -5,12 +5,15 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ActivityDiscoverBinding;
 import com.globalbit.tellyou.ui.adapters.DiscoverPagerAdapter;
+import com.globalbit.tellyou.ui.fragments.ContactsFragment;
+import com.globalbit.tellyou.ui.fragments.SuggestionsFragment;
 
 /**
  * Created by alex on 07/11/2017.
@@ -37,6 +40,7 @@ public class DiscoverActivity extends BaseActivity implements TabLayout.OnTabSel
         mBinding.viewpager.setAdapter(mDiscoverPagerAdapter);
         mBinding.viewpager.setOffscreenPageLimit(1);
         mBinding.tabDiscover.setupWithViewPager(mBinding.viewpager);
+        mBinding.tabDiscover.setOnTabSelectedListener(this);
         mBinding.btnContinue.setOnClickListener(this);
         mBinding.toolbar.btnBack.setOnClickListener(this);
     }
@@ -44,7 +48,14 @@ public class DiscoverActivity extends BaseActivity implements TabLayout.OnTabSel
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-
+        int position=tab.getPosition();
+        Fragment fragment=mDiscoverPagerAdapter.getRegisteredFragment(position);
+        if(fragment instanceof ContactsFragment) {
+            ((ContactsFragment) fragment).refresh();
+        }
+        else if(fragment instanceof SuggestionsFragment) {
+            ((SuggestionsFragment) fragment).refresh();
+        }
     }
 
     @Override

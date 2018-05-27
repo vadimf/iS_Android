@@ -12,6 +12,7 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedExceptio
 import com.globalbit.tellyou.model.Post;
 import com.globalbit.tellyou.model.system.SystemPreferencesKT;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Locale;
 
@@ -26,6 +27,7 @@ public class CustomApplication extends MultiDexApplication {
     private static Context mApplicationContext;
     private static SystemPreferencesKT mSystemPreference;
     private static Post mPost;
+    private static FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
@@ -37,6 +39,7 @@ public class CustomApplication extends MultiDexApplication {
         Configuration configuration = new Configuration(Resources.getSystem().getConfiguration());
         configuration.setLocale(Locale.ENGLISH);
         mApplicationContext.getResources().updateConfiguration(configuration, null);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         FFmpeg ffmpeg = FFmpeg.getInstance(this);
         try {
             ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
@@ -60,6 +63,10 @@ public class CustomApplication extends MultiDexApplication {
 
     public static Context getAppContext() {
         return mApplicationContext;
+    }
+
+    public static FirebaseAnalytics getAnalytics() {
+        return  mFirebaseAnalytics;
     }
 
     public static SystemPreferencesKT getSystemPreference() {
