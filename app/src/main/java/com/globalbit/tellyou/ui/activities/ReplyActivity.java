@@ -179,6 +179,18 @@ public class ReplyActivity extends BaseActivity implements View.OnClickListener,
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent=new Intent();
+        intent.putExtra(Constants.DATA_POST_ID, mPostId);
+        if(mAdapter!=null) {
+            intent.putExtra(Constants.DATA_POST_COMMENTS_COUNT, mAdapter.getItemCount());
+        }
+        setResult(RESULT_OK, intent);
+        finish();
+
+    }
+
     private void loadItems() {
         mBinding.swipeLayout.setEnabled(true);
         mBinding.swipeLayout.setRefreshing(true);

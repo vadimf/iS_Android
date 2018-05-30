@@ -174,6 +174,19 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
+    public void setComments(String id, int commentsCount) {
+        if(!CollectionUtils.isEmpty(mItems)) {
+            for(int i=0; i<mItems.size(); i++) {
+                Post item=mItems.get(i);
+                if(item.getId().equals(id)) {
+                    item.setComments(commentsCount);
+                    break;
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -592,8 +605,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 }, mPost.getId());
             }
             mHelper.initialize(container, playbackInfo);
-            mElapsedTime=0;
-            mBinding.progressBarPortrait.setProgress(mElapsedTime);
+            //mElapsedTime=0;
+            //mBinding.progressBarPortrait.setProgress(mElapsedTime);
             mTimer=new CountDownTimer(HIDE_DETAILS_THRESHOLD, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
@@ -619,6 +632,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                     }
                     mElapsedTime=(int) mHelper.getLatestPlaybackInfo().getResumePosition();
                     mBinding.progressBarPortrait.setProgress(mElapsedTime);
+                    scheduleSeekbarUpdate();
                 }
 
                 @Override
@@ -644,8 +658,9 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         public void play() {
             if(!SharedPrefsUtils.isShowTutorial()) {
                 if(mHelper!=null) mHelper.play();
-                scheduleSeekbarUpdate();
                 mTimer.start();
+                long time=(int) mHelper.getLatestPlaybackInfo().getResumePosition();
+                Log.i(TAG, "play: "+time);
                 //mElapsedTime=(int) mHelper.getLatestPlaybackInfo().getResumePosition();
                 //mBinding.progressBarPortrait.setProgress(mElapsedTime);
             }

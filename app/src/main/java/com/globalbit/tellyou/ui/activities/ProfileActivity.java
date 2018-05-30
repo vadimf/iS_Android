@@ -61,7 +61,7 @@ public class ProfileActivity extends AppCompatActivity implements IMainListener,
 
     @Override
     public void onOpenDrawer() {
-
+        finish();
     }
 
     @Override

@@ -221,8 +221,15 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 snackbar.show();
             }
         }
-        else if(requestCode==Constants.REQUEST_COMMENTS) {
+        else if(requestCode==Constants.REQUEST_COMMENTS && resultCode==RESULT_OK) {
             //TODO maybe load this post in background and update comments count
+            if(data!=null) {
+                int commentsCount=data.getIntExtra(Constants.DATA_POST_COMMENTS_COUNT, -1);
+                String postId=data.getStringExtra(Constants.DATA_POST_ID);
+                if(commentsCount!=-1&&postId!=null) {
+                    mAdapter.setComments(postId, commentsCount);
+                }
+            }
         }
     }
 

@@ -174,7 +174,7 @@
 
     <style name="NavigationTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textColor">@color/grey</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">13sp</item>
         <item name="android:fontFamily">@font/assistant_semi_bold</item>
     </style>
 

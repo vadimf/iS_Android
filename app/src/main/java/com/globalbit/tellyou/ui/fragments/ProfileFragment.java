@@ -25,6 +25,7 @@ import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.ui.activities.FollowActivity;
+import com.globalbit.tellyou.ui.activities.MainActivity;
 import com.globalbit.tellyou.ui.activities.ProfileActivity;
 import com.globalbit.tellyou.ui.adapters.ProfilePagerAdapter;
 import com.globalbit.tellyou.ui.events.BookmarkEvent;
@@ -87,7 +88,12 @@ public class ProfileFragment extends BaseFragment implements View.OnClickListene
         if(mUser==null) { //My profile
             mUser=SharedPrefsUtils.getUserDetails();
             mProfileState=Enums.ProfileState.MyProfile;
-            mBinding.imgViewMenu.setImageResource(R.drawable.ic_menu);
+            if(mListener instanceof MainActivity) {
+                mBinding.imgViewMenu.setImageResource(R.drawable.ic_menu);
+            }
+            else {
+                mBinding.imgViewMenu.setImageResource(R.drawable.ic_back);
+            }
             //mProfilePagerAdapter=new ProfilePagerAdapter(getChildFragmentManager(), getActivity(), new String[]{getString(R.string.tab_questions),getString(R.string.tab_bookmarks)} ,mUser );
         }
         else { //Other profile

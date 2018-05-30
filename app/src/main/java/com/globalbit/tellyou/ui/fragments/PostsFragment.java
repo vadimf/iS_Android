@@ -277,6 +277,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             }
             catch(Exception ex){}
             //TODO something when returning from video player
+            onRefreshPosts();
         }
         else if(requestCode==Constants.REQUEST_SEARCH) {
             onRefreshPosts();

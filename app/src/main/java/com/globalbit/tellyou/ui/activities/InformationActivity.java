@@ -1,7 +1,9 @@
 package com.globalbit.tellyou.ui.activities;
 
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -33,6 +35,19 @@ public class InformationActivity extends BaseActivity implements View.OnClickLis
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 hideLoadingDialog();
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith("tel:") || url.startsWith("sms:") || url.startsWith("smsto:") || url.startsWith("mailto:") || url.startsWith("mms:") || url.startsWith("mmsto:")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                    return true;
+                }
+                else {
+                    view.loadUrl(url);
+                }
+                return true;
             }
         } );
         mBinding.webView.getSettings().setDomStorageEnabled(true);
