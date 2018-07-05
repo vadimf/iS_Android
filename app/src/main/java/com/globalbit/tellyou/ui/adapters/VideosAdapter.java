@@ -524,6 +524,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
         private CountDownTimer mTimer;
         private int mElapsedTime=0;
         private ScheduledFuture<?> mScheduleFuture;
+        private User mUser=SharedPrefsUtils.getUserDetails();
         private Runnable mUpdateProgressTask = new Runnable() {
             @Override
             public void run() {
@@ -592,17 +593,19 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 Log.i(TAG, "initialize: "+mPosition);
                 mBinding.imgViewPreview.setVisibility(View.VISIBLE);
                 mHelper = new ExoPlayerViewHelper( this, mMediaUri);
-                NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
-                    @Override
-                    public void onSuccess(BaseResponse response, Object object) {
+                if(!mPost.getUser().getUsername().equals(mUser.getUsername())) {
+                    NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
+                        @Override
+                        public void onSuccess(BaseResponse response, Object object) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onError(int errorCode, String errorMessage) {
+                        @Override
+                        public void onError(int errorCode, String errorMessage) {
 
-                    }
-                }, mPost.getId());
+                        }
+                    }, mPost.getId());
+                }
             }
             mHelper.initialize(container, playbackInfo);
             //mElapsedTime=0;

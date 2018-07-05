@@ -21,25 +21,6 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
             <com.shawnlin.numberpicker.NumberPicker
-                android:id="@+id/pickerMonths"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:np_dividerColor="@color/separator"
-                app:np_max="7"
-                app:np_min="0"
-                app:np_selectedTextColor="@color/grey_light"
-                app:np_textColor="@color/separator"
-                app:np_textSize="16sp"
-                app:np_selectedTextSize="16sp"
-                app:np_value="3" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
-            <com.shawnlin.numberpicker.NumberPicker
                 android:id="@+id/pickerDays"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,6 +32,25 @@
                 app:np_textSize="16sp"
                 app:np_selectedTextSize="16sp"
                 app:np_value="1" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/pickerMonths"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:np_dividerColor="@color/separator"
+                app:np_max="7"
+                app:np_min="0"
+                app:np_selectedTextColor="@color/grey_light"
+                app:np_textColor="@color/separator"
+                app:np_textSize="16sp"
+                app:np_selectedTextSize="16sp"
+                app:np_value="3" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"

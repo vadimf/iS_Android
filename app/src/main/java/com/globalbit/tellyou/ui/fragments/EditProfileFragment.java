@@ -18,14 +18,12 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.internal.MDButton;
 import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.CustomApplication;
@@ -40,8 +38,6 @@ import com.globalbit.tellyou.network.requests.UserRequest;
 import com.globalbit.tellyou.network.responses.UserResponse;
 import com.globalbit.tellyou.network.responses.UsernameExistResponse;
 import com.globalbit.tellyou.ui.activities.CropActivity;
-import com.globalbit.tellyou.ui.activities.DiscoverActivity;
-import com.globalbit.tellyou.ui.dialogs.BirthdayPickerDialogFragment;
 import com.globalbit.tellyou.ui.interfaces.IProfileListener;
 import com.globalbit.tellyou.utils.GeneralUtils;
 import com.globalbit.tellyou.utils.ObservableHelper;
@@ -553,6 +549,8 @@ public class EditProfileFragment extends BaseFragment implements View.OnClickLis
                     pickerDays.setMaxValue(day);
                 }
                 else {
+                    pickerMonths.setMaxValue(months.length);
+                    pickerMonths.setDisplayedValues(months);
                     if(pickerMonths.getValue()==2) {
                         if(newVal%4==0) {
                             pickerDays.setMaxValue(29);

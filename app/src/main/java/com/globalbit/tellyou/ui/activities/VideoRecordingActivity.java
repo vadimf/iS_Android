@@ -447,7 +447,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
             case Recording:
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutExit.setVisibility(View.GONE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutRecordStop.setVisibility(View.VISIBLE);
-                mBinding.lnrLayoutVideoRecordingActions.imgViewRecordStop.setImageResource(R.drawable.btn_stop);
+                mBinding.lnrLayoutVideoRecordingActions.imgViewRecordStop.setImageResource(R.drawable.btn_pause);
                 mBinding.lnrLayoutVideoRecordingActions.imgViewReShoot.setVisibility(View.INVISIBLE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutFinish.setVisibility(View.GONE);
                 mBinding.lnrLayoutVideoRecordingActions.frmLayoutSwitchCamera.setVisibility(View.GONE);

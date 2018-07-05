@@ -89,10 +89,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                         BaseFragment fragment=(BaseFragment) mSearchPagerAdapter.getRegisteredFragment(mPosition);
                         CustomApplication.getAnalytics().logEvent(Constants.SEARCH, null);
                         if(fragment instanceof PostsFragment) {
-                            ((PostsFragment) fragment).searchPosts(charSequence.toString());
+                            ((PostsFragment) fragment).searchPosts(charSequence.toString().trim());
                         }
                         else if(fragment instanceof SuggestionsFragment) {
-                            ((SuggestionsFragment) fragment).searchPosts(charSequence.toString());
+                            ((SuggestionsFragment) fragment).searchPosts(charSequence.toString().trim());
                         }
                     }
 

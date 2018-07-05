@@ -97,7 +97,7 @@
                 android:id="@+id/btCancel"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                style="@style/ButtonRegularStyleDisabled"
+                style="@style/ButtonRegularStyleCancel"
                 android:text="@string/btn_cancel"
                 android:textColor="#46474d"/>
 

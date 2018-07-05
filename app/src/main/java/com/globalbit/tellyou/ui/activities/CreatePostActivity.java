@@ -163,7 +163,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                     final MaterialDialog dialog=new MaterialDialog.Builder(this)
                             .content(R.string.dialog_video_uploading)
                             .cancelable(false)
-                            .positiveText(R.string.btn_ok)
+                            /*.positiveText(R.string.btn_ok)
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -173,7 +173,7 @@ public class CreatePostActivity extends BaseActivity implements View.OnClickList
                                     }
                                     finish();
                                 }
-                            })
+                            })*/
                             .show();
                     TimerTask timerTask=new TimerTask() {
                         @Override

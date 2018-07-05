@@ -23,6 +23,7 @@ import com.globalbit.androidutils.StringUtils;
 import com.globalbit.tellyou.Constants;
 import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.FragmentContactsBinding;
+import com.globalbit.tellyou.model.Pagination;
 import com.globalbit.tellyou.network.NetworkManager;
 import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
 import com.globalbit.tellyou.network.requests.ContactsRequest;
@@ -58,6 +59,7 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
     private String mToken;
     private CallbackManager mCallbackManager;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
+    private Pagination mPagination;
 
     public static ContactsFragment newInstance(int state) {
         ContactsFragment fragment=new ContactsFragment();
@@ -107,6 +109,9 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
                 totalItemCount = layoutManager.getItemCount();
                 pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
                 if (mLoading) {
+                    if(mPagination!=null&&mState==Constants.TYPE_FRIENDS_CONTACTS&&mPagination.getPage()<=mPagination.getPages()) {
+                        return;
+                    }
                     if ( (visibleItemCount+pastVisiblesItems) >= totalItemCount) {
                         mLoading = false;
                         if(mState==Constants.TYPE_FRIENDS_CONTACTS) {
@@ -218,6 +223,7 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
             NetworkManager.getInstance().getContacts(new IBaseNetworkResponseListener<UsersResponse>() {
                 @Override
                 public void onSuccess(UsersResponse response, Object object) {
+                    mPagination=response.getPagination();
                     mBinding.swipeLayout.setRefreshing(false);
                     mBinding.swipeLayout.setEnabled(false);
                     mLoading=true;
