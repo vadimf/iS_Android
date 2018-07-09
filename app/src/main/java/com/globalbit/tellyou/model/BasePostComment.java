@@ -32,6 +32,9 @@ public class BasePostComment implements Parcelable {
     @SerializedName("uniqueViews")
     private int mUniqueViews;
 
+    @SerializedName("dailyViews")
+    private int mDailyViews;
+
     @SerializedName("comments")
     private int mComments;
 
@@ -77,8 +80,8 @@ public class BasePostComment implements Parcelable {
     }
 
     public int getViews() {
-        return mViews;
-    }
+        return mDailyViews;
+    } //Currently using daily views
 
     public void setViews(int views) {
         mViews=views;
@@ -169,5 +172,13 @@ public class BasePostComment implements Parcelable {
 
     public void setTags(ArrayList<String> tags) {
         mTags=tags;
+    }
+
+    public int getDailyViews() {
+        return mDailyViews;
+    }
+
+    public void setDailyViews(int dailyViews) {
+        mDailyViews=dailyViews;
     }
 }

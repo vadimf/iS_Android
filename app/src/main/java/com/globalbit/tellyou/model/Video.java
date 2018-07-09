@@ -26,6 +26,9 @@ public class Video implements Parcelable{
     @SerializedName("duration")
     private int mDuration;
 
+    @SerializedName("dimensions")
+    private VideoDimensions mVideoDimensions;
+
     public String getUrl() {
         return mUrl;
     }
@@ -56,6 +59,7 @@ public class Video implements Parcelable{
         mUrl=in.readString();
         mThumbnail=in.readString();
         mDuration=in.readInt();
+        mVideoDimensions=in.readParcelable(VideoDimensions.class.getClassLoader());
     }
 
     public static final Creator<Video> CREATOR=new Creator<Video>() {
@@ -80,6 +84,7 @@ public class Video implements Parcelable{
         dest.writeString(mUrl);
         dest.writeString(mThumbnail);
         dest.writeInt(mDuration);
+        dest.writeParcelable(mVideoDimensions, flags);
     }
 
     public String getSample() {
@@ -96,5 +101,13 @@ public class Video implements Parcelable{
 
     public void setGif(String gif) {
         mGif=gif;
+    }
+
+    public VideoDimensions getVideoDimensions() {
+        return mVideoDimensions;
+    }
+
+    public void setVideoDimensions(VideoDimensions videoDimensions) {
+        mVideoDimensions=videoDimensions;
     }
 }

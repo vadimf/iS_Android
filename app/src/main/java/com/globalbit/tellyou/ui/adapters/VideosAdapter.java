@@ -53,6 +53,7 @@ import com.globalbit.tellyou.ui.interfaces.IVideoListener;
 import com.globalbit.tellyou.utils.CustomLinearLayoutManager;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
 import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.video.VideoListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -204,10 +205,31 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
             Uri uri=Uri.parse(item.getVideo().getUrl());
             if(!StringUtils.isEmpty(item.getVideo().getThumbnail())) {
                 holder.mBinding.imgViewPreview.setVisibility(View.VISIBLE);
-                Picasso.with(mContext).load(item.getVideo().getThumbnail()).resize(mImgWidth, 0).into(holder.mBinding.imgViewPreview);
+                if(item.getVideo().getVideoDimensions()!=null) {
+                    if(item.getVideo().getVideoDimensions().getOrientation()==3) {
+                        Picasso.with(mContext).load(item.getVideo().getThumbnail()).resize(0, mImgHeight).into(holder.mBinding.imgViewPreview);
+                    }
+                    else {
+                        Picasso.with(mContext).load(item.getVideo().getThumbnail()).resize(mImgWidth, 0).into(holder.mBinding.imgViewPreview);
+                    }
+                }
+                else {
+                    Picasso.with(mContext).load(item.getVideo().getThumbnail()).resize(mImgWidth, 0).into(holder.mBinding.imgViewPreview);
+                }
             }
             else {
                 holder.mBinding.imgViewPreview.setVisibility(View.GONE);
+            }
+            if(item.getVideo().getVideoDimensions()!=null) {
+                if(item.getVideo().getVideoDimensions().getOrientation()==3) {
+                    holder.mBinding.videoViewPlayer.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);
+                }
+                else {
+                    holder.mBinding.videoViewPlayer.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
+                }
+            }
+            else {
+                holder.mBinding.videoViewPlayer.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
             }
             holder.mMediaUri=uri;
             holder.mPosition=position;
@@ -582,10 +604,6 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
             return mHelper != null ? mHelper.getLatestPlaybackInfo() : new PlaybackInfo();
         }
 
-        @Override
-        public void onSettled(Container container) {
-
-        }
 
         @Override
         public void initialize(@NonNull Container container, @Nullable PlaybackInfo playbackInfo) {

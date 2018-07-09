@@ -219,6 +219,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
                                 profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
                             }
                         }
+                        Log.i(TAG, "onClick: "+profile.videoFrameWidth+","+profile.videoFrameHeight);
                         mRecorder.setProfile(profile);
                         mRecorder.setVideoEncodingBitRate(1000000);
                         mRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());

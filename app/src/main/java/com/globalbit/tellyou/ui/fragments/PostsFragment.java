@@ -80,6 +80,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
 
     private Post mCurrentPost=null;
     private int mCurrentPosition=-1;
+    private int mLastPosition=-1;
 
     public static PostsFragment newInstance(int feedType, User user, IProfileListener listener) {
         PostsFragment fragment=new PostsFragment();
@@ -164,6 +165,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             public void onRefresh() {
                 mIsPopularVideos=false;
                 mPage=1;
+                mLastPosition=-1;
                 mAdapter.clear();
                 loadItems();
             }
@@ -299,6 +301,9 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             if(!mIsPopularVideos||mFeedType==Constants.TYPE_FEED_SEARCH) {
                 isEmpty();
             }
+            if(mFeedType==Constants.TYPE_FEED_HOME&&mLastPosition!=-1&& mAdapter.getItemCount()>mLastPosition) {
+                mBinding.recyclerViewPosts.scrollToPosition(mLastPosition);
+            }
         }
     }
 
@@ -402,6 +407,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
 
     @Override
     public void onVideoPayer(Post post, int position) {
+        mLastPosition=position;
         Intent intent=new Intent(getActivity(), VideoPlayerActivity.class);
         intent.putExtra(Constants.DATA_POSTS, mAdapter.getItems());
         intent.putExtra(Constants.DATA_INDEX, position);

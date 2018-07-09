@@ -85,9 +85,9 @@ dependencies {
     compile 'com.android.support:multidex:1.0.3'
     //implementation 'com.googlecode.mp4parser:isoparser:1.1.21'
     /*implementation 'com.googlecode.mp4parser:isoparser:1.0.6'*/
-    implementation 'com.google.android.exoplayer:exoplayer:2.7.0'
-    implementation 'im.ene.toro3:toro:3.4.1'
-    implementation 'im.ene.toro3:toro-ext-exoplayer:3.4.1'
+    /*implementation 'com.google.android.exoplayer:exoplayer:2.8.0'*/
+    implementation 'im.ene.toro3:toro:3.5.2'
+    implementation 'im.ene.toro3:toro-ext-exoplayer:3.5.2'
     implementation 'com.shawnlin:number-picker:2.4.6'
     implementation 'com.iceteck.silicompressorr:silicompressor:2.1'
     implementation 'com.writingminds:FFmpegAndroid:0.3.2'

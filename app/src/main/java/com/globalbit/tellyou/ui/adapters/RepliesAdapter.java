@@ -27,6 +27,9 @@ import com.globalbit.tellyou.R;
 import com.globalbit.tellyou.databinding.ItemReplyBinding;
 import com.globalbit.tellyou.model.Comment;
 import com.globalbit.tellyou.model.User;
+import com.globalbit.tellyou.network.NetworkManager;
+import com.globalbit.tellyou.network.interfaces.IBaseNetworkResponseListener;
+import com.globalbit.tellyou.network.responses.BaseResponse;
 import com.globalbit.tellyou.ui.events.NextVideoEvent;
 import com.globalbit.tellyou.ui.interfaces.IReplyListener;
 import com.globalbit.tellyou.utils.SharedPrefsUtils;
@@ -156,6 +159,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
             }
             holder.mediaUri=uri;
             holder.mPosition=position;
+            holder.mComment=item;
             holder.mBinding.txtViewUsername.setText(String.format(Locale.getDefault(),"@%s",item.getUser().getUsername()));
             if(item.getUser().getProfile()!=null&&item.getUser().getProfile().getPicture()!=null&&!StringUtils.isEmpty(item.getUser().getProfile().getPicture().getThumbnail())) {
                 Picasso.with(mContext).load(item.getUser().getProfile().getPicture().getThumbnail()).into(holder.mBinding.imgViewPhoto);
@@ -174,6 +178,7 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
                 holder.mBinding.imgViewDelete.setVisibility(View.GONE);
                 holder.mBinding.imgViewReport.setVisibility(View.VISIBLE);
             }
+            holder.mBinding.txtViewViews.setText(String.format(Locale.getDefault(),"%d", item.getViews()));
             holder.setClickListener(new ViewHolder.ClickListener() {
                 @Override
                 public void onClick(View v, int position) {
@@ -201,6 +206,8 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
         ToroPlayerHelper helper;
         Uri mediaUri;
         private int mPosition;
+        private Comment mComment;
+        private User mUser=SharedPrefsUtils.getUserDetails();
 
         public ViewHolder(View v) {
             super(v);
@@ -226,6 +233,19 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
             if (helper == null) {
                 mBinding.imgViewPreview.setVisibility(View.VISIBLE);
                 helper = new ExoPlayerViewHelper(this, mediaUri);
+                if(!mComment.getUser().getUsername().equals(mUser.getUsername())) {
+                    NetworkManager.getInstance().viewPost(new IBaseNetworkResponseListener<BaseResponse>() {
+                        @Override
+                        public void onSuccess(BaseResponse response, Object object) {
+
+                        }
+
+                        @Override
+                        public void onError(int errorCode, String errorMessage) {
+
+                        }
+                    }, mComment.getId());
+                }
             }
             CustomApplication.getAnalytics().logEvent(Constants.REPLY_PLAYED, null);
             helper.initialize(container, playbackInfo);
@@ -286,10 +306,6 @@ public class RepliesAdapter extends RecyclerView.Adapter<RepliesAdapter.ViewHold
             return getAdapterPosition();
         }
 
-        @Override
-        public void onSettled(Container container) {
-
-        }
 
         public interface ClickListener {
 

@@ -89,6 +89,7 @@
                         android:id="@+id/txtViewViews"
                         tools:text="345"
                         android:layout_marginStart="5dp"
+                        android:includeFontPadding="false"
                         style="@style/LabelTextWhiteSemiBoldStyle"/>
                     <ImageView
                         android:layout_width="wrap_content"
@@ -103,6 +104,7 @@
                         android:id="@+id/txtViewComments"
                         tools:text="345"
                         android:layout_marginStart="5dp"
+                        android:includeFontPadding="false"
                         style="@style/LabelTextWhiteSemiBoldStyle"/>
                 </LinearLayout>
                 <TextView

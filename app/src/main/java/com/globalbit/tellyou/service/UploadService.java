@@ -75,12 +75,38 @@ public class UploadService extends Service {
         if(intent!=null) {
             final String filePath=intent.getStringExtra(Constants.DATA_VIDEO_FILE);
             final File file=new File(filePath);
+            MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
+            metaRetriever.setDataSource(file.getPath());
+            String hh = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+            String ww = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+            String metaRotation = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+            Log.i(TAG, "onStartCommand: "+ww+","+hh+":"+metaRotation);
+            int w=0;
+            int h=0;
+            int rotation=0;
+            try {
+                w=Integer.parseInt(ww);
+                h=Integer.parseInt(hh);
+                rotation=Integer.parseInt(metaRotation);
+            }
+            catch(Exception ex) {
+
+            }
+            if(rotation==90||rotation==270) {
+                int tmp=w;
+                w=h;
+                h=tmp;
+            }
+            final int width=w;
+            final int height=h;
             //final File gif=(File)intent.getSerializableExtra(Constants.DATA_GIF_FILE);
             final String text=intent.getStringExtra(Constants.DATA_TEXT);
             ArrayList<String> tags=intent.getStringArrayListExtra(Constants.DATA_HASHTAGS);
             final int duration=(int)intent.getLongExtra(Constants.DATA_DURATION, -1);
             final int videoRecordingType=intent.getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
             final String postId=intent.getStringExtra(Constants.DATA_POST_ID);
+            //final int width=intent.getIntExtra(Constants.DATA_WIDTH, 0);
+            //final int height=intent.getIntExtra(Constants.DATA_HEIGHT, 0);
             final boolean isFrontCamera=intent.getBooleanExtra(Constants.DATA_IS_FRONT_CAMERA, true);
             Bitmap thumb = ThumbnailUtils.createVideoThumbnail(filePath,
                     MediaStore.Images.Thumbnails.MINI_KIND);
@@ -115,7 +141,7 @@ public class UploadService extends Service {
             Notification notification;
             switch(videoRecordingType) {
                 case Constants.TYPE_POST_VIDEO_RECORDING:
-                    recordedVideo(isFrontCamera, videoRecordingType, file, requestFile, gif, requestGif, text, hashtags, duration);
+                    recordedVideo(isFrontCamera, videoRecordingType, file, requestFile, gif, requestGif, text, hashtags, duration, width, height);
                     notification =
                             new NotificationCompat.Builder(this, "UploadChannel")
                                     .setContentTitle(getString(R.string.label_uploading))
@@ -156,7 +182,7 @@ public class UploadService extends Service {
                                         MediaType.parse("image/jpg"),
                                         gifFileNewFinal
                                 );
-                                recordedVideo(isFrontCamera, videoRecordingType, newFile, requestFileNew, gifFileNewFinal, requestGifNew, text, hashtags, duration);
+                                recordedVideo(isFrontCamera, videoRecordingType, newFile, requestFileNew, gifFileNewFinal, requestGifNew, text, hashtags, duration, width, height);
                             } catch(URISyntaxException e) {
                                 e.printStackTrace();
                             }
@@ -278,7 +304,7 @@ public class UploadService extends Service {
         }
     }
 
-    private void recordedVideo(final boolean isFrontCamera, final int videoRecordingType, final File file, RequestBody requestFile, File gif, RequestBody requestGif, final String text, final ArrayList<RequestBody> hashtags, final int duration) {
+    private void recordedVideo(final boolean isFrontCamera, final int videoRecordingType, final File file, RequestBody requestFile, File gif, RequestBody requestGif, final String text, final ArrayList<RequestBody> hashtags, final int duration, final int width, final int height) {
         NetworkManager.getInstance().createPost(new IBaseNetworkResponseListener<PostResponse>() {
                                                     @Override
                                                     public void onSuccess(PostResponse response, Object object) {
@@ -338,7 +364,9 @@ public class UploadService extends Service {
                                                 }, MultipartBody.Part.createFormData("video", file.getName(), requestFile),
                 MultipartBody.Part.createFormData("thumbnail", gif.getName(), requestGif),
                 RequestBody.create(MultipartBody.FORM, text), hashtags,
-                RequestBody.create(MultipartBody.FORM, String.valueOf(duration)));
+                RequestBody.create(MultipartBody.FORM, String.valueOf(duration)),
+                RequestBody.create(MultipartBody.FORM, String.valueOf(width)),
+                RequestBody.create(MultipartBody.FORM, String.valueOf(height)));
     }
 
     private void showReplyNotification(PendingIntent pendingIntent) {
