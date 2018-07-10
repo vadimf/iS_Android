@@ -18,6 +18,9 @@ public class PostsResponse extends BaseResponse {
     @SerializedName("pagination")
     private Pagination mPagination;
 
+    @SerializedName("followingPostsExists")
+    private boolean mFollowingPostsExists;
+
     public ArrayList<Post> getPosts() {
         return mPosts;
     }
@@ -32,5 +35,13 @@ public class PostsResponse extends BaseResponse {
 
     public void setPagination(Pagination pagination) {
         mPagination=pagination;
+    }
+
+    public boolean isFollowingPostsExists() {
+        return mFollowingPostsExists;
+    }
+
+    public void setFollowingPostsExists(boolean followingPostsExists) {
+        mFollowingPostsExists=followingPostsExists;
     }
 }

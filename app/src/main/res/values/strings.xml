@@ -50,7 +50,7 @@
     <string name="label_contact_us">Contact us</string>
     <string name="label_terms_of_service">Terms of service</string>
     <string name="label_privacy_policy">Privacy policy</string>
-    <string name="label_about">About TellYou</string>
+    <string name="label_about">About Tellyou</string>
     <string name="globalbit_website">http://globalbit.co.il/</string>
     <string name="v">v</string>
     <string name="btn_continue">Continue</string>
@@ -80,7 +80,7 @@
     <string name="label_followers_empty">No one follows you yet</string>
     <string name="label_user_followers_empty">No one follows %1$s yet</string>
     <string name="label_user_following_empty">%1$s not following anyone yet</string>
-    <string name="label_share_title">%1$s shared a video from TellYou app\n\n\"%2$s\"</string>
+    <string name="label_share_title">%1$s shared a video from Tellyou app\n\n\"%2$s\"</string>
     <string name="label_share_via">Share via&#8230;</string>
     <string name="label_sign_up_agreement">By signing up you agree to <u>Terms of Use</u>\n&amp;\n<u>Privacy Policy</u></string>
     <string name="label_log_in_agreement"><![CDATA[By logging in you agree to <u>Terms of Use</u> & <u>Privacy Policy</u>]]></string>
@@ -98,11 +98,11 @@
     <string name="hint_password">PASSWORD</string>
     <string name="btn_sign_up">Sign up</string>
     <string name="tab_facebook">Connect</string>
-    <string name="label_header_facebook_connect">Connect your Facebook account to find friends who already use TellYou</string>
-    <string name="label_header_facebook_connected">Some of your Facebook friends use TellYou! Follow them</string>
+    <string name="label_header_facebook_connect">Connect your Facebook account to find friends who already use Tellyou</string>
+    <string name="label_header_facebook_connected">Some of your Facebook friends use Tellyou! Follow them</string>
     <string name="label_header_facebook_connected_empty">It seems like your Facebook friends don\'t use TellYou yet</string>
-    <string name="label_header_contacts_connected">Some of your contacts use TellYou! Follow them</string>
-    <string name="label_header_contacts_connected_empty">It seems like your contacts don\'t use TellYou yet</string>
+    <string name="label_header_contacts_connected">Some of your contacts use Tellyou! Follow them</string>
+    <string name="label_header_contacts_connected_empty">It seems like your contacts don\'t use Tellyou yet</string>
     <string name="label_no_matches">No matches found</string>
     <string name="label_no_replies">Has something to say?\n\nPlease be polite, brief and pleasant.\nYou have only 30 seconds!</string>
     <string name="btn_create_account">Create new account</string>
@@ -112,7 +112,7 @@
     <string name="label_by_facebook">or by Facebook</string>
     <string name="label_forgot_password_instruction">Enter your Email below and we will send you the instructions on how to reset your password</string>
     <string name="label_add_photo">Add photo</string>
-    <string name="label_popular_on_cake">Popular on TellYou</string>
+    <string name="label_popular_on_cake">Popular on Tellyou</string>
     <string name="btn_ask_first_question">Post your first video</string>
     <string name="label_developed_by">Developed by</string>
     <string name="dialog_title_internet_connection">Network connection</string>

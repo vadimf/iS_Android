@@ -303,6 +303,7 @@ public class PostsFragment extends BaseFragment implements IBaseNetworkResponseL
             }
             if(mFeedType==Constants.TYPE_FEED_HOME&&mLastPosition!=-1&& mAdapter.getItemCount()>mLastPosition) {
                 mBinding.recyclerViewPosts.scrollToPosition(mLastPosition);
+                mLastPosition=-1;
             }
         }
     }

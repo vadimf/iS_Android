@@ -132,6 +132,7 @@ public class BasePostComment implements Parcelable {
         mText=in.readString();
         in.readList(mTags, String.class.getClassLoader());
         mIsViewed=in.readByte() != 0;
+        mDailyViews=in.readInt();
 
     }
 
@@ -164,6 +165,7 @@ public class BasePostComment implements Parcelable {
         dest.writeString(mText);
         dest.writeList(mTags);
         dest.writeByte((byte) (mIsViewed ? 1 : 0));
+        dest.writeInt(mDailyViews);
     }
 
     public ArrayList<String> getTags() {

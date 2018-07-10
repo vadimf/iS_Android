@@ -98,8 +98,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 style="@style/ButtonRegularStyleCancel"
-                android:text="@string/btn_cancel"
-                android:textColor="#46474d"/>
+                android:text="@string/btn_cancel"/>
 
             <View
                 android:layout_width="20dp"

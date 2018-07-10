@@ -208,13 +208,16 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
                 if(item.getVideo().getVideoDimensions()!=null) {
                     if(item.getVideo().getVideoDimensions().getOrientation()==3) {
                         Picasso.with(mContext).load(item.getVideo().getThumbnail()).resize(0, mImgHeight).into(holder.mBinding.imgViewPreview);
+                        //holder.mBinding.imgViewPreview.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                     }
                     else {
                         Picasso.with(mContext).load(item.getVideo().getThumbnail()).resize(mImgWidth, 0).into(holder.mBinding.imgViewPreview);
+                        //holder.mBinding.imgViewPreview.setLayoutParams(new FrameLayout.LayoutParams(mImgWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
                     }
                 }
                 else {
                     Picasso.with(mContext).load(item.getVideo().getThumbnail()).resize(mImgWidth, 0).into(holder.mBinding.imgViewPreview);
+                    //holder.mBinding.imgViewPreview.setLayoutParams(new FrameLayout.LayoutParams(mImgWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
                 }
             }
             else {

@@ -258,7 +258,12 @@ public class ContactsFragment extends BaseFragment implements IBaseNetworkRespon
         mBinding.swipeLayout.setRefreshing(false);
         mBinding.swipeLayout.setEnabled(false);
         mLoading=true;
-        mAdapter.addItems(response.getUsers());
+        if(mPageToken!=null&&mPageToken.equals(response.getNextPageToken())) {
+            mAdapter.setItems(response.getUsers());
+        }
+        else {
+            mAdapter.addItems(response.getUsers());
+        }
         mPageToken=response.getNextPageToken();
         if(mAdapter.getItemCount()>0) {
             mBinding.txtViewHeader.setText(R.string.label_header_facebook_connected);
