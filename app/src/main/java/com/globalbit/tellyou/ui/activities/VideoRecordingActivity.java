@@ -99,6 +99,7 @@ public class VideoRecordingActivity extends BaseActivity implements View.OnClick
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding=DataBindingUtil.setContentView(this, R.layout.activity_video_recording);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mVideoRecordingType=getIntent().getIntExtra(Constants.DATA_VIDEO_RECORDING_TYPE, Constants.TYPE_POST_VIDEO_RECORDING);
         mPostId=getIntent().getStringExtra(Constants.DATA_POST_ID);
         switch(mVideoRecordingType) {
